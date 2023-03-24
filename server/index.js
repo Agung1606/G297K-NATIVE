@@ -9,16 +9,17 @@ import dotenv from 'dotenv';
 import multer from 'multer';
 import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
+import { verifyToken } from './middleware/verifyToken.js'; // middle to verify the token
 
 // router
 import authRouter from './routes/auth.js';
 
 
 // fake data
-import User from './models/User.js';
-import Post from './models/Post.js';
-import Comment from './models/Comment.js';
-import { users, posts, comments } from './data/index.js'
+// import User from './models/User.js';
+// import Post from './models/Post.js';
+// import Comment from './models/Comment.js';
+// import { users, posts, comments } from './data/index.js'
 
 
 // CONFIGURATION
