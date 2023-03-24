@@ -7,8 +7,9 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 // ICONS
 import { AntDesign } from '@expo/vector-icons';
 
-export default function BirthdayReg() {
+export default function BirthdayReg({ route }) {
   const navigation = useNavigation();
+  const data = route?.params?.param;
 
   // name of months
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'Desember'];
@@ -21,6 +22,14 @@ export default function BirthdayReg() {
   const onChange = (event, value) => {
     setDate(value);
     if(Platform.OS === 'android') setIsPickerShow(false);
+  };
+
+  const handleDateSubmit = () => {
+    const newData = {
+      ...data,
+      date: formatDate
+    };
+    navigation.navigate('PasswordReg', {param: newData})
   };
 
   return (
@@ -67,7 +76,7 @@ export default function BirthdayReg() {
           {/* button submit */}
           <Pressable
             className='bg-[#3bace2] active:bg-[#229dd6] mt-2 py-[10px] rounded-lg'
-            onPress={() => navigation.navigate('PasswordReg')}
+            onPress={handleDateSubmit}
           >
             <Text className='text-center text-white font-semibold'>
               Next

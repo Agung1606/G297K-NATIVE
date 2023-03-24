@@ -6,11 +6,36 @@ import { useNavigation } from '@react-navigation/native';
 // ICONS
 import { AntDesign } from '@expo/vector-icons';
 
-export default function NameReg() {
+// form
+import { Formik } from 'formik';
+import * as yup from 'yup';
+
+const initialNameValue = {
+    firstName: '',
+    lastName: '',
+};
+const nameValidation = yup.object().shape({
+    firstName: yup
+        .string()
+        .min(3, ({ min }) => `First name must be at least ${min} characters`)
+        .required('first name is required'),
+    lastName: yup
+        .string()
+});
+
+export default function NameReg({ route }) {
     const navigation = useNavigation();
+    const email = route?.params?.param;
+
+    const handleNameSubmit = (values) => {
+        const newData = {
+            ...values,
+            email
+        };
+        navigation.navigate('BirthdayReg', {param: newData});
+    };
 
     const styleInput = 'mb-2 bg-indigo-50 rounded-lg';
-
     return (
         <SafeAreaView className='flex-1 bg-white relative'>
             <View className='mt-8 mx-3'>
@@ -25,33 +50,51 @@ export default function NameReg() {
             </View>
             {/* form */}
             <View className='mt-8 mx-3'>
-                {/* first name */}
-                <View>
-                    <TextInput 
-                        placeholder='First Name'
-                        underlineColor='transparent'
-                        activeUnderlineColor='#3bace2'
-                        className={styleInput}
-                    />
-                </View>
-                {/* last name */}
-                <View>
-                    <TextInput 
-                        placeholder='Last Name'
-                        underlineColor='transparent'
-                        activeUnderlineColor='#3bace2'
-                        className={styleInput}
-                    />
-                </View>
-                {/* submit button */}
-                <Pressable  
-                    className='bg-[#3bace2] active:bg-[#229dd6] mt-2 py-[10px] rounded-lg'
-                    onPress={() => navigation.navigate('BirthdayReg')}
+                <Formik
+                    validationSchema={nameValidation}
+                    initialValues={initialNameValue}
+                    onSubmit={handleNameSubmit}
                 >
-                    <Text className='text-center text-white font-semibold'>
-                        Next
-                    </Text>
-                </Pressable>
+                    {({handleChange, handleSubmit, values, errors}) => (
+                        <>
+                            {/* first name */}
+                            <View>
+                                <TextInput 
+                                    placeholder='First Name'
+                                    underlineColor='transparent'
+                                    activeUnderlineColor='#3bace2'
+                                    className={styleInput}
+                                    value={values.firstName}
+                                    onChangeText={handleChange('firstName')}
+                                />
+                                {errors.firstName && 
+                                    <Text className='text-red-600'>{errors.firstName}</Text>}
+                            </View>
+                            {/* last name */}
+                            <View>
+                                <TextInput 
+                                    placeholder='Last Name'
+                                    underlineColor='transparent'
+                                    activeUnderlineColor='#3bace2'
+                                    className={styleInput}
+                                    value={values.lastName}
+                                    onChangeText={handleChange('lastName')}
+                                />
+                                {errors.lastName && 
+                                    <Text className='text-red-600'>{errors.lastName}</Text>}
+                            </View>
+                            {/* submit button */}
+                            <Pressable  
+                                className='bg-[#3bace2] active:bg-[#229dd6] mt-2 py-[10px] rounded-lg'
+                                onPress={handleSubmit}
+                            >
+                                <Text className='text-center text-white font-semibold'>
+                                    Next
+                                </Text>
+                            </Pressable>
+                        </>
+                    )}
+                </Formik>
             </View>
 
             {/* already have an account */}

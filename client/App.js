@@ -5,6 +5,8 @@ import {
   Itim_400Regular,
 } from '@expo-google-fonts/itim';
 
+import Toast, { ErrorToast } from 'react-native-toast-message';
+
 import { Provider } from 'react-redux';
 import { store } from './state';
 
@@ -13,6 +15,20 @@ import FlowRegister from './screens/auth/signUp/FlowRegister';
 import MainLayout from './screens/layout/MainLayout';
 
 const Stack = createNativeStackNavigator();
+
+const toastConfig = {
+  // overwrite error
+  error: (props) => (
+    <ErrorToast 
+      {...props}
+      style={{ borderLeftColor: 'red', width: 245, height: 50 }}
+      text1Style={{
+        fontSize: 15,
+        textAlign: 'center'
+      }}
+    />
+  ),
+};
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -34,6 +50,7 @@ export default function App() {
             
           </Stack.Navigator>
         </NavigationContainer>
+        <Toast config={toastConfig} />
     </Provider>
   );
 }

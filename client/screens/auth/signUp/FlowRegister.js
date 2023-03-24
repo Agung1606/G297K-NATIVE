@@ -5,8 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import EmailReg from './reg/EmailReg';
 import NameReg from './reg/NameReg';
 import BirthdayReg from './reg/BirthdayReg';
-import UsernameReg from './reg/UsernameReg';
 import PasswordReg from './reg/PasswordReg';
+import UsernameReg from './reg/UsernameReg';
 
 const Tab = createNativeStackNavigator();
 

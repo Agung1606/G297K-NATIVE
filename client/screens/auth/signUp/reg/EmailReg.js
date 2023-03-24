@@ -6,8 +6,28 @@ import React from 'react'
 // ICONS
 import { AntDesign } from '@expo/vector-icons';
 
+// formik
+import { Formik } from 'formik';
+import * as yup from 'yup';
+
+const initialEmailValue = {
+  email: ''
+};
+const emailValidation = yup.object().shape({
+  email: yup
+    .string()
+    .email('Please enter valid email')
+    .required('Email address is required')
+});
+
 export default function EmailReg() {
   const navigation = useNavigation();
+
+  const handleEmailSubmit = (values) => {
+    navigation.navigate('NameReg', { 
+      param: values.email,
+    });
+  };
 
   return (
     <SafeAreaView className='flex-1 bg-white relative'>
@@ -26,25 +46,41 @@ export default function EmailReg() {
       </View>
       {/* form */}
       <View className='mt-8 mx-3'>
-        {/* email */}
-        <View>
-          <TextInput 
-            placeholder='Email'
-            keyboardType='email-address'
-            underlineColor='transparent'
-            activeUnderlineColor='#3bace2'
-            className='mb-2 bg-indigo-50 rounded-lg'
-          />
-        </View>
-        {/* button submit */}
-        <Pressable 
-          className='bg-[#3bace2] active:bg-[#229dd6] mt-2 py-[10px] rounded-lg'
-          onPress={() => navigation.navigate('NameReg')}
+        <Formik
+          validationSchema={emailValidation}
+          initialValues={initialEmailValue}
+          onSubmit={handleEmailSubmit}
         >
-          <Text className='text-center text-white font-semibold'>
-            Next
-          </Text>
-        </Pressable>
+          {({handleChange, handleSubmit, values, errors, isValid}) => (
+            <>
+              {/* email */}
+              <View>
+                <TextInput 
+                  placeholder='Email'
+                  keyboardType='email-address'
+                  underlineColor='transparent'
+                  activeUnderlineColor='#3bace2'
+                  className='mb-2 bg-indigo-50 rounded-lg'
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                />
+                {errors.email && 
+                  <Text className='text-red-600'>{errors.email}</Text>
+                }
+              </View>
+              {/* button submit */}
+              <Pressable 
+                className='bg-[#3bace2] active:bg-[#229dd6] mt-2 py-[10px] rounded-lg'
+                disabled={!isValid}
+                onPress={handleSubmit}
+              >
+                <Text className='text-center text-white font-semibold'>
+                  Next
+                </Text>
+              </Pressable>
+            </>
+          )}
+        </Formik>
       </View>
       {/* already have an account */}
       <View className='absolute bottom-6 w-full'>

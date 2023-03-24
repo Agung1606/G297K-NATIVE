@@ -1,8 +1,18 @@
-import { View, Text, Pressable } from 'react-native'
+import { View, Text, Pressable, ActivityIndicator } from 'react-native'
 import { TextInput } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
+
+// form
+import { useLoginUserMutation } from '../../../api/authApi';
+import { Formik } from 'formik';
+import Toast from 'react-native-toast-message'
+
+const initialLoginValues = {
+  username: '',
+  pw: '',
+};
 
 export default function SignIn() {
   const navigation = useNavigation();
@@ -10,6 +20,25 @@ export default function SignIn() {
 
   const inputStyle = 'w-[95%] mx-auto mb-2 bg-indigo-50 rounded-lg';
   const formStyle = 'w-[350px] sm:w-[400px] h-auto px-3 py-5 rounded-xl mt-4 sm:bg-black/5 backdrop-blur-sm sm:border sm:border-black/30'
+
+  // login api
+  const [loginUser, { isLoading }] = useLoginUserMutation();
+
+
+  // handle login
+  const handleLoginSubmit = async (values, onSubmitProps) => {
+    try {
+      const loginPromise = await loginUser(values).unwrap();
+      console.log(loginPromise)
+      onSubmitProps.resetForm();
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: error.data.msg
+      })
+    }
+  };
+
   return (
       <SafeAreaView className='flex-1 bg-white'>
         <View className='flex-1 flex-col sm:flex-row justify-center items-center'>
@@ -19,42 +48,59 @@ export default function SignIn() {
 
           {/* FORM */}
           <View className={formStyle}>
-            {/* username */}
-            <View>
-              <TextInput 
-                placeholder='Username'
-                underlineColor='transparent'
-                activeUnderlineColor='#3bace2'
-                className={inputStyle}
-                />
-            </View>
-
-            {/* password */}
-            <View>
-              <TextInput 
-                placeholder='Password'
-                underlineColor='transparent'
-                activeUnderlineColor='#3bace2'
-                secureTextEntry={hidePassword}
-                right={
-                  <TextInput.Icon 
-                  onPress={() => setHidePassword(!hidePassword)}
-                  icon={hidePassword ? 'eye-off' : 'eye'}
-                  />
-                }
-                className={inputStyle}
-              />
-            </View>
-
-            {/* button submit */}
-            <Pressable
-              className='bg-[#3bace2] active:bg-[#229dd6] w-[95%] mx-auto mt-2 py-[10px] rounded-lg'
-              onPress={() => alert('agung is a good boy')}
+            <Formik 
+              initialValues={initialLoginValues}
+              onSubmit={handleLoginSubmit}
             >
-              <Text className='text-center text-white font-semibold'>
-                Login
-              </Text>
-            </Pressable>
+              {({ handleChange, handleSubmit, values, errors}) => (
+                <>
+                  {/* username */}
+                  <View>
+                    <TextInput 
+                      placeholder='Username'
+                      underlineColor='transparent'
+                      activeUnderlineColor='#3bace2'
+                      className={inputStyle}
+                      value={values.username}
+                      onChangeText={handleChange('username')}
+                      />
+                  </View>
+
+                  {/* password */}
+                  <View>
+                    <TextInput 
+                      placeholder='Password'
+                      underlineColor='transparent'
+                      activeUnderlineColor='#3bace2'
+                      secureTextEntry={hidePassword}
+                      right={
+                        <TextInput.Icon 
+                          onPress={() => setHidePassword(!hidePassword)}
+                          icon={hidePassword ? 'eye-off' : 'eye'}
+                        />
+                      }
+                      className={inputStyle}
+                      value={values.pw}
+                      onChangeText={handleChange('pw')}
+                    />
+                  </View>
+
+                  {/* button submit */}
+                  <Pressable
+                    className='bg-[#3bace2] active:bg-[#229dd6] w-[95%] mx-auto mt-2 py-[10px] rounded-lg'
+                    onPress={handleSubmit}
+                  >
+                    <Text className='text-center text-white font-semibold'>
+                      {
+                        isLoading 
+                          ? <ActivityIndicator size="small" color="#fff" /> 
+                          : 'Login'
+                      }
+                    </Text>
+                  </Pressable>
+                </>
+              )}
+            </Formik>
           </View>
           
           <View>

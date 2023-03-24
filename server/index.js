@@ -58,7 +58,7 @@ app.use('/api/v1/auth', authRouter);
 
 /* MONGOOSE AND SERVER SETUP */
 const PORT = process.env.PORT || 9002;
-const hostName = 'localhost';
+const hostName = '192.168.0.106';
 
 mongoose.set('strictQuery', true); // to prevent deprecation waring
 mongoose.connect(process.env.MONGO_URI, {
