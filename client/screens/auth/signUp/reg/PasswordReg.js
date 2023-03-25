@@ -16,8 +16,8 @@ const initialPasswordValue = {
 const passwordValidation = yup.object().shape({
     pw: yup
      .string()
-     .pw('please use strong password so that others cannot guess')
      .required('Password is required')
+     .min(8, ({ min }) => `Password must be at least ${min} characters`)
 });
 
 export default function PasswordReg({ route }) {
@@ -31,7 +31,7 @@ export default function PasswordReg({ route }) {
             ...data,
             pw: values.pw
         }
-        console.log(newData)
+        navigation.navigate('UsernameReg', {param: newData});
     };
 
     return (

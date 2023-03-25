@@ -27,7 +27,7 @@ export const register = async (req, res) => {
 
         const newUser = new User({
             firstName,
-            lastName: lastName || '',
+            lastName,
             email,
             birthday,
             username,

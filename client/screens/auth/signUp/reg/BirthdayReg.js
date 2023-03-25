@@ -27,7 +27,7 @@ export default function BirthdayReg({ route }) {
   const handleDateSubmit = () => {
     const newData = {
       ...data,
-      date: formatDate
+      birthday: String(date)
     };
     navigation.navigate('PasswordReg', {param: newData})
   };

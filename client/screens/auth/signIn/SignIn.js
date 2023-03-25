@@ -52,7 +52,7 @@ export default function SignIn() {
               initialValues={initialLoginValues}
               onSubmit={handleLoginSubmit}
             >
-              {({ handleChange, handleSubmit, values, errors}) => (
+              {({ handleChange, handleSubmit, values}) => (
                 <>
                   {/* username */}
                   <View>
