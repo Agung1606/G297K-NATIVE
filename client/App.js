@@ -8,13 +8,13 @@ import {
 import Toast, { ErrorToast } from 'react-native-toast-message';
 
 import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { persistStore } from 'redux-persist';
 import { store } from './state';
 
-import SignIn from './screens/auth/signIn/SignIn';
-import FlowRegister from './screens/auth/signUp/FlowRegister';
-import MainLayout from './screens/layout/MainLayout';
-
 const Stack = createNativeStackNavigator();
+
+import Main from './Main';
 
 const toastConfig = {
   // overwrite error
@@ -38,19 +38,14 @@ export default function App() {
 
   return (
     <Provider store={store}>
+      <PersistGate loading={null} persistor={persistStore(store)}>
         <NavigationContainer>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
-
-            <Stack.Group>
-              <Stack.Screen name='SignIn' component={SignIn} />
-              <Stack.Screen name='FlowRegister' component={FlowRegister} />
-            </Stack.Group>
-            
-            <Stack.Screen name='MainLayout' component={MainLayout} />
-            
+            <Stack.Screen name='Main' component={Main} />
           </Stack.Navigator>
         </NavigationContainer>
         <Toast config={toastConfig} />
+      </PersistGate>
     </Provider>
   );
 }

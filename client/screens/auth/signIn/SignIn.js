@@ -4,18 +4,19 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 
+import { setLogin } from '../../../state/authSlice'
+import { useDispatch, useSelector } from 'react-redux';
+
 // form
 import { useLoginUserMutation } from '../../../api/authApi';
 import { Formik } from 'formik';
 import Toast from 'react-native-toast-message'
 
-const initialLoginValues = {
-  username: '',
-  pw: '',
-};
-
 export default function SignIn() {
+  const user = useSelector((state) => state.auth.user);
+
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const [hidePassword, setHidePassword] = useState(true);
 
   const inputStyle = 'w-[95%] mx-auto mb-2 bg-indigo-50 rounded-lg';
@@ -24,12 +25,16 @@ export default function SignIn() {
   // login api
   const [loginUser, { isLoading }] = useLoginUserMutation();
 
-
   // handle login
   const handleLoginSubmit = async (values, onSubmitProps) => {
     try {
       const loginPromise = await loginUser(values).unwrap();
-      console.log(loginPromise)
+      dispatch(
+        setLogin({
+          user: loginPromise.userData,
+          token: loginPromise.token
+        })
+      )
       onSubmitProps.resetForm();
     } catch (error) {
       Toast.show({
@@ -49,7 +54,10 @@ export default function SignIn() {
           {/* FORM */}
           <View className={formStyle}>
             <Formik 
-              initialValues={initialLoginValues}
+              initialValues={{
+                username: user?.username || '',
+                pw: ''
+              }}
               onSubmit={handleLoginSubmit}
             >
               {({ handleChange, handleSubmit, values}) => (

@@ -9,11 +9,11 @@ import dotenv from 'dotenv';
 import multer from 'multer';
 import mongoose from 'mongoose';
 import { fileURLToPath } from 'url';
-import { verifyToken } from './middleware/verifyToken.js'; // middle to verify the token
+import { verifyToken } from './middleware/verifyToken.js'; // middleware to verify the token
 
 // router
 import authRouter from './routes/auth.js';
-
+import postRouter from './routes/post.js';
 
 // fake data
 // import User from './models/User.js';
@@ -55,6 +55,7 @@ const upload = multer({ storage }); // if we wanna upload file we can use this v
 
 // routes
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/post', verifyToken, postRouter);
 
 /* MONGOOSE AND SERVER SETUP */
 const PORT = process.env.PORT || 9002;

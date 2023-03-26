@@ -9,6 +9,10 @@ import { TextInput } from 'react-native-paper';
 // api
 import { useRegisterUserMutation } from '../../../../api/authApi';
 
+// store
+import { setLogin } from '../../../../state/authSlice';
+import { useDispatch } from 'react-redux';
+
 // form
 import { Formik } from 'formik';
 import * as yup from 'yup';
@@ -24,6 +28,7 @@ const usernameValidation = yup.object().shape({
 });
 
 export default function UsernameReg({ route }) {
+    const dispatch = useDispatch();
     const navigation = useNavigation();
     const data = route?.params?.param;
 
@@ -37,7 +42,12 @@ export default function UsernameReg({ route }) {
                 username: values.username
             }
             const registerPromise = await registerUser(newData).unwrap();
-            console.log(registerPromise)
+            dispatch(
+                setLogin({
+                    user: registerPromise.userData,
+                    token: registerPromise.token
+                })
+            )
             onSubmitProps.resetForm();
         } catch (error) {
             Toast.show({
