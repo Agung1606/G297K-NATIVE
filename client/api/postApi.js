@@ -18,10 +18,23 @@ const postApi = api.injectEndpoints({
                       ]
                     : [{ type: 'Posts', id: 'PARTIAL-LIST' }],
         }),
+        likePost: builder.mutation({
+            query: ({ postId, token, ...data}) => ({
+                url: `/api/v1/post/like/${postId}`,
+                method: 'PATCH',
+                headers: { Authorization: `Bearer ${token}` },
+                body: data,
+            }),
+            invalidatesTags: (result, error, postId) => [
+                { type: 'Posts', postId },
+                { type: 'Posts', id: 'PARTIAL-LIST' }
+            ],
+        }),
     }),
     overrideExisting: false
 });
 
 export const {
-    useGetExplorePostsQuery
+    useGetExplorePostsQuery,
+    useLikePostMutation,
 } = postApi;

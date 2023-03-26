@@ -2,20 +2,41 @@ import { View, Text, Image, Pressable } from 'react-native'
 import { Avatar } from 'react-native-paper'
 import React, { useState } from 'react'
 
+import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 
 // icons
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 
+// api
+import { useLikePostMutation } from '../../api/postApi'
+
 export default function Post({ item }) {
     const [moreDesc, setMoreDesc] = useState(true);
+    const handleMoreDesc = () => setMoreDesc(!moreDesc);
 
     const user = useSelector((state) => state.auth.user);
+    const token = useSelector((state) => state.auth.token);
 
     const likeCount = item.likes?.length;
     const longDesc = item.description?.length > 80 ? item.description.slice(0, 80) : item.description;
     const commentCount = item.comments?.length;
+
+    // 
+    const isLiked = item?.likes?.some((like) => like.userId === user._id);
+
+    // api
+    const [likePost] = useLikePostMutation();
+    const handleLikePost = async () => {
+        await likePost({
+            postId: item._id,
+            token,
+            userId: user._id,
+            username: user.username,
+            profilePicturePath: user.profilePicturePath
+        });
+    };
 
     return (
         <View className='mb-7 p-2'>
@@ -43,7 +64,7 @@ export default function Post({ item }) {
             {/* icons */}
             <View className='flex-row justify-between items-center px-2 mb-2'>
                 <View className='flex-row gap-x-4'>
-                    <Pressable onPress={() => alert('like photo')}>
+                    <Pressable onPress={handleLikePost}>
                         <FontAwesome name='heart-o' size={25} />
                     </Pressable>
                     <Pressable onPress={() => alert('go to comment screen')}>
@@ -70,7 +91,7 @@ export default function Post({ item }) {
                 </Text>}
                 {/* function to look at long desc */}
                 {item.description?.length > 40 && 
-                <Pressable onPress={() => setMoreDesc(!moreDesc)}>
+                <Pressable onPress={handleMoreDesc}>
                     <Text className='text-gray-400'>{moreDesc ? '...more' : '...less'}</Text>
                 </Pressable>}
                 {/* comment info */}
@@ -81,8 +102,8 @@ export default function Post({ item }) {
                     </Text>
                 </Pressable>}
                 {/* post date */}
-                <Text className='text-gray-400 text-xs'>
-                    {item.postDate}
+                <Text className='text-gray-400 text-[12px]'>
+                    {dayjs(item.postDate).format("MMMM D, YYYY")}
                 </Text>
             </View>
         </View>
