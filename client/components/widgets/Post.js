@@ -1,16 +1,14 @@
-import { View, Text, Image, Pressable } from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { Avatar } from 'react-native-paper'
 import React, { useState } from 'react'
-
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
-
 // icons
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-
 // api
 import { useLikePostMutation } from '../../api/postApi'
+// animation
 
 export default function Post({ item }) {
     const [moreDesc, setMoreDesc] = useState(true);
@@ -20,11 +18,10 @@ export default function Post({ item }) {
     const token = useSelector((state) => state.auth.token);
 
     const likeCount = Object.keys(item?.likes).length || 0;
+    const isLiked = Boolean(item?.likes[user._id]);
     const longDesc = item?.description?.length > 80 ? item.description.slice(0, 80) : item.description;
     const commentCount = item?.comments?.length;
 
-    // 
-    const isLiked = Boolean(item?.likes[user._id]);
 
     // api
     const [likePost] = useLikePostMutation();
@@ -33,8 +30,11 @@ export default function Post({ item }) {
             postId: item._id,
             userId: user._id,
             token,
+            isLiked: isLiked
         });
     };
+
+    // animation
 
     return (
         <View className='mb-7 p-2'>
@@ -62,13 +62,13 @@ export default function Post({ item }) {
             {/* icons */}
             <View className='flex-row justify-between items-center px-2 mb-2'>
                 <View className='flex-row gap-x-4'>
-                    <Pressable onPress={handleLikePost}>
+                    <TouchableOpacity onPress={handleLikePost}>
                         <FontAwesome 
                             name={isLiked ? 'heart' : 'heart-o'} 
                             color={isLiked ? 'red' : undefined}
                             size={25}
                         />
-                    </Pressable>
+                    </TouchableOpacity>
                     <FontAwesome name='comment-o' size={25} />
                 </View>
                 <FontAwesome name='bookmark-o' size={25} />
@@ -89,9 +89,9 @@ export default function Post({ item }) {
                 </Text>}
                 {/* function to look at long desc */}
                 {item?.description?.length > 40 && 
-                <Pressable onPress={handleMoreDesc}>
+                <TouchableOpacity onPress={handleMoreDesc}>
                     <Text className='text-gray-400'>{moreDesc ? '...more' : '...less'}</Text>
-                </Pressable>}
+                </TouchableOpacity>}
                 {/* comment info */}
                 {item.comments?.length > 0 && 
                     <Text className='text-gray-400 text-[16px]'>

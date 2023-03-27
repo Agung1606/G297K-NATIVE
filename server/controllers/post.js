@@ -28,26 +28,23 @@ export const getExplorePosts = async (req, res) => {
 // PATCH: http://192.168.0.106:6002/api/v1/post/like
 export const likePost = async (req, res) => {
     try {
-        const { postId, userId } = req.body;
+        const { postId, userId, isLiked } = req.body;
 
         const post = await Post.findById({ _id: postId });
-        if(!post) return res.status(StatusCodes.NOT_FOUND).json({ msg: 'Postingan tidak ditemukan' });
-
-        const isLiked = post.likes.get(userId);
 
         if(isLiked) {
             post.likes.delete(userId);
         } else {
             post.likes.set(userId, true);
         }
-
-        const updatedPost = await Post.findByIdAndUpdate(
-            post._id,
+        
+        const updatedPost = await Post.findOneAndUpdate(
+            { _id: postId },
             { likes: post.likes },
             { new: true }
         );
-
         return res.status(StatusCodes.OK).json(updatedPost);
+
     } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
     }
