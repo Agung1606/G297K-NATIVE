@@ -19,8 +19,8 @@ const postApi = api.injectEndpoints({
                     : [{ type: 'Posts', id: 'PARTIAL-LIST' }],
         }),
         likePost: builder.mutation({
-            query: ({ postId, token, ...data}) => ({
-                url: `/api/v1/post/like/${postId}`,
+            query: ({ token, ...data}) => ({
+                url: `/api/v1/post/like`,
                 method: 'PATCH',
                 headers: { Authorization: `Bearer ${token}` },
                 body: data,

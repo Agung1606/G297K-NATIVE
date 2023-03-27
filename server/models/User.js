@@ -40,20 +40,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
-    followers: [
-        {
-            userId: String,
-            username: String,
-            profilePicturePath: String,
-        }
-    ],
-    following: [
-        {
-            userId: String,
-            username: String,
-            profilePicturePath: String,
-        }
-    ],
+    followers: {
+        type: Map,
+        of: Boolean
+    },
+    following: {
+        type: Map,
+        of: Boolean
+    },
 }, {timestamps: true});
 
 const User = mongoose.model("User", UserSchema);

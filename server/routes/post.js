@@ -7,6 +7,6 @@ import { getExplorePosts, likePost } from '../controllers/post.js';
 router.route('/explore').get(getExplorePosts);
 
 // patch
-router.route('/like/:postId').patch(likePost);
+router.route('/like').patch(likePost);
 
 export default router;

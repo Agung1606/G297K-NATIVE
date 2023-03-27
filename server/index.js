@@ -16,10 +16,10 @@ import authRouter from './routes/auth.js';
 import postRouter from './routes/post.js';
 
 // fake data
-// import User from './models/User.js';
-// import Post from './models/Post.js';
-// import Comment from './models/Comment.js';
-// import { users, posts, comments } from './data/index.js'
+import User from './models/User.js';
+import Post from './models/Post.js';
+import Comment from './models/Comment.js';
+import { users, posts, comments } from './data/index.js'
 
 
 // CONFIGURATION

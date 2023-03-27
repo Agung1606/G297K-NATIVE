@@ -19,22 +19,20 @@ export default function Post({ item }) {
     const user = useSelector((state) => state.auth.user);
     const token = useSelector((state) => state.auth.token);
 
-    const likeCount = item.likes?.length;
-    const longDesc = item.description?.length > 80 ? item.description.slice(0, 80) : item.description;
-    const commentCount = item.comments?.length;
+    const likeCount = Object.keys(item?.likes).length || 0;
+    const longDesc = item?.description?.length > 80 ? item.description.slice(0, 80) : item.description;
+    const commentCount = item?.comments?.length;
 
     // 
-    const isLiked = item?.likes?.some((like) => like.userId === user._id);
+    const isLiked = Boolean(item?.likes[user._id]);
 
     // api
     const [likePost] = useLikePostMutation();
     const handleLikePost = async () => {
         await likePost({
             postId: item._id,
-            token,
             userId: user._id,
-            username: user.username,
-            profilePicturePath: user.profilePicturePath
+            token,
         });
     };
 
@@ -65,42 +63,40 @@ export default function Post({ item }) {
             <View className='flex-row justify-between items-center px-2 mb-2'>
                 <View className='flex-row gap-x-4'>
                     <Pressable onPress={handleLikePost}>
-                        <FontAwesome name='heart-o' size={25} />
+                        <FontAwesome 
+                            name={isLiked ? 'heart' : 'heart-o'} 
+                            color={isLiked ? 'red' : undefined}
+                            size={25}
+                        />
                     </Pressable>
-                    <Pressable onPress={() => alert('go to comment screen')}>
-                        <FontAwesome name='comment-o' size={25} />
-                    </Pressable>
+                    <FontAwesome name='comment-o' size={25} />
                 </View>
                 <FontAwesome name='bookmark-o' size={25} />
             </View>
             {/* container */}
             <View className='px-2 space-y-1'>
                 {/* like count */}
-                {item.likes.length > 0 && 
-                    <Pressable onPress={() => alert('go to like screen info')}>
-                        <Text className='font-extrabold'>
-                            {`${likeCount} ${likeCount > 1 ? 'likes' : 'like'}`}
-                        </Text>
-                    </Pressable>
+                {likeCount > 0 && 
+                    <Text className='font-extrabold'>
+                        {`${likeCount} ${likeCount > 1 ? 'likes' : 'like'}`}
+                    </Text>
                 }
                 {/* username and desc */}
-                {item.description && 
+                {item?.description && 
                 <Text>
                     <Text className='font-extrabold'>{item.username}{"  "}</Text>
                     {moreDesc ? longDesc : item.description}
                 </Text>}
                 {/* function to look at long desc */}
-                {item.description?.length > 40 && 
+                {item?.description?.length > 40 && 
                 <Pressable onPress={handleMoreDesc}>
                     <Text className='text-gray-400'>{moreDesc ? '...more' : '...less'}</Text>
                 </Pressable>}
                 {/* comment info */}
                 {item.comments?.length > 0 && 
-                <Pressable onPress={() => alert('go to comment screen')}>
                     <Text className='text-gray-400 text-[16px]'>
                         {`View all ${commentCount} ${commentCount > 1 ? 'comments' : 'comment'}`}
-                    </Text>
-                </Pressable>}
+                    </Text>}
                 {/* post date */}
                 <Text className='text-gray-400 text-[12px]'>
                     {dayjs(item.postDate).format("MMMM D, YYYY")}

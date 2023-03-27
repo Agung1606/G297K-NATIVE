@@ -32,8 +32,8 @@ export const register = async (req, res) => {
             birthday,
             username,
             password: hashedPassword,
-            followers: [],
-            following: [],
+            followers: {},
+            following: {},
         });
 
         await newUser.save();
