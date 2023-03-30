@@ -1,12 +1,13 @@
+import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 // models
-import User from '../models/User.js';
+import User from '../models/User';
 
 // POST: http://localhost:6002/api/v1/auth/register
-export const register = async (req, res) => {
+export const register = async (req: Request, res: Response) => {
     try {
         // unpack the request body
         const {
@@ -43,9 +44,10 @@ export const register = async (req, res) => {
 
         
         // create token
+        const secret: string = (process.env.JWT_SECRET_KEY) as string;
         const token = jwt.sign({
             userId: user._id,
-        }, process.env.JWT_SECRET_KEY, { expiresIn: '24d' });
+        }, secret, { expiresIn: '24d' });
         
         const {password, ...rest} = user;
         return res.status(StatusCodes.CREATED).json({
@@ -59,7 +61,7 @@ export const register = async (req, res) => {
 };
     
 // POST: http://localhost:6002/api/v1/auth/login
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
     try {
         // unpack the request body
         const {username, pw} = req.body;
@@ -75,9 +77,10 @@ export const login = async (req, res) => {
         if(!checkPassword) return res.status(StatusCodes.BAD_REQUEST).json({ msg: 'Password salah' });
 
         // create token
+        const secret: string = (process.env.JWT_SECRET_KEY) as string;
         const token = jwt.sign({
             userId: user._id,
-        }, process.env.JWT_SECRET_KEY, { expiresIn: '24d' });
+        }, secret, { expiresIn: '24d' });
 
         // left the password
         const { password, ...rest } = user;
