@@ -28,8 +28,10 @@ const usernameValidation = yup.object().shape({
 });
 
 export default function UsernameReg({ route }) {
-    const dispatch = useDispatch();
     const navigation = useNavigation();
+    const goToPasswordReg = () => navigation.navigate('PasswordReg');
+
+    const dispatch = useDispatch();
     const data = route?.params?.param;
 
     const [registerUser, { isLoading }] = useRegisterUserMutation();
@@ -60,7 +62,7 @@ export default function UsernameReg({ route }) {
     return (
         <SafeAreaView className='flex-1 bg-white relative'>
             <View className='mt-8 mx-3'>
-                <Pressable onPress={() => navigation.navigate('PasswordReg')}>
+                <Pressable onPress={goToPasswordReg}>
                     <AntDesign name='arrowleft' size={30} color='#010026' />
                 </Pressable>
             </View>

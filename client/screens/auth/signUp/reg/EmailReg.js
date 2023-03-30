@@ -22,6 +22,7 @@ const emailValidation = yup.object().shape({
 
 export default function EmailReg() {
   const navigation = useNavigation();
+  const goToSignIn = () => navigation.navigate('SignIn');
 
   const handleEmailSubmit = (values) => {
     navigation.navigate('NameReg', { 
@@ -32,7 +33,7 @@ export default function EmailReg() {
   return (
     <SafeAreaView className='flex-1 bg-white relative'>
       <View className='mt-8 mx-3'>
-        <Pressable onPress={() => navigation.navigate('SignIn')}>
+        <Pressable onPress={goToSignIn}>
           <AntDesign name='arrowleft' size={30} color='#010026' />
         </Pressable>
       </View>
@@ -86,7 +87,7 @@ export default function EmailReg() {
       <View className='absolute bottom-6 w-full'>
         <Text 
           className='text-center font-bold text-blue'
-          onPress={() => navigation.navigate('SignIn')}
+          onPress={goToSignIn}
         >
           Sudah punya akun?
         </Text>

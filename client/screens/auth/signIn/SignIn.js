@@ -13,11 +13,14 @@ import { Formik } from 'formik';
 import Toast from 'react-native-toast-message'
 
 export default function SignIn() {
+  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
 
   const navigation = useNavigation();
-  const dispatch = useDispatch();
+  const goToRegister = () => navigation.navigate('FlowRegister');
+
   const [hidePassword, setHidePassword] = useState(true);
+  const handleHidePassword = () => setHidePassword(!hidePassword)
 
   const inputStyle = 'w-[95%] mx-auto mb-2 bg-indigo-50 rounded-lg';
   const formStyle = 'w-[350px] sm:w-[400px] h-auto px-3 py-5 rounded-xl mt-4 sm:bg-black/5 backdrop-blur-sm sm:border sm:border-black/30'
@@ -83,7 +86,7 @@ export default function SignIn() {
                       secureTextEntry={hidePassword}
                       right={
                         <TextInput.Icon 
-                          onPress={() => setHidePassword(!hidePassword)}
+                          onPress={handleHidePassword}
                           icon={hidePassword ? 'eye-off' : 'eye'}
                         />
                       }
@@ -121,7 +124,7 @@ export default function SignIn() {
             <Text className='text-deep-blue'>Belum punya akun?</Text>
             <Text 
               className='text-blue'
-              onPress={() => navigation.navigate('FlowRegister')}
+              onPress={goToRegister}
             >
               Daftar
             </Text>

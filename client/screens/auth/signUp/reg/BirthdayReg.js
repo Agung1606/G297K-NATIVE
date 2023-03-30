@@ -9,8 +9,10 @@ import { AntDesign } from '@expo/vector-icons';
 
 export default function BirthdayReg({ route }) {
   const navigation = useNavigation();
+  const goToSignIn = () => navigation.navigate('SignIn');
+  const goToNameReg = () => navigation.navigate('NameReg');
+  
   const data = route?.params?.param;
-
   // name of months
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'Desember'];
 
@@ -35,7 +37,7 @@ export default function BirthdayReg({ route }) {
   return (
     <SafeAreaView className='flex-1 bg-white relative'>
       <View className='mt-8 mx-3'>
-        <Pressable onPress={() => navigation.navigate('NameReg')}>
+        <Pressable onPress={goToNameReg}>
           <AntDesign name='arrowleft' size={30} color='#010026' />
         </Pressable>
       </View>
@@ -88,7 +90,7 @@ export default function BirthdayReg({ route }) {
       <View className='absolute bottom-6 w-full'>
           <Text 
               className='text-center font-bold text-blue'
-              onPress={() => navigation.navigate('SignIn')}
+              onPress={goToSignIn}
           >
           Sudah punya akun?
           </Text>

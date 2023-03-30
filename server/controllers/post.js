@@ -17,34 +17,10 @@ export const getExplorePosts = async (req, res) => {
                 },
             },
             {$sort: {'postDate': -1}},
+            {$unset: ['createdAt', 'updatedAt', '__v']}
         ]);
 
         return res.status(StatusCodes.OK).json(posts);
-    } catch (error) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
-    }
-};
-
-// PATCH: http://192.168.0.106:6002/api/v1/post/like
-export const likePost = async (req, res) => {
-    try {
-        const { postId, userId, isLiked } = req.body;
-
-        const post = await Post.findById({ _id: postId });
-
-        if(isLiked) {
-            post.likes.delete(userId);
-        } else {
-            post.likes.set(userId, true);
-        }
-        
-        const updatedPost = await Post.findOneAndUpdate(
-            { _id: postId },
-            { likes: post.likes },
-            { new: true }
-        );
-        return res.status(StatusCodes.OK).json(updatedPost);
-
     } catch (error) {
         return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
     }

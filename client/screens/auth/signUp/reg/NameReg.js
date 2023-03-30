@@ -25,6 +25,9 @@ const nameValidation = yup.object().shape({
 
 export default function NameReg({ route }) {
     const navigation = useNavigation();
+    const goToSignIn = () => navigation.navigate('SignIn');
+    const goToEmailReg = () => navigation.navigate('EmailReg');
+
     const email = route?.params?.param;
 
     const handleNameSubmit = (values) => {
@@ -39,7 +42,7 @@ export default function NameReg({ route }) {
     return (
         <SafeAreaView className='flex-1 bg-white relative'>
             <View className='mt-8 mx-3'>
-                <Pressable onPress={() => navigation.navigate('EmailReg')}>
+                <Pressable onPress={goToEmailReg}>
                     <AntDesign name='arrowleft' size={30} color='#010026' />
                 </Pressable>
             </View>
@@ -101,7 +104,7 @@ export default function NameReg({ route }) {
             <View className='absolute bottom-6 w-full'>
                 <Text 
                     className='text-center font-bold text-blue'
-                    onPress={() => navigation.navigate('SignIn')}
+                    onPress={goToSignIn}
                 >
                 Sudah punya akun?
                 </Text>

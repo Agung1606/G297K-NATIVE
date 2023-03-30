@@ -6,35 +6,17 @@ import { useSelector } from 'react-redux'
 // icons
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
-// api
-import { useLikePostMutation } from '../../api/postApi'
-// animation
 
 export default function Post({ item }) {
     const [moreDesc, setMoreDesc] = useState(true);
     const handleMoreDesc = () => setMoreDesc(!moreDesc);
 
     const user = useSelector((state) => state.auth.user);
-    const token = useSelector((state) => state.auth.token);
 
     const likeCount = Object.keys(item?.likes).length || 0;
     const isLiked = Boolean(item?.likes[user._id]);
     const longDesc = item?.description?.length > 80 ? item.description.slice(0, 80) : item.description;
     const commentCount = item?.comments?.length;
-
-
-    // api
-    const [likePost] = useLikePostMutation();
-    const handleLikePost = async () => {
-        await likePost({
-            postId: item._id,
-            userId: user._id,
-            token,
-            isLiked: isLiked
-        });
-    };
-
-    // animation
 
     return (
         <View className='mb-7 p-2'>
@@ -49,7 +31,9 @@ export default function Post({ item }) {
                         {item.username}
                     </Text>
                 </View>
-                <MaterialIcons name='more-vert' size={25} />
+                <TouchableOpacity>
+                    <MaterialIcons name='more-vert' size={25} />
+                </TouchableOpacity>
             </View>
             {/* post photo */}
             <View className='mx-auto mb-2'>
@@ -62,16 +46,20 @@ export default function Post({ item }) {
             {/* icons */}
             <View className='flex-row justify-between items-center px-2 mb-2'>
                 <View className='flex-row gap-x-4'>
-                    <TouchableOpacity onPress={handleLikePost}>
+                    <TouchableOpacity>
                         <FontAwesome 
                             name={isLiked ? 'heart' : 'heart-o'} 
                             color={isLiked ? 'red' : undefined}
                             size={25}
                         />
                     </TouchableOpacity>
-                    <FontAwesome name='comment-o' size={25} />
+                    <TouchableOpacity>
+                        <FontAwesome name='comment-o' size={25} />
+                    </TouchableOpacity>
                 </View>
-                <FontAwesome name='bookmark-o' size={25} />
+                <TouchableOpacity>
+                    <FontAwesome name='bookmark-o' size={25} />
+                </TouchableOpacity>
             </View>
             {/* container */}
             <View className='px-2 space-y-1'>

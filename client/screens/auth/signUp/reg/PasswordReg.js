@@ -22,9 +22,13 @@ const passwordValidation = yup.object().shape({
 
 export default function PasswordReg({ route }) {
     const navigation = useNavigation();
+    const goToSignIn = () => navigation.navigate('SignIn');
+    const goToBirthdayReg = () => navigation.navigate('BirthdayReg');
+
     const data = route?.params?.param;
 
     const [hidePassword, setHidePassword] = useState(true);
+    const handleHidePassword = () => setHidePassword(!hidePassword);
     
     const handlePwSubmit = (values) => {
         const newData = {
@@ -37,7 +41,7 @@ export default function PasswordReg({ route }) {
     return (
         <SafeAreaView className='flex-1 bg-white relative'>
             <View className='mt-8 mx-3'>
-                <Pressable onPress={() => navigation.navigate('BirthdayReg')}>
+                <Pressable onPress={goToBirthdayReg}>
                     <AntDesign name='arrowleft' size={30} color='#010026' />
                 </Pressable>
             </View>
@@ -68,7 +72,7 @@ export default function PasswordReg({ route }) {
                                     secureTextEntry={hidePassword}
                                     right={
                                         <TextInput.Icon 
-                                            onPress={() => setHidePassword(!hidePassword)}
+                                            onPress={handleHidePassword}
                                             icon={hidePassword ? 'eye-off' : 'eye'}
                                         />
                                     }
@@ -100,7 +104,7 @@ export default function PasswordReg({ route }) {
             <View className='absolute bottom-6 w-full'>
                 <Text 
                     className='text-center font-bold text-blue'
-                    onPress={() => navigation.navigate('SignIn')}
+                    onPress={goToSignIn}
                 >
                 Sudah punya akun?
                 </Text>
