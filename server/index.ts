@@ -78,42 +78,39 @@
 
 // IMPORT
 import express, { Express } from 'express';
-import mongoose from 'mongoose';
+import http from 'http';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4'
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
+import { connectDB } from './db';
 import cors from 'cors';
-import helmet from 'helmet';
-import path from 'path';
-import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 
-import { verifyToken } from './middleware/verifyToken';
-// router import
-import authRouter from './routes/auth';
-import postRouter from './routes/post';
+import { resolvers, typeDefs } from './schema';
 
-// config
-dotenv.config();
-const app: Express = express();
-// middleware
-app.use(express.json());
-app.use(helmet());
-app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
-app.use(bodyParser.json({ limit: '30mb' }))
-app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
-app.use(morgan('common'));
-app.use(cors());
-app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
-app.disable('X-Powered-By')
+(async function() {
+    dotenv.config(); // to access environment variable
+    const app: Express = express();
+    
+    const httpServer = http.createServer(app);
+    const server = new ApolloServer({
+        typeDefs,
+        resolvers,
+        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+    })
+    await server.start();
+    await connectDB(); // connect to database first and then run server
+    const PORT = process.env.PORT || 9002;
 
-// router
-app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/post', verifyToken, postRouter);
+    app.use(express.json());
+    app.use(morgan('common'));
+    app.use(
+        '/graphql',
+        cors<cors.CorsRequest>(),
+        expressMiddleware(server)
+    )
 
-const PORT = process.env.PORT || 9002;
-
-mongoose.set('strictQuery', true); // to prevent deprecation waring
-mongoose.connect(process.env.MONGO_URI as string, {
-    autoIndex: false
-}).then(() => {
-    app.listen(PORT, () => console.log(`Server is listening on port ${PORT}...`));
-}).catch((error) => console.error(`${error} did not found`))
+    await new Promise<void>((resolve) => httpServer.listen({ port: PORT }, resolve));
+    console.log(`🚀 Server ready at http://localhost:6002/graphql`);
+})();

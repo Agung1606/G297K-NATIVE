@@ -11,6 +11,15 @@
 // import mongoose from 'mongoose';
 // import { fileURLToPath } from 'url';
 // import { verifyToken } from './middleware/verifyToken.js'; // middleware to verify the token
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -69,37 +78,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // ========= TYPESCRIPT =========
 // IMPORT
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
+const http_1 = __importDefault(require("http"));
+const server_1 = require("@apollo/server");
+const express4_1 = require("@apollo/server/express4");
+const drainHttpServer_1 = require("@apollo/server/plugin/drainHttpServer");
+const db_1 = require("./db");
 const cors_1 = __importDefault(require("cors"));
-const helmet_1 = __importDefault(require("helmet"));
-const path_1 = __importDefault(require("path"));
-const body_parser_1 = __importDefault(require("body-parser"));
 const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const verifyToken_1 = require("./middleware/verifyToken");
-// router import
-const auth_1 = __importDefault(require("./routes/auth"));
-const post_1 = __importDefault(require("./routes/post"));
-// config
-dotenv_1.default.config();
-const app = (0, express_1.default)();
-// middleware
-app.use(express_1.default.json());
-app.use((0, helmet_1.default)());
-app.use(helmet_1.default.crossOriginResourcePolicy({ policy: 'cross-origin' }));
-app.use(body_parser_1.default.json({ limit: '30mb' }));
-app.use(body_parser_1.default.urlencoded({ limit: '30mb', extended: true }));
-app.use((0, morgan_1.default)('common'));
-app.use((0, cors_1.default)());
-app.use('/assets', express_1.default.static(path_1.default.join(__dirname, 'public/assets')));
-app.disable('X-Powered-By');
-// router
-app.use('/api/v1/auth', auth_1.default);
-app.use('/api/v1/post', verifyToken_1.verifyToken, post_1.default);
-const PORT = process.env.PORT || 9002;
-mongoose_1.default.set('strictQuery', true); // to prevent deprecation waring
-mongoose_1.default.connect(process.env.MONGO_URI, {
-    autoIndex: false
-}).then(() => {
-    app.listen(PORT, () => console.log(`Server is listening on port ${PORT}...`));
-}).catch((error) => console.error(`${error} did not found`));
+const schema_1 = require("./schema");
+(function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        dotenv_1.default.config(); // to access environment variable
+        const app = (0, express_1.default)();
+        const httpServer = http_1.default.createServer(app);
+        const server = new server_1.ApolloServer({
+            typeDefs: schema_1.typeDefs,
+            resolvers: schema_1.resolvers,
+            plugins: [(0, drainHttpServer_1.ApolloServerPluginDrainHttpServer)({ httpServer })]
+        });
+        yield server.start();
+        yield (0, db_1.connectDB)(); // connect to database first and then run server
+        const PORT = process.env.PORT || 9002;
+        app.use(express_1.default.json());
+        app.use((0, morgan_1.default)('common'));
+        app.use('/graphql', (0, cors_1.default)(), (0, express4_1.expressMiddleware)(server));
+        yield new Promise((resolve) => httpServer.listen({ port: PORT }, resolve));
+        console.log(`🚀 Server ready at http://localhost:6002/graphql`);
+    });
+})();
