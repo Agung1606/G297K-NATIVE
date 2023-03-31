@@ -288,40 +288,29 @@ export const comments = [
         username: 'king_of_pirate',
         profilePicturePath: 'p2.jpg',
         comment: 'you look like a fishman',
-        reply: [
-            {
-                username: 'vnsmkSanji',
-                profilePicturePath: 'p4.jpg',
-                comment: 'test comment balasan',
-            }
-        ],
     },
     {
         postId: postIds[0],
         username: 'vnsmkSanji',
         profilePicturePath: 'p4.jpg',
         comment: 'test comment, i am sanji',
-        reply: [],
     },
     {
         postId: postIds[0],
         username: 'king_of_pirate',
         profilePicturePath: 'p2.jpg',
         comment: 'test 123',
-        reply: [],
     },
     {
         postId: postIds[0],
         username: 'rrnoazoro_',
         profilePicturePath: 'p3.jpg',
         comment: 'test TEest test test',
-        reply: [],
     },
     {
         postId: postIds[0],
         username: 'king_of_pirate',
         profilePicturePath: 'p2.jpg',
         comment: 'test comment 123',
-        reply: [],
     },
 ];

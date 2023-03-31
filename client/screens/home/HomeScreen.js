@@ -44,6 +44,8 @@ export default function HomeScreen() {
           data={postsData}
           renderItem={({ item }) => <Post item={item} />}
           keyExtractor={item => item._id}
+          maxToRenderPerBatch={5}
+          updateCellsBatchingPeriod={20}
         />
       )}
     </SafeAreaView>

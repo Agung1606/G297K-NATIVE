@@ -1,11 +1,10 @@
-import Post from '../models/Post.js';
-import Comment from '../models/Comment.js';
-import User from '../models/User.js';
+import { Request, Response } from 'express';
+import Post from '../models/Post'
 
 import { StatusCodes } from 'http-status-codes';
 
 // GET: http://192.168.0.106:6002/api/v1/post/explore
-export const getExplorePosts = async (req, res) => {
+export const getExplorePosts = async (req: Request, res: Response) => {
     try {
         const posts = await Post.aggregate([
             {

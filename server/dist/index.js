@@ -69,15 +69,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // ========= TYPESCRIPT =========
 // IMPORT
 const express_1 = __importDefault(require("express"));
+const mongoose_1 = __importDefault(require("mongoose"));
+const cors_1 = __importDefault(require("cors"));
+const helmet_1 = __importDefault(require("helmet"));
+const path_1 = __importDefault(require("path"));
+const body_parser_1 = __importDefault(require("body-parser"));
+const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const verifyToken_1 = require("./middleware/verifyToken");
+// router import
+const auth_1 = __importDefault(require("./routes/auth"));
+const post_1 = __importDefault(require("./routes/post"));
 // config
 dotenv_1.default.config();
 const app = (0, express_1.default)();
+// middleware
 app.use(express_1.default.json());
-const port = process.env.PORT || 9002;
-app.get('/', (req, res) => {
-    res.send('agung is a good boy');
-});
-app.listen(port, () => {
-    console.log(`server is listening on port ${port}...`);
-});
+app.use((0, helmet_1.default)());
+app.use(helmet_1.default.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+app.use(body_parser_1.default.json({ limit: '30mb' }));
+app.use(body_parser_1.default.urlencoded({ limit: '30mb', extended: true }));
+app.use((0, morgan_1.default)('common'));
+app.use((0, cors_1.default)());
+app.use('/assets', express_1.default.static(path_1.default.join(__dirname, 'public/assets')));
+app.disable('X-Powered-By');
+// router
+app.use('/api/v1/auth', auth_1.default);
+app.use('/api/v1/post', verifyToken_1.verifyToken, post_1.default);
+const PORT = process.env.PORT || 9002;
+mongoose_1.default.set('strictQuery', true); // to prevent deprecation waring
+mongoose_1.default.connect(process.env.MONGO_URI, {
+    autoIndex: false
+}).then(() => {
+    app.listen(PORT, () => console.log(`Server is listening on port ${PORT}...`));
+}).catch((error) => console.error(`${error} did not found`));

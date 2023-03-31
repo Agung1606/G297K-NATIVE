@@ -78,20 +78,23 @@
 
 // IMPORT
 import express, { Express } from 'express';
+import mongoose from 'mongoose';
 import cors from 'cors';
 import helmet from 'helmet';
 import path from 'path';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
-import multer from 'multer';
 import dotenv from 'dotenv';
 
 import { verifyToken } from './middleware/verifyToken';
+// router import
+import authRouter from './routes/auth';
+import postRouter from './routes/post';
 
 // config
 dotenv.config();
 const app: Express = express();
-
+// middleware
 app.use(express.json());
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
@@ -102,8 +105,15 @@ app.use(cors());
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 app.disable('X-Powered-By')
 
-const port = process.env.PORT || 9002;
+// router
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/post', verifyToken, postRouter);
 
-app.listen(port, () => {
-    console.log(`server is listening on port ${port}...`);
-})
+const PORT = process.env.PORT || 9002;
+
+mongoose.set('strictQuery', true); // to prevent deprecation waring
+mongoose.connect(process.env.MONGO_URI as string, {
+    autoIndex: false
+}).then(() => {
+    app.listen(PORT, () => console.log(`Server is listening on port ${PORT}...`));
+}).catch((error) => console.error(`${error} did not found`))

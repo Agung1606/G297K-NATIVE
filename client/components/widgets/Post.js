@@ -1,13 +1,13 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
 import { Avatar } from 'react-native-paper'
-import React, { useState } from 'react'
+import React, { useState, memo } from 'react'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 // icons
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 
-export default function Post({ item }) {
+export default Post = memo(function Post({ item }) {
     const [moreDesc, setMoreDesc] = useState(true);
     const handleMoreDesc = () => setMoreDesc(!moreDesc);
 
@@ -92,4 +92,4 @@ export default function Post({ item }) {
             </View>
         </View>
     )
-}
+})

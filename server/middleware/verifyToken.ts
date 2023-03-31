@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import * as jwt from 'jsonwebtoken';
-import type { JwtPayload, Secret } from 'jsonwebtoken';
+import type { JwtPayload } from 'jsonwebtoken';
 
 interface RequestUser extends Request {
     user?: JwtPayload
