@@ -12,6 +12,13 @@ import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
 import { store } from './state';
 
+import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'http://192.168.0.106:6002/graphql',
+  cache: new InMemoryCache(),
+})
+
 const Stack = createNativeStackNavigator();
 
 import Main from './Main';
@@ -37,15 +44,17 @@ export default function App() {
   if(!fontsLoaded) return null;
 
   return (
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistStore(store)}>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name='Main' component={Main} />
-          </Stack.Navigator>
-        </NavigationContainer>
-        <Toast config={toastConfig} />
-      </PersistGate>
-    </Provider>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistStore(store)}>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name='Main' component={Main} />
+            </Stack.Navigator>
+          </NavigationContainer>
+          <Toast config={toastConfig} />
+        </PersistGate>
+      </Provider>
+    </ApolloProvider>
   );
 }

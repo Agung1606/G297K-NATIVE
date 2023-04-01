@@ -1,7 +1,8 @@
 import Post from "./models/Post"
 import User from "./models/User";
-import { RegisterType } from "./types/utils";
+import { RegisterType, LoginType } from "./types/utils";
 import { GraphQLError } from "graphql";
+import { StatusCodes } from "http-status-codes";
 
 import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -41,7 +42,7 @@ const resolvers = {
             const existUsername = await User.exists({ username: username });
             if(existUsername) {
                 throw new GraphQLError('Username sudah digunakan', {
-                    extensions: { code: 'BAD_REQUEST' }
+                    extensions: { code: StatusCodes.BAD_REQUEST }
                 })
             }
 
@@ -64,7 +65,7 @@ const resolvers = {
             const user = await User.findOne({ username: username }).lean();
             if(!user) {
                 throw new GraphQLError('User tidak ditemukan', {
-                    extensions: { code: '404' }
+                    extensions: { code: StatusCodes.NOT_FOUND }
                 })
             }
 
@@ -79,7 +80,44 @@ const resolvers = {
                 token
             }
         },
+        // MUTATION LOGIN
+        login: async(_: any, args: LoginType) => {
+            const {username, pw} = args;
+
+            if(!username || !pw) {
+                throw new GraphQLError('Please provide credentials', {
+                    extensions: { code: StatusCodes.BAD_REQUEST }
+                })
+            }
+            
+            // find req user in the database
+            const user = await User.findOne({ username: username }).lean();
+            if(!user) {
+                throw new GraphQLError('User tidak ditemukan', {
+                    extensions: { code: StatusCodes.BAD_REQUEST }
+                })
+            }
+            
+            // check password
+            const checkPassword = await bcrypt.compare(pw as string, user.password);
+            if(!checkPassword) {
+                throw new GraphQLError('Password salah', {
+                    extensions: { code: StatusCodes.BAD_REQUEST }
+                })
+            }
+            
+            // create token
+            const secret: string = (process.env.JWT_SECRET_KEY) as string;
+            const token = jwt.sign({
+                userId: user._id,
+            }, secret, { expiresIn: '24d' })
+
+            return {
+                userData: user,
+                token
+            }
+        },
     }
 }
 
-export default resolvers;
+export default resolvers; 

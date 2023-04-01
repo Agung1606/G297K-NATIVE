@@ -27,6 +27,25 @@ const usernameValidation = yup.object().shape({
         .required('Username is required and must be unique')
 });
 
+import { useMutation, gql } from '@apollo/client';
+const REGISTER = gql`
+    mutation Register($email: String, $firstName: String, $lastName: String, $birthday: Date, $pw: String, $username: String) {
+        register(email: $email, firstName: $firstName, lastName: $lastName, birthday: $birthday, pw: $pw, username: $username) {
+            userData {
+                _id
+                firstName
+                lastName
+                username
+                profilePicturePath
+                bio
+                followers
+                following
+            }
+            token
+        }
+    }
+`;
+
 export default function UsernameReg({ route }) {
     const navigation = useNavigation();
     const goToPasswordReg = () => navigation.navigate('PasswordReg');
@@ -59,6 +78,38 @@ export default function UsernameReg({ route }) {
         }
     };
 
+    const [register, { loading }] = useMutation(REGISTER);
+    const handleUsernameQl = async (values, onSubmitProps) => {
+        try {
+            const newData = {
+                ...data,
+                username: values.username
+            }
+            
+            const registerPromise = await register({ variables: {
+                email: newData.email,
+                firstName: newData.firstName,
+                lastName: newData.lastName,
+                birthday: newData.birthday,
+                pw: newData.pw,
+                username: newData.username
+            }});
+
+            dispatch(
+                setLogin({
+                    user: registerPromise.data.register.userData,
+                    token: registerPromise.data.register.token
+                })
+            )
+            onSubmitProps.resetForm();
+        } catch (error) {
+            Toast.show({
+                type: 'error',
+                text1: error.message
+            })
+        }
+    };
+
     return (
         <SafeAreaView className='flex-1 bg-white relative'>
             <View className='mt-8 mx-3'>
@@ -79,7 +130,7 @@ export default function UsernameReg({ route }) {
                 <Formik
                     validationSchema={usernameValidation}
                     initialValues={initialUsernameValue}
-                    onSubmit={handleUsernameSubmit}
+                    onSubmit={handleUsernameQl}
                 >
                     {({handleChange, handleSubmit, values, errors, isValid}) => (
                         <>
@@ -106,7 +157,7 @@ export default function UsernameReg({ route }) {
                             >
                                 <Text className='text-center text-white font-semibold'>
                                     {
-                                        isLoading 
+                                        loading 
                                         ? <ActivityIndicator size="small" color="#fff" /> 
                                         : 'Create account'
                                     }

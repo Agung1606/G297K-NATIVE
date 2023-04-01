@@ -6,3 +6,8 @@ export type RegisterType = {
     pw: String
     username: String
 }
+
+export type LoginType = {
+    username: String
+    pw: String
+}

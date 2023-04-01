@@ -8,9 +8,27 @@ import { setLogin } from '../../../state/authSlice'
 import { useDispatch, useSelector } from 'react-redux';
 
 // form
-import { useLoginUserMutation } from '../../../api/authApi';
 import { Formik } from 'formik';
 import Toast from 'react-native-toast-message'
+
+import { useMutation, gql } from '@apollo/client'
+const LOGIN = gql`
+  mutation Login($username: String, $pw: String) {
+    login(username: $username, pw: $pw) {
+       userData {
+            _id
+            firstName
+            lastName
+            username
+            profilePicturePath
+            bio
+            followers
+            following
+        }
+        token
+    }
+  }
+`;
 
 export default function SignIn() {
   const dispatch = useDispatch();
@@ -25,24 +43,24 @@ export default function SignIn() {
   const inputStyle = 'w-[95%] mx-auto mb-2 bg-indigo-50 rounded-lg';
   const formStyle = 'w-[350px] sm:w-[400px] h-auto px-3 py-5 rounded-xl mt-4 sm:bg-black/5 backdrop-blur-sm sm:border sm:border-black/30'
 
-  // login api
-  const [loginUser, { isLoading }] = useLoginUserMutation();
-
-  // handle login
+  const [login, { loading }] = useMutation(LOGIN);
   const handleLoginSubmit = async (values, onSubmitProps) => {
     try {
-      const loginPromise = await loginUser(values).unwrap();
+      const loginPromise = await login({ variables: {
+        username: values.username,
+        pw: values.pw
+      } });
       dispatch(
         setLogin({
-          user: loginPromise.userData,
-          token: loginPromise.token
+          user: loginPromise.data.login.userData,
+          token: loginPromise.data.login.token
         })
       )
       onSubmitProps.resetForm();
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: error.data.msg
+        text1: error.message
       })
     }
   };
@@ -103,7 +121,7 @@ export default function SignIn() {
                   >
                     <Text className='text-center text-white font-semibold'>
                       {
-                        isLoading 
+                        loading 
                           ? <ActivityIndicator size="small" color="#fff" /> 
                           : 'Login'
                       }

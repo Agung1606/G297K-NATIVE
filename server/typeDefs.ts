@@ -2,6 +2,7 @@ const typeDefs = `#graphql
     scalar Date
 
     type User {
+        _id: String
         firstName: String
         lastName: String
         email: String
@@ -14,6 +15,11 @@ const typeDefs = `#graphql
     }
 
     type Register {
+        userData: User
+        token: String
+    }
+
+    type Login {
         userData: User
         token: String
     }
@@ -49,6 +55,10 @@ const typeDefs = `#graphql
             pw: String
             username: String
         ): Register
+        login(
+            username: String
+            pw: String
+        ): Login
     }
 `
 

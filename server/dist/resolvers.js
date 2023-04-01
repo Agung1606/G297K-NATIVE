@@ -38,6 +38,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Post_1 = __importDefault(require("./models/Post"));
 const User_1 = __importDefault(require("./models/User"));
 const graphql_1 = require("graphql");
+const http_status_codes_1 = require("http-status-codes");
 const jwt = __importStar(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const resolvers = {
@@ -67,7 +68,7 @@ const resolvers = {
             const existUsername = yield User_1.default.exists({ username: username });
             if (existUsername) {
                 throw new graphql_1.GraphQLError('Username sudah digunakan', {
-                    extensions: { code: 'BAD_REQUEST' }
+                    extensions: { code: http_status_codes_1.StatusCodes.BAD_REQUEST }
                 });
             }
             // hashed password
@@ -86,7 +87,39 @@ const resolvers = {
             const user = yield User_1.default.findOne({ username: username }).lean();
             if (!user) {
                 throw new graphql_1.GraphQLError('User tidak ditemukan', {
-                    extensions: { code: '404' }
+                    extensions: { code: http_status_codes_1.StatusCodes.NOT_FOUND }
+                });
+            }
+            // create token
+            const secret = (process.env.JWT_SECRET_KEY);
+            const token = jwt.sign({
+                userId: user._id,
+            }, secret, { expiresIn: '24d' });
+            return {
+                userData: user,
+                token
+            };
+        }),
+        // MUTATION LOGIN
+        login: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { username, pw } = args;
+            if (!username || !pw) {
+                throw new graphql_1.GraphQLError('Please provide credentials', {
+                    extensions: { code: http_status_codes_1.StatusCodes.BAD_REQUEST }
+                });
+            }
+            // find req user in the database
+            const user = yield User_1.default.findOne({ username: username }).lean();
+            if (!user) {
+                throw new graphql_1.GraphQLError('User tidak ditemukan', {
+                    extensions: { code: http_status_codes_1.StatusCodes.BAD_REQUEST }
+                });
+            }
+            // check password
+            const checkPassword = yield bcrypt_1.default.compare(pw, user.password);
+            if (!checkPassword) {
+                throw new graphql_1.GraphQLError('Password salah', {
+                    extensions: { code: http_status_codes_1.StatusCodes.BAD_REQUEST }
                 });
             }
             // create token
