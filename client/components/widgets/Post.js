@@ -15,7 +15,7 @@ export default Post = memo(function Post({ item }) {
 
     const likeCount = Object.keys(item?.likes).length || 0;
     const isLiked = Boolean(item?.likes[user._id]);
-    const longDesc = item?.description?.length > 80 ? item.description.slice(0, 80) : item.description;
+    const longDesc = item?.description?.length > 80 ? item?.description.slice(0, 80) : item?.description;
     const commentCount = item?.comments?.length;
 
     return (
@@ -25,10 +25,10 @@ export default Post = memo(function Post({ item }) {
                 <View className='flex-row items-center gap-x-3 px-2'>
                     <Avatar.Image 
                         size={30} 
-                        source={{uri: `http://192.168.0.106:6002/assets/${item.userProfilePicturePath}`}} 
+                        source={{uri: `http://192.168.0.106:6002/assets/${item?.userProfilePicturePath}`}} 
                     />
                     <Text className='font-bold'>
-                        {item.username}
+                        {item?.username}
                     </Text>
                 </View>
                 <TouchableOpacity>
@@ -38,7 +38,7 @@ export default Post = memo(function Post({ item }) {
             {/* post photo */}
             <View className='mx-auto mb-2'>
                 <Image 
-                    source={{ uri: `http://192.168.0.106:6002/assets/${item.postPicturePath}` }}
+                    source={{ uri: `http://192.168.0.106:6002/assets/${item?.postPicturePath}` }}
                     style={{ width: 340, height: 340 }}
                     resizeMode='contain'
                 />
@@ -72,7 +72,7 @@ export default Post = memo(function Post({ item }) {
                 {/* username and desc */}
                 {item?.description && 
                 <Text>
-                    <Text className='font-extrabold'>{item.username}{"  "}</Text>
+                    <Text className='font-extrabold'>{item?.username}{"  "}</Text>
                     {moreDesc ? longDesc : item.description}
                 </Text>}
                 {/* function to look at long desc */}
@@ -81,12 +81,12 @@ export default Post = memo(function Post({ item }) {
                     <Text className='text-gray-400'>{moreDesc ? '...more' : '...less'}</Text>
                 </TouchableOpacity>}
                 {/* comment info */}
-                {item.comments?.length > 0 && 
+                {item?.comments?.length > 0 && 
                     <Text className='text-gray-400 text-[16px]'>
                         {`View all ${commentCount} ${commentCount > 1 ? 'comments' : 'comment'}`}
                     </Text>}
                 {/* post date */}
-                <Text className='text-gray-400 text-[12px]'>
+                <Text className='text-gray-400 text-[11px]'>
                     {dayjs(item.postDate).format("MMMM D, YYYY")}
                 </Text>
             </View>

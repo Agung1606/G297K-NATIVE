@@ -1,13 +1,17 @@
-export type RegisterType = {
-    email: String
-    firstName: String
-    lastName?: String
+export type RegisterArgsType = {
+    email: string
+    firstName: string
+    lastName?: string
     birthday: Date
-    pw: String
-    username: String
+    pw: string
+    username: string
 }
 
-export type LoginType = {
-    username: String
-    pw: String
+export type LoginArgsType = {
+    username: string
+    pw: string
+}
+
+export type ExplorePostsArgsType = {
+    token: string
 }

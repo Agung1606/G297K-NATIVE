@@ -1,8 +1,9 @@
 import Post from "./models/Post"
 import User from "./models/User";
-import { RegisterType, LoginType } from "./types/utils";
+import { RegisterArgsType, LoginArgsType, ExplorePostsArgsType } from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
+import { verifyToken } from "./middleware/verifyToken";
 
 import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
@@ -10,25 +11,29 @@ import bcrypt from 'bcrypt';
 const resolvers = {
     Query: {
         // QUERY POST
-        explorePosts: async () => {
-            const posts = await Post.aggregate([
-                {
-                    $lookup: {
-                        from: 'comments',
-                        localField: '_id',
-                        foreignField: 'postId',
-                        as: 'comments'
-                    }
-                },
-                {$sort: {'postDate': -1}},
-                {$unset: ['createdAt', 'updatedAt', '__v']}
-            ]);
-            return posts;
+        explorePosts: async (_: any, args: ExplorePostsArgsType) => {
+            const { token } = args;
+            const verified = await verifyToken(token);
+            if(verified){
+                const posts = await Post.aggregate([
+                    {
+                        $lookup: {
+                            from: 'comments',
+                            localField: '_id',
+                            foreignField: 'postId',
+                            as: 'comments'
+                        }
+                    },
+                    {$sort: {'postDate': -1}},
+                    {$unset: ['createdAt', 'updatedAt', '__v']}
+                ]);
+                return posts;
+            }
         },
     },
     Mutation: {
         // MUTATION REGISTER
-        register: async (_: any, args: RegisterType) => {
+        register: async (_: any, args: RegisterArgsType) => {
             const {
                 email,
                 firstName,
@@ -81,7 +86,7 @@ const resolvers = {
             }
         },
         // MUTATION LOGIN
-        login: async(_: any, args: LoginType) => {
+        login: async(_: any, args: LoginArgsType) => {
             const {username, pw} = args;
 
             if(!username || !pw) {

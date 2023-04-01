@@ -32,6 +32,7 @@ const typeDefs = `#graphql
     }
 
     type Post {
+        _id: String
         userId: String
         username: String
         postDate: Date
@@ -43,7 +44,7 @@ const typeDefs = `#graphql
     }
 
     type Query {
-        explorePosts: [Post]
+        explorePosts(token: String): [Post]
     }
 
     type Mutation {

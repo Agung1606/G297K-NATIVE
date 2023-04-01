@@ -6,9 +6,6 @@ import React from 'react'
 import { AntDesign } from '@expo/vector-icons';
 import { TextInput } from 'react-native-paper';
 
-// api
-import { useRegisterUserMutation } from '../../../../api/authApi';
-
 // store
 import { setLogin } from '../../../../state/authSlice';
 import { useDispatch } from 'react-redux';
@@ -52,31 +49,6 @@ export default function UsernameReg({ route }) {
 
     const dispatch = useDispatch();
     const data = route?.params?.param;
-
-    const [registerUser, { isLoading }] = useRegisterUserMutation();
-
-    // handle register
-    const handleUsernameSubmit = async (values, onSubmitProps) => {
-        try {
-            const newData = {
-                ...data,
-                username: values.username
-            }
-            const registerPromise = await registerUser(newData).unwrap();
-            dispatch(
-                setLogin({
-                    user: registerPromise.userData,
-                    token: registerPromise.token
-                })
-            )
-            onSubmitProps.resetForm();
-        } catch (error) {
-            Toast.show({
-                type: 'error',
-                text1: error.data.msg
-            })
-        }
-    };
 
     const [register, { loading }] = useMutation(REGISTER);
     const handleUsernameQl = async (values, onSubmitProps) => {

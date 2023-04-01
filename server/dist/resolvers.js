@@ -39,25 +39,30 @@ const Post_1 = __importDefault(require("./models/Post"));
 const User_1 = __importDefault(require("./models/User"));
 const graphql_1 = require("graphql");
 const http_status_codes_1 = require("http-status-codes");
+const verifyToken_1 = require("./middleware/verifyToken");
 const jwt = __importStar(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const resolvers = {
     Query: {
         // QUERY POST
-        explorePosts: () => __awaiter(void 0, void 0, void 0, function* () {
-            const posts = yield Post_1.default.aggregate([
-                {
-                    $lookup: {
-                        from: 'comments',
-                        localField: '_id',
-                        foreignField: 'postId',
-                        as: 'comments'
-                    }
-                },
-                { $sort: { 'postDate': -1 } },
-                { $unset: ['createdAt', 'updatedAt', '__v'] }
-            ]);
-            return posts;
+        explorePosts: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const posts = yield Post_1.default.aggregate([
+                    {
+                        $lookup: {
+                            from: 'comments',
+                            localField: '_id',
+                            foreignField: 'postId',
+                            as: 'comments'
+                        }
+                    },
+                    { $sort: { 'postDate': -1 } },
+                    { $unset: ['createdAt', 'updatedAt', '__v'] }
+                ]);
+                return posts;
+            }
         }),
     },
     Mutation: {

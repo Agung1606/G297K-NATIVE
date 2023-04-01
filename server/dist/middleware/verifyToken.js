@@ -34,15 +34,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verifyToken = void 0;
 const http_status_codes_1 = require("http-status-codes");
+const graphql_1 = require("graphql");
 const jwt = __importStar(require("jsonwebtoken"));
-const verifyToken = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    const token = (_b = (_a = req.headers) === null || _a === void 0 ? void 0 : _a.authorization) === null || _b === void 0 ? void 0 : _b.split(' ')[1]; // just take the token
-    if (!token)
-        return res.status(http_status_codes_1.StatusCodes.UNAUTHORIZED).json({ msg: 'Unauthorized user' });
-    const secret = process.env.JWT_SECRET_KEY;
-    const verifed = jwt.verify(token, secret);
-    req.user = verifed;
-    next();
+const verifyToken = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    if (!token) {
+        throw new graphql_1.GraphQLError('Unauthorized user', {
+            extensions: { code: http_status_codes_1.StatusCodes.UNAUTHORIZED }
+        });
+    }
+    const verified = jwt.verify(token, process.env.JWT_SECRET_KEY);
+    return verified;
 });
 exports.verifyToken = verifyToken;
