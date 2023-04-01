@@ -44,14 +44,8 @@ const UserSchema = new mongoose_1.default.Schema({
         type: String,
         default: "",
     },
-    followers: {
-        type: Map,
-        of: Boolean
-    },
-    following: {
-        type: Map,
-        of: Boolean
-    },
+    followers: [mongoose_1.default.Schema.Types.ObjectId],
+    following: [mongoose_1.default.Schema.Types.ObjectId],
 }, { timestamps: true });
 const User = mongoose_1.default.model("User", UserSchema);
 exports.default = User;

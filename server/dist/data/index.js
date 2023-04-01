@@ -41,8 +41,8 @@ exports.users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p1.jpg",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
     // Luffy
     {
@@ -55,8 +55,8 @@ exports.users = [
         password: "$!FEAS@!O)_IDJda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p2.jpg",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
     // Zoro
     {
@@ -69,8 +69,8 @@ exports.users = [
         password: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
         profilePicturePath: "p3.jpg",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
     // Sanji
     {
@@ -83,8 +83,8 @@ exports.users = [
         password: "d$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p4.jpg",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
     // Usop
     {
@@ -97,8 +97,8 @@ exports.users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p5.jpg",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
     // Chopper
     {
@@ -111,8 +111,8 @@ exports.users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p6.png",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
     // Nami
     {
@@ -125,8 +125,8 @@ exports.users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p7.jpg",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
     // Robin
     {
@@ -139,8 +139,8 @@ exports.users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p8.jpeg",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
     // Brook
     {
@@ -153,8 +153,8 @@ exports.users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p9.jpg",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
     // Franky
     {
@@ -167,8 +167,8 @@ exports.users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p10.jpg",
         bio: '',
-        followers: {},
-        following: {},
+        followers: [],
+        following: [],
     },
 ];
 exports.posts = [
@@ -181,7 +181,13 @@ exports.posts = [
         postPicturePath: "post1.jpg",
         userProfilePicturePath: "p1.jpg",
         description: "Hello",
-        likes: new Map(),
+        likes: [
+            userIds[1],
+            userIds[2],
+            userIds[3],
+            userIds[4],
+            userIds[5]
+        ],
     },
     // Luffy
     {
@@ -192,7 +198,7 @@ exports.posts = [
         postPicturePath: "post2.jpg",
         userProfilePicturePath: "p2.jpg",
         description: "I will be the king of pirates!!!",
-        likes: new Map(),
+        likes: [],
     },
     // Zoro
     {
@@ -203,7 +209,7 @@ exports.posts = [
         postPicturePath: "post3.jpg",
         userProfilePicturePath: "p3.jpg",
         description: "ENMA",
-        likes: new Map(),
+        likes: [],
     },
     // Sanji
     {
@@ -214,7 +220,7 @@ exports.posts = [
         postPicturePath: "post4.jpg",
         userProfilePicturePath: "p4.jpg",
         description: "",
-        likes: new Map(),
+        likes: [],
     },
     // Usopp
     {
@@ -225,7 +231,7 @@ exports.posts = [
         postPicturePath: "post5.jpeg",
         userProfilePicturePath: "p5.jpg",
         description: "I am usopp!!!",
-        likes: new Map(),
+        likes: [],
     },
     // chopper
     {
@@ -236,7 +242,7 @@ exports.posts = [
         postPicturePath: "post6.jpg",
         userProfilePicturePath: "p6.png",
         description: "No Caption",
-        likes: new Map(),
+        likes: [],
     },
     // nami
     {
@@ -247,7 +253,7 @@ exports.posts = [
         postPicturePath: "post7.jpg",
         userProfilePicturePath: "p7.jpg",
         description: "Beautiful woman",
-        likes: new Map(),
+        likes: [],
     },
     // robin
     {
@@ -258,7 +264,7 @@ exports.posts = [
         postPicturePath: "post8.jpg",
         userProfilePicturePath: "p8.jpeg",
         description: "Beautiful woman",
-        likes: new Map(),
+        likes: [],
     },
     // brook
     {
@@ -269,7 +275,7 @@ exports.posts = [
         postPicturePath: "post9.jpg",
         userProfilePicturePath: "p9.jpg",
         description: "Hello I am brook",
-        likes: new Map(),
+        likes: [],
     },
     // Franky
     {
@@ -280,7 +286,7 @@ exports.posts = [
         postPicturePath: "post10.jpg",
         userProfilePicturePath: "p10.jpg",
         description: "Heyy",
-        likes: new Map(),
+        likes: [],
     },
 ];
 exports.comments = [

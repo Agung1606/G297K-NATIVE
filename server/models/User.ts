@@ -9,8 +9,8 @@ interface IUserModel {
     password: string;
     profilePicturePath?: string;
     bio?: string;
-    followers?: object;
-    following?: object;
+    followers?: [];
+    following?: [];
 }
 
 const UserSchema = new mongoose.Schema<IUserModel>({
@@ -53,14 +53,8 @@ const UserSchema = new mongoose.Schema<IUserModel>({
         type: String,
         default: "",
     },
-    followers: {
-        type: Map,
-        of: Boolean
-    },
-    following: {
-        type: Map,
-        of: Boolean
-    },
+    followers: [mongoose.Schema.Types.ObjectId],
+    following: [mongoose.Schema.Types.ObjectId],
 }, {timestamps: true});
 
 const User = mongoose.model<IUserModel>("User", UserSchema);

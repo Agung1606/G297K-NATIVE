@@ -80,6 +80,7 @@
 import express, { Express } from 'express';
 import http from 'http';
 import { ApolloServer } from '@apollo/server';
+import { ApolloServerErrorCode } from '@apollo/server/errors'
 import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
 import { connectDB } from './db';
@@ -87,7 +88,13 @@ import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 
-import { resolvers, typeDefs } from './schema';
+import typeDefs from './typeDefs';
+import resolvers from './resolvers';
+
+// import User from './models/User';
+// import Post from './models/Post';
+// import Comments from './models/Comments';
+// import { users, posts, comments } from './data/index';
 
 (async function() {
     dotenv.config(); // to access environment variable
@@ -97,12 +104,33 @@ import { resolvers, typeDefs } from './schema';
     const server = new ApolloServer({
         typeDefs,
         resolvers,
-        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })]
+        formatError: (formattedError, error) => {
+            if(formattedError.message.startsWith('Database Error: ')) {
+                return { message: 'Internal Server Error' }
+            }
+
+            if(
+                formattedError.extensions?.code ===
+                ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED
+            ) {
+                return {
+                    ...formattedError,
+                    message: "Your query doesn't match the schema. Try double-checking it!"
+                }
+            }
+
+            return formattedError;
+        },
+        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     })
     await server.start();
     await connectDB(); // connect to database first and then run server
-    const PORT = process.env.PORT || 9002;
 
+    // await User.insertMany(users)
+    // await Post.insertMany(posts)
+    // await Comments.insertMany(comments)
+
+    const PORT = process.env.PORT || 9002;
     app.use(express.json());
     app.use(morgan('common'));
     app.use(

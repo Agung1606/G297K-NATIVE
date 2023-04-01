@@ -80,25 +80,45 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
 const server_1 = require("@apollo/server");
+const errors_1 = require("@apollo/server/errors");
 const express4_1 = require("@apollo/server/express4");
 const drainHttpServer_1 = require("@apollo/server/plugin/drainHttpServer");
 const db_1 = require("./db");
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const schema_1 = require("./schema");
+const typeDefs_1 = __importDefault(require("./typeDefs"));
+const resolvers_1 = __importDefault(require("./resolvers"));
+// import User from './models/User';
+// import Post from './models/Post';
+// import Comments from './models/Comments';
+// import { users, posts, comments } from './data/index';
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
         dotenv_1.default.config(); // to access environment variable
         const app = (0, express_1.default)();
         const httpServer = http_1.default.createServer(app);
         const server = new server_1.ApolloServer({
-            typeDefs: schema_1.typeDefs,
-            resolvers: schema_1.resolvers,
-            plugins: [(0, drainHttpServer_1.ApolloServerPluginDrainHttpServer)({ httpServer })]
+            typeDefs: typeDefs_1.default,
+            resolvers: resolvers_1.default,
+            formatError: (formattedError, error) => {
+                var _a;
+                if (formattedError.message.startsWith('Database Error: ')) {
+                    return { message: 'Internal Server Error' };
+                }
+                if (((_a = formattedError.extensions) === null || _a === void 0 ? void 0 : _a.code) ===
+                    errors_1.ApolloServerErrorCode.GRAPHQL_VALIDATION_FAILED) {
+                    return Object.assign(Object.assign({}, formattedError), { message: "Your query doesn't match the schema. Try double-checking it!" });
+                }
+                return formattedError;
+            },
+            plugins: [(0, drainHttpServer_1.ApolloServerPluginDrainHttpServer)({ httpServer })],
         });
         yield server.start();
         yield (0, db_1.connectDB)(); // connect to database first and then run server
+        // await User.insertMany(users)
+        // await Post.insertMany(posts)
+        // await Comments.insertMany(comments)
         const PORT = process.env.PORT || 9002;
         app.use(express_1.default.json());
         app.use((0, morgan_1.default)('common'));
