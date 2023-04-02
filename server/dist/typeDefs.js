@@ -26,13 +26,6 @@ const typeDefs = `#graphql
         token: String
     }
 
-    type comments {
-        postId: String
-        username: String
-        profilePicturePath: String
-        comment: String
-    }
-
     type Post {
         _id: String
         userId: String
@@ -42,11 +35,12 @@ const typeDefs = `#graphql
         userProfilePicturePath: String
         description: String
         likes: [String]
-        comments: [comments]
+        comments: [String]
     }
 
     type Query {
         explorePosts(token: String): [Post]
+        post(token: String, _id: String): Post
     }
 
     type Mutation {

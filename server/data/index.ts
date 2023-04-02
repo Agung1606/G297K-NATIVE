@@ -186,6 +186,9 @@ export const posts = [
             userIds[4],
             userIds[5]
         ],
+        comments: [
+            userIds[3],
+        ],
     },
     // Luffy
     {
@@ -197,6 +200,7 @@ export const posts = [
         userProfilePicturePath: "p2.jpg",
         description: "I will be the king of pirates!!!",
         likes: [],
+        comments: [],
     },
     // Zoro
     {
@@ -208,6 +212,7 @@ export const posts = [
         userProfilePicturePath: "p3.jpg",
         description: "ENMA",
         likes: [],
+        comments: [],
     },
     // Sanji
     {
@@ -219,6 +224,7 @@ export const posts = [
         userProfilePicturePath: "p4.jpg",
         description: "",
         likes: [],
+        comments: [],
     },
     // Usopp
     {
@@ -230,6 +236,7 @@ export const posts = [
         userProfilePicturePath: "p5.jpg",
         description: "I am usopp!!!",
         likes: [],
+        comments: [],
     },
     // chopper
     {
@@ -241,6 +248,7 @@ export const posts = [
         userProfilePicturePath: "p6.png",
         description: "No Caption",
         likes: [],
+        comments: [],
     },
     // nami
     {
@@ -252,6 +260,7 @@ export const posts = [
         userProfilePicturePath: "p7.jpg",
         description: "Beautiful woman",
         likes: [],
+        comments: [],
     },
     // robin
     {
@@ -263,6 +272,7 @@ export const posts = [
         userProfilePicturePath: "p8.jpeg",
         description: "Beautiful woman",
         likes: [],
+        comments: [],
     },
     // brook
     {
@@ -274,6 +284,7 @@ export const posts = [
         userProfilePicturePath: "p9.jpg",
         description: "Hello I am brook",
         likes: [],
+        comments: [],
     },
     // Franky
     {
@@ -285,38 +296,16 @@ export const posts = [
         userProfilePicturePath: "p10.jpg",
         description: "Heyy",
         likes: [],
+        comments: [],
     },
 ];
 
 export const comments = [
     {
-        postId: postIds[0],
-        username: 'king_of_pirate',
-        profilePicturePath: 'p2.jpg',
-        comment: 'you look like a fishman',
-    },
-    {
+        userId: userIds[3],
         postId: postIds[0],
         username: 'vnsmkSanji',
         profilePicturePath: 'p4.jpg',
         comment: 'test comment, i am sanji',
-    },
-    {
-        postId: postIds[0],
-        username: 'king_of_pirate',
-        profilePicturePath: 'p2.jpg',
-        comment: 'test 123',
-    },
-    {
-        postId: postIds[0],
-        username: 'rrnoazoro_',
-        profilePicturePath: 'p3.jpg',
-        comment: 'test TEest test test',
-    },
-    {
-        postId: postIds[0],
-        username: 'king_of_pirate',
-        profilePicturePath: 'p2.jpg',
-        comment: 'test comment 123',
     },
 ];

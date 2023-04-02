@@ -15,3 +15,8 @@ export type LoginArgsType = {
 export type ExplorePostsArgsType = {
     token: string
 }
+
+export type PostArgsType = {
+    token: string
+    _id: string
+}

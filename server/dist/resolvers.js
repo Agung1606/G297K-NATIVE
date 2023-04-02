@@ -44,24 +44,22 @@ const jwt = __importStar(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const resolvers = {
     Query: {
-        // QUERY POST
+        // QUERY EXPLORE POST
         explorePosts: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
             const { token } = args;
             const verified = yield (0, verifyToken_1.verifyToken)(token);
             if (verified) {
-                const posts = yield Post_1.default.aggregate([
-                    {
-                        $lookup: {
-                            from: 'comments',
-                            localField: '_id',
-                            foreignField: 'postId',
-                            as: 'comments'
-                        }
-                    },
-                    { $sort: { 'postDate': -1 } },
-                    { $unset: ['createdAt', 'updatedAt', '__v'] }
-                ]);
+                const posts = yield Post_1.default.find({}).lean();
                 return posts;
+            }
+        }),
+        // QUERY POST
+        post: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, _id } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const post = yield Post_1.default.findById({ _id }).lean();
+                return post;
             }
         }),
     },

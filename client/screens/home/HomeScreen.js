@@ -9,6 +9,7 @@ import Post from '../../components/widgets/Post';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 import { gql, useQuery } from '@apollo/client';
+import { BottomSheetModal, BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 const GET_EXPLORE_POSTS = gql`
   query ExplorePosts($token: String) {
     explorePosts(token: $token) {
@@ -20,9 +21,7 @@ const GET_EXPLORE_POSTS = gql`
       userProfilePicturePath
       description
       likes
-      comments {
-          username
-      }
+      comments
     }
   }
 `;
@@ -37,7 +36,8 @@ export default function HomeScreen() {
   const { data, loading } = useQuery(GET_EXPLORE_POSTS, { variables: {token: token} });
 
   return (
-    <SafeAreaView className='flex-1 bg-white'>
+    <BottomSheetModalProvider>
+      <SafeAreaView className='flex-1 bg-white'>
       {/* top */}
       <View className='p-4 flex-row justify-between items-center'>
         <Text className='text-3xl font-itim text-deep-blue'>
@@ -65,6 +65,7 @@ export default function HomeScreen() {
           updateCellsBatchingPeriod={20}
         />
       )}
-    </SafeAreaView>
+      </SafeAreaView>
+    </BottomSheetModalProvider>
   )
 }

@@ -1,6 +1,11 @@
 import Post from "./models/Post"
 import User from "./models/User";
-import { RegisterArgsType, LoginArgsType, ExplorePostsArgsType } from "./types/utils";
+import { 
+    RegisterArgsType, 
+    LoginArgsType, 
+    ExplorePostsArgsType, 
+    PostArgsType 
+} from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
 import { verifyToken } from "./middleware/verifyToken";
@@ -10,24 +15,22 @@ import bcrypt from 'bcrypt';
 
 const resolvers = {
     Query: {
-        // QUERY POST
+        // QUERY EXPLORE POST
         explorePosts: async (_: any, args: ExplorePostsArgsType) => {
             const { token } = args;
             const verified = await verifyToken(token);
             if(verified){
-                const posts = await Post.aggregate([
-                    {
-                        $lookup: {
-                            from: 'comments',
-                            localField: '_id',
-                            foreignField: 'postId',
-                            as: 'comments'
-                        }
-                    },
-                    {$sort: {'postDate': -1}},
-                    {$unset: ['createdAt', 'updatedAt', '__v']}
-                ]);
+                const posts = await Post.find({}).lean();
                 return posts;
+            }
+        },
+        // QUERY POST
+        post: async (_: any, args: PostArgsType) => {
+            const { token, _id } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const post = await Post.findById({ _id }).lean();
+                return post;
             }
         },
     },
