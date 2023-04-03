@@ -1,5 +1,12 @@
-import { View, Text, Image, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native'
-import { Avatar } from 'react-native-paper'
+import { 
+    View, 
+    Text, 
+    Image, 
+    TouchableOpacity, 
+    ActivityIndicator, 
+    FlatList 
+} from 'react-native'
+import { Avatar, TextInput } from 'react-native-paper'
 import React, { useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
@@ -10,6 +17,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { 
     BottomSheetModal, 
 } from '@gorhom/bottom-sheet'
+import Comment from '../Comment'
 
 import { gql, useLazyQuery } from '@apollo/client'
 const GET_POST_COMMENTS = gql`
@@ -44,6 +52,9 @@ export default Post = ({ item }) => {
     const openModal = async () => {
         bottomSheetModalRef.current.present();
         await getPostComments({ variables: {token: token, postId: item._id} })
+    }
+    const closeModal = () => {
+        bottomSheetModalRef.current.dismiss();
     }
 
     return (
@@ -110,7 +121,7 @@ export default Post = ({ item }) => {
                     </TouchableOpacity>}
                     {/* comment info */}
                     {item?.comments > 0 && 
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={openModal}>
                         <Text className='text-gray-400 text-[16px]'>
                             {`View all ${item.comments} ${item.comments > 1 ? 'comments' : 'comment'}`}
                         </Text>
@@ -125,23 +136,54 @@ export default Post = ({ item }) => {
                 ref={bottomSheetModalRef}
                 index={0}
                 snapPoints={snapPoints}
-            >
+                >
                 <View className='px-2'>
-                    <View className='flex-row justify-between px-3 border-b border-gray-600'>
-                        <Text className='text-lg font-bold'>Comments</Text>
-                        <MaterialIcons name='close' size={24} />
+                    <View 
+                        className='flex-row justify-between px-3 pb-2 border-b border-gray-600'
+                        >
+                        <Text className='text-xl font-bold'>Comments</Text>
+                        <MaterialIcons name='close' size={24} onPress={closeModal} />
+                    </View>
+                    <View className='pr-2 mt-2 flex-row items-center gap-x-4'>
+                        <TextInput 
+                            placeholder='Add a comment...'
+                            underlineColor='transparent'
+                            activeUnderlineColor='#3bace2'
+                            className='flex-1 h-[38px] bg-gray-300'
+                        />
+                        <TouchableOpacity>
+                            <MaterialIcons name='send' size={24} />
+                        </TouchableOpacity>
                     </View>
                     {loading ? (
                         <ActivityIndicator size="large" color="#406aff" />
-                    ) : (
-                    <FlatList 
-                        data={data?.getPostComments}
-                        renderItem={({ item }) => <Text>{item.comment}</Text>}
-                        keyExtractor={item => item._id}
-                    />
-                    )}
+                        ) : (
+                            <FlatList 
+                                data={data?.getPostComments}
+                                renderItem={({ item }) => (
+                                    <View className='px-2 py-4'>
+                                        <View className='flex-row gap-x-2'>
+                                            <Avatar.Image 
+                                                size={30} 
+                                                source={{uri: `http://192.168.0.106:6002/assets/${item?.profilePicturePath}`}} 
+                                            />
+                                            <View>
+                                                <Text className='text-[12px] text-gray-400'>
+                                                    {item.username}
+                                                </Text>
+                                                <Text>
+                                                    {item.comment}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                )}
+                                keyExtractor={item => item._id}
+                            />
+                        )}
                 </View>
             </BottomSheetModal>
+            {/* comment modal */}
         </View>
     )
 }
