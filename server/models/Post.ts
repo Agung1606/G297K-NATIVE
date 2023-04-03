@@ -8,7 +8,7 @@ interface IPostModel {
     userProfilePicturePath?: string;
     description?: string;
     likes?: [];
-    comments?: [];
+    comments?: number;
 }
 
 const PostSchema = new mongoose.Schema<IPostModel>({
@@ -26,7 +26,10 @@ const PostSchema = new mongoose.Schema<IPostModel>({
     userProfilePicturePath: String,
     description: String,
     likes: [String],
-    comments: [String],
+    comments: {
+        type: Number,
+        default: 0
+    },
 }, {timestamps: true});
 
 

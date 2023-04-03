@@ -4,7 +4,8 @@ import {
     RegisterArgsType, 
     LoginArgsType, 
     ExplorePostsArgsType, 
-    PostArgsType 
+    PostArgsType,
+    GetPostCommentsArgsType
 } from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
@@ -12,6 +13,7 @@ import { verifyToken } from "./middleware/verifyToken";
 
 import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import Comments from "./models/Comments";
 
 const resolvers = {
     Query: {
@@ -31,6 +33,15 @@ const resolvers = {
             if(verified) {
                 const post = await Post.findById({ _id }).lean();
                 return post;
+            }
+        },
+        // QUERY GET POST COMMENT
+        getPostComments: async (_: any, args: GetPostCommentsArgsType) => {
+            const {token, postId} = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const comments = await Comments.find({ postId }).lean();
+                return comments;
             }
         },
     },

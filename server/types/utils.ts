@@ -20,3 +20,8 @@ export type PostArgsType = {
     token: string
     _id: string
 }
+
+export type GetPostCommentsArgsType = {
+    token: string
+    postId: string
+}

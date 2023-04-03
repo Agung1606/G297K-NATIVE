@@ -1,6 +1,6 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native'
+import { View, Text, Image, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native'
 import { Avatar } from 'react-native-paper'
-import React, { useCallback, useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 // icons
@@ -9,26 +9,42 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 
 import { 
     BottomSheetModal, 
-    BottomSheetModalProvider
 } from '@gorhom/bottom-sheet'
+
+import { gql, useLazyQuery } from '@apollo/client'
+const GET_POST_COMMENTS = gql`
+    query GetPostComments($token: String, $postId: String) {
+        getPostComments(token: $token, postId: $postId) {
+            _id
+            userId
+            username
+            profilePicturePath
+            comment
+        }
+    }
+`;
 
 export default Post = ({ item }) => {
     const [moreDesc, setMoreDesc] = useState(true);
     const handleMoreDesc = () => setMoreDesc(!moreDesc);
 
-    const user = useSelector((state) => state.auth.user);
+    const loggedInUserId = useSelector((state) => state.auth.user._id);
+    const token = useSelector((state) => state.auth.token);
 
     const likeCount = item?.likes?.length;
-    const isLiked = Boolean(item?.likes?.find(id => id === user._id));
+    const isLiked = Boolean(item?.likes?.find(id => id === loggedInUserId));
     const longDesc = item?.description?.length > 80 ? item?.description.slice(0, 80) : item?.description;
-    const commentCount = item?.comments?.length;
 
+    // comment api using apollo useLazyQuery
+    const [getPostComments, { data, loading }] = useLazyQuery(GET_POST_COMMENTS);
+    
     // modal
     const bottomSheetModalRef = useRef(null);
-    const snapPoints = useMemo(() => ['25%', '50%'], []);
-    const handlePresentModalPress = useCallback(() => {
-        bottomSheetModalRef.current?.present();
-    }, [])
+    const snapPoints = useMemo(() => ['65%', '90%'], []);
+    const openModal = async () => {
+        bottomSheetModalRef.current.present();
+        await getPostComments({ variables: {token: token, postId: item._id} })
+    }
 
     return (
         <View className='mb-7 p-2'>
@@ -65,7 +81,7 @@ export default Post = ({ item }) => {
                                 size={25}
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={handlePresentModalPress}>
+                        <TouchableOpacity onPress={openModal}>
                             <FontAwesome name='comment-o' size={25} />
                         </TouchableOpacity>
                     </View>
@@ -93,10 +109,10 @@ export default Post = ({ item }) => {
                         <Text className='text-gray-400'>{moreDesc ? '...more' : '...less'}</Text>
                     </TouchableOpacity>}
                     {/* comment info */}
-                    {item?.comments?.length > 0 && 
+                    {item?.comments > 0 && 
                     <TouchableOpacity>
                         <Text className='text-gray-400 text-[16px]'>
-                            {`View all ${commentCount} ${commentCount > 1 ? 'comments' : 'comment'}`}
+                            {`View all ${item.comments} ${item.comments > 1 ? 'comments' : 'comment'}`}
                         </Text>
                     </TouchableOpacity>}
                     {/* post date */}
@@ -104,13 +120,26 @@ export default Post = ({ item }) => {
                         {dayjs(item.postDate).format("MMMM D, YYYY")}
                     </Text>
                 </View>
+            {/* comment modal */}
             <BottomSheetModal
                 ref={bottomSheetModalRef}
-                index={1}
+                index={0}
                 snapPoints={snapPoints}
             >
-                <View className='flex-1 items-center bg-red-600'>
-                    <Text>Awesome</Text>
+                <View className='px-2'>
+                    <View className='flex-row justify-between px-3 border-b border-gray-600'>
+                        <Text className='text-lg font-bold'>Comments</Text>
+                        <MaterialIcons name='close' size={24} />
+                    </View>
+                    {loading ? (
+                        <ActivityIndicator size="large" color="#406aff" />
+                    ) : (
+                    <FlatList 
+                        data={data?.getPostComments}
+                        renderItem={({ item }) => <Text>{item.comment}</Text>}
+                        keyExtractor={item => item._id}
+                    />
+                    )}
                 </View>
             </BottomSheetModal>
         </View>

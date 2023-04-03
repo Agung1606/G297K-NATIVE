@@ -33,12 +33,22 @@ const typeDefs = `#graphql
         userProfilePicturePath: String
         description: String
         likes: [String]
-        comments: [String]
+        comments: Int
+    }
+
+    type Comments {
+        _id: String
+        userId: String
+        postId: String
+        username: String
+        profilePicturePath: String
+        comment: String
     }
 
     type Query {
         explorePosts(token: String): [Post]
         post(token: String, _id: String): Post
+        getPostComments(token: String, postId: String): [Comments]
     }
 
     type Mutation {

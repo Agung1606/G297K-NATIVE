@@ -14,6 +14,9 @@ import { store } from './state';
 
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+
 const client = new ApolloClient({
   uri: 'http://192.168.0.106:6002/graphql',
   cache: new InMemoryCache(),
@@ -47,12 +50,16 @@ export default function App() {
     <ApolloProvider client={client}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistStore(store)}>
-          <NavigationContainer>
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-              <Stack.Screen name='Main' component={Main} />
-            </Stack.Navigator>
-          </NavigationContainer>
-          <Toast config={toastConfig} />
+
+          <GestureHandlerRootView className='flex-1'>
+            <BottomSheetModalProvider>
+              <NavigationContainer>
+                <Main />
+              </NavigationContainer>
+            </BottomSheetModalProvider>
+            <Toast config={toastConfig} />
+          </GestureHandlerRootView>
+
         </PersistGate>
       </Provider>
     </ApolloProvider>

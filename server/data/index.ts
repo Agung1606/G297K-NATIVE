@@ -186,9 +186,7 @@ export const posts = [
             userIds[4],
             userIds[5]
         ],
-        comments: [
-            userIds[3],
-        ],
+        comments: 1,
     },
     // Luffy
     {
@@ -200,7 +198,7 @@ export const posts = [
         userProfilePicturePath: "p2.jpg",
         description: "I will be the king of pirates!!!",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // Zoro
     {
@@ -212,7 +210,7 @@ export const posts = [
         userProfilePicturePath: "p3.jpg",
         description: "ENMA",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // Sanji
     {
@@ -224,7 +222,7 @@ export const posts = [
         userProfilePicturePath: "p4.jpg",
         description: "",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // Usopp
     {
@@ -236,7 +234,7 @@ export const posts = [
         userProfilePicturePath: "p5.jpg",
         description: "I am usopp!!!",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // chopper
     {
@@ -248,7 +246,7 @@ export const posts = [
         userProfilePicturePath: "p6.png",
         description: "No Caption",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // nami
     {
@@ -260,7 +258,7 @@ export const posts = [
         userProfilePicturePath: "p7.jpg",
         description: "Beautiful woman",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // robin
     {
@@ -272,7 +270,7 @@ export const posts = [
         userProfilePicturePath: "p8.jpeg",
         description: "Beautiful woman",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // brook
     {
@@ -284,7 +282,7 @@ export const posts = [
         userProfilePicturePath: "p9.jpg",
         description: "Hello I am brook",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // Franky
     {
@@ -296,7 +294,7 @@ export const posts = [
         userProfilePicturePath: "p10.jpg",
         description: "Heyy",
         likes: [],
-        comments: [],
+        comments: 0,
     },
 ];
 

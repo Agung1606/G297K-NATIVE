@@ -42,6 +42,7 @@ const http_status_codes_1 = require("http-status-codes");
 const verifyToken_1 = require("./middleware/verifyToken");
 const jwt = __importStar(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
+const Comments_1 = __importDefault(require("./models/Comments"));
 const resolvers = {
     Query: {
         // QUERY EXPLORE POST
@@ -60,6 +61,15 @@ const resolvers = {
             if (verified) {
                 const post = yield Post_1.default.findById({ _id }).lean();
                 return post;
+            }
+        }),
+        // QUERY GET POST COMMENT
+        getPostComments: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, postId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const comments = yield Comments_1.default.find({ postId }).lean();
+                return comments;
             }
         }),
     },

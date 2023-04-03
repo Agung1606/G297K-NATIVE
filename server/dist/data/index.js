@@ -188,9 +188,7 @@ exports.posts = [
             userIds[4],
             userIds[5]
         ],
-        comments: [
-            userIds[3],
-        ],
+        comments: 1,
     },
     // Luffy
     {
@@ -202,7 +200,7 @@ exports.posts = [
         userProfilePicturePath: "p2.jpg",
         description: "I will be the king of pirates!!!",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // Zoro
     {
@@ -214,7 +212,7 @@ exports.posts = [
         userProfilePicturePath: "p3.jpg",
         description: "ENMA",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // Sanji
     {
@@ -226,7 +224,7 @@ exports.posts = [
         userProfilePicturePath: "p4.jpg",
         description: "",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // Usopp
     {
@@ -238,7 +236,7 @@ exports.posts = [
         userProfilePicturePath: "p5.jpg",
         description: "I am usopp!!!",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // chopper
     {
@@ -250,7 +248,7 @@ exports.posts = [
         userProfilePicturePath: "p6.png",
         description: "No Caption",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // nami
     {
@@ -262,7 +260,7 @@ exports.posts = [
         userProfilePicturePath: "p7.jpg",
         description: "Beautiful woman",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // robin
     {
@@ -274,7 +272,7 @@ exports.posts = [
         userProfilePicturePath: "p8.jpeg",
         description: "Beautiful woman",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // brook
     {
@@ -286,7 +284,7 @@ exports.posts = [
         userProfilePicturePath: "p9.jpg",
         description: "Hello I am brook",
         likes: [],
-        comments: [],
+        comments: 0,
     },
     // Franky
     {
@@ -298,7 +296,7 @@ exports.posts = [
         userProfilePicturePath: "p10.jpg",
         description: "Heyy",
         likes: [],
-        comments: [],
+        comments: 0,
     },
 ];
 exports.comments = [
