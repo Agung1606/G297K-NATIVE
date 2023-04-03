@@ -5,7 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDispatch } from 'react-redux';
 import { setLogout } from '../../state/authSlice';
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ route }) {
+  const userId = route?.params?.param;
+  console.log("🚀 ~ file: ProfileScreen.js:10 ~ ProfileScreen ~ userId:", userId)
   const dispatch = useDispatch();
   const handleLogout = () => dispatch(setLogout());
   

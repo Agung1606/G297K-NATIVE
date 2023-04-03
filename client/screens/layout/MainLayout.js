@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeScreen from '../home/HomeScreen'
 import ProfileScreen from '../profile/ProfileScreen'
@@ -11,6 +12,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 const Tab = createBottomTabNavigator();
 
 export default function MainLayout() {
+  const loggedInUserId = useSelector((state) => state.auth.user._id);
 
   return (
     <Tab.Navigator 
@@ -43,11 +45,13 @@ export default function MainLayout() {
       <Tab.Screen 
         name='Profile'
         component={ProfileScreen}
+        initialParams={{ param: loggedInUserId }}
         options={{
           tabBarIcon: ({ color }) => (
             <MaterialIcons name='account-circle' color={color} size={30} />
           ),
         }}
+        
       />
     </Tab.Navigator>
   )

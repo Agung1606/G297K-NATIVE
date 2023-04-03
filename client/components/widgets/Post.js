@@ -17,7 +17,9 @@ import FontAwesome from '@expo/vector-icons/FontAwesome'
 import { 
     BottomSheetModal, 
 } from '@gorhom/bottom-sheet'
+// comment component
 import Comment from '../Comment'
+import { useNavigation } from '@react-navigation/native'
 
 import { gql, useLazyQuery } from '@apollo/client'
 const GET_POST_COMMENTS = gql`
@@ -33,6 +35,9 @@ const GET_POST_COMMENTS = gql`
 `;
 
 export default Post = ({ item }) => {
+    const navigation = useNavigation();
+    const goToProfile = () => navigation.navigate('Profile', {param: item.userId});
+
     const [moreDesc, setMoreDesc] = useState(true);
     const handleMoreDesc = () => setMoreDesc(!moreDesc);
 
@@ -49,23 +54,23 @@ export default Post = ({ item }) => {
     // modal
     const bottomSheetModalRef = useRef(null);
     const snapPoints = useMemo(() => ['65%', '90%'], []);
-    const openModal = async () => {
+    const openModal = () => {
         bottomSheetModalRef.current.present();
-        await getPostComments({ variables: {token: token, postId: item._id} })
+        if(item.comments > 0) getPostComments({ variables: {token: token, postId: item._id} })
     }
-    const closeModal = () => {
-        bottomSheetModalRef.current.dismiss();
-    }
+    const closeModal = () => bottomSheetModalRef.current.dismiss();
 
     return (
         <View className='mb-7 p-2'>
             {/* user's photo and username */}
             <View className='flex-row justify-between items-center mb-2'>
                 <View className='flex-row items-center gap-x-3 px-2'>
-                    <Avatar.Image 
-                        size={30} 
-                        source={{uri: `http://192.168.0.106:6002/assets/${item?.userProfilePicturePath}`}} 
-                    />
+                    <TouchableOpacity onPress={goToProfile}>
+                        <Avatar.Image 
+                            size={30} 
+                            source={{uri: `http://192.168.0.106:6002/assets/${item?.userProfilePicturePath}`}} 
+                        />
+                    </TouchableOpacity>
                     <Text className='font-bold'>
                         {item?.username}
                     </Text>
@@ -136,7 +141,7 @@ export default Post = ({ item }) => {
                 ref={bottomSheetModalRef}
                 index={0}
                 snapPoints={snapPoints}
-                >
+            >
                 <View className='px-2'>
                     <View 
                         className='flex-row justify-between px-3 pb-2 border-b border-gray-600'
@@ -158,29 +163,14 @@ export default Post = ({ item }) => {
                     {loading ? (
                         <ActivityIndicator size="large" color="#406aff" />
                         ) : (
-                            <FlatList 
-                                data={data?.getPostComments}
-                                renderItem={({ item }) => (
-                                    <View className='px-2 py-4'>
-                                        <View className='flex-row gap-x-2'>
-                                            <Avatar.Image 
-                                                size={30} 
-                                                source={{uri: `http://192.168.0.106:6002/assets/${item?.profilePicturePath}`}} 
-                                            />
-                                            <View>
-                                                <Text className='text-[12px] text-gray-400'>
-                                                    {item.username}
-                                                </Text>
-                                                <Text>
-                                                    {item.comment}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    </View>
-                                )}
-                                keyExtractor={item => item._id}
-                            />
-                        )}
+                        <FlatList 
+                            data={data?.getPostComments}
+                            renderItem={({ item }) => (
+                                <Comment item={item} />
+                            )}
+                            keyExtractor={item => item._id}
+                        />
+                    )}
                 </View>
             </BottomSheetModal>
             {/* comment modal */}
