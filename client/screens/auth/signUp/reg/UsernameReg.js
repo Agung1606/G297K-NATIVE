@@ -30,13 +30,8 @@ const REGISTER = gql`
         register(email: $email, firstName: $firstName, lastName: $lastName, birthday: $birthday, pw: $pw, username: $username) {
             userData {
                 _id
-                firstName
-                lastName
                 username
                 profilePicturePath
-                bio
-                followers
-                following
             }
             token
         }

@@ -12,8 +12,22 @@ const typeDefs = `#graphql
         username: String
         profilePicturePath: String
         bio: String
-        followers: [String]
-        following: [String]
+        followers: Int
+        following: Int
+    }
+
+    type Followers {
+        followersUserId: String
+        userId: String
+        username: String
+        profilePicturePath: String
+    }
+
+    type Following {
+        followingUserId: String
+        userId: String
+        username: String
+        profilePicturePath: String
     }
 
     type Register {
@@ -48,9 +62,11 @@ const typeDefs = `#graphql
     }
 
     type Query {
-        explorePosts(token: String): [Post]
-        post(token: String, _id: String): Post
+        getExplorePosts(token: String): [Post]
         getPostComments(token: String, postId: String): [Comments]
+        getUser(token: String, userId: String): User
+        getUserFollowers(token: String, userId: String): [Followers]
+        getUserFollowing(token: String, userId: String): [Following]
     }
 
     type Mutation {

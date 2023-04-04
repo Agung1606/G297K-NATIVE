@@ -13,6 +13,7 @@ const Tab = createBottomTabNavigator();
 
 export default function MainLayout() {
   const loggedInUserId = useSelector((state) => state.auth.user._id);
+  console.log("🚀 ~ file: MainLayout.js:16 ~ MainLayout ~ loggedInUserId:", loggedInUserId)
 
   return (
     <Tab.Navigator 
@@ -46,6 +47,7 @@ export default function MainLayout() {
         name='Profile'
         component={ProfileScreen}
         initialParams={{ param: loggedInUserId }}
+        
         options={{
           tabBarIcon: ({ color }) => (
             <MaterialIcons name='account-circle' color={color} size={30} />

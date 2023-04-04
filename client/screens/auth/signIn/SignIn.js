@@ -17,13 +17,8 @@ const LOGIN = gql`
     login(username: $username, pw: $pw) {
        userData {
             _id
-            firstName
-            lastName
             username
             profilePicturePath
-            bio
-            followers
-            following
         }
         token
     }

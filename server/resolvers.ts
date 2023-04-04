@@ -4,8 +4,8 @@ import {
     RegisterArgsType, 
     LoginArgsType, 
     ExplorePostsArgsType, 
-    PostArgsType,
-    GetPostCommentsArgsType
+    GetPostCommentsArgsType,
+    GetUserArgsType
 } from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
@@ -14,25 +14,18 @@ import { verifyToken } from "./middleware/verifyToken";
 import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import Comments from "./models/Comments";
+import Followers from "./models/Followers";
+import Following from "./models/Following";
 
 const resolvers = {
     Query: {
         // QUERY EXPLORE POST
-        explorePosts: async (_: any, args: ExplorePostsArgsType) => {
+        getExplorePosts: async (_: any, args: ExplorePostsArgsType) => {
             const { token } = args;
             const verified = await verifyToken(token);
             if(verified){
                 const posts = await Post.find({}).lean();
                 return posts;
-            }
-        },
-        // QUERY POST
-        post: async (_: any, args: PostArgsType) => {
-            const { token, _id } = args;
-            const verified = await verifyToken(token);
-            if(verified) {
-                const post = await Post.findById({ _id }).lean();
-                return post;
             }
         },
         // QUERY GET POST COMMENT
@@ -42,6 +35,37 @@ const resolvers = {
             if(verified) {
                 const comments = await Comments.find({ postId }).lean();
                 return comments;
+            }
+        },
+        // QUERY GET USER
+        getUser: async (_: any, args: GetUserArgsType) => {
+            const {token, userId} = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const user = await User.findById({ _id: userId }).lean();
+                if(!user) {
+                    throw new GraphQLError('User tidak ditemukan', {
+                        extensions: { code: StatusCodes.NOT_FOUND }
+                    })
+                }
+
+                return user;
+            }
+        },
+        getUserFollowers: async (_: any, args: GetUserArgsType) => {
+            const {token, userId} = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const userFollowers = await Followers.find({ followersUserId: userId }).lean();
+                return userFollowers;
+            }
+        },
+        getUserFollowing: async (_: any, args: GetUserArgsType) => {
+            const {token, userId} = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const userFollowing = await Following.find({ followingUserId: userId }).lean();
+                return userFollowing;
             }
         },
     },
@@ -75,8 +99,8 @@ const resolvers = {
                 birthday,
                 username,
                 password: hashedPassword,
-                followers: [],
-                following: [],
+                followers: 0,
+                following: 0,
             });
 
             await newUser.save();

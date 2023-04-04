@@ -4,22 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const PostSchema = new mongoose_1.default.Schema({
+const FollowersSchema = new mongoose_1.default.Schema({
+    followersUserId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: 'User'
+    },
     userId: {
         type: mongoose_1.default.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
+        ref: 'User'
     },
     username: {
         type: String,
-        required: true,
+        required: true
     },
-    postDate: Date,
-    postPicturePath: String,
-    userProfilePicturePath: String,
-    description: String,
-    likes: [String],
-    comments: Number,
-}, { timestamps: true });
-const Post = mongoose_1.default.model("Post", PostSchema);
-exports.default = Post;
+    profilePicturePath: String,
+});
+const Followers = mongoose_1.default.model("Followers", FollowersSchema);
+exports.default = Followers;

@@ -43,24 +43,17 @@ const verifyToken_1 = require("./middleware/verifyToken");
 const jwt = __importStar(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const Comments_1 = __importDefault(require("./models/Comments"));
+const Followers_1 = __importDefault(require("./models/Followers"));
+const Following_1 = __importDefault(require("./models/Following"));
 const resolvers = {
     Query: {
         // QUERY EXPLORE POST
-        explorePosts: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+        getExplorePosts: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
             const { token } = args;
             const verified = yield (0, verifyToken_1.verifyToken)(token);
             if (verified) {
                 const posts = yield Post_1.default.find({}).lean();
                 return posts;
-            }
-        }),
-        // QUERY POST
-        post: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            const { token, _id } = args;
-            const verified = yield (0, verifyToken_1.verifyToken)(token);
-            if (verified) {
-                const post = yield Post_1.default.findById({ _id }).lean();
-                return post;
             }
         }),
         // QUERY GET POST COMMENT
@@ -70,6 +63,36 @@ const resolvers = {
             if (verified) {
                 const comments = yield Comments_1.default.find({ postId }).lean();
                 return comments;
+            }
+        }),
+        // QUERY GET USER
+        getUser: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, userId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const user = yield User_1.default.findById({ _id: userId }).lean();
+                if (!user) {
+                    throw new graphql_1.GraphQLError('User tidak ditemukan', {
+                        extensions: { code: http_status_codes_1.StatusCodes.NOT_FOUND }
+                    });
+                }
+                return user;
+            }
+        }),
+        getUserFollowers: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, userId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const userFollowers = yield Followers_1.default.find({ followersUserId: userId }).lean();
+                return userFollowers;
+            }
+        }),
+        getUserFollowing: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, userId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const userFollowing = yield Following_1.default.find({ followingUserId: userId }).lean();
+                return userFollowing;
             }
         }),
     },
@@ -93,8 +116,8 @@ const resolvers = {
                 birthday,
                 username,
                 password: hashedPassword,
-                followers: [],
-                following: [],
+                followers: 0,
+                following: 0,
             });
             yield newUser.save();
             const user = yield User_1.default.findOne({ username: username }).lean();

@@ -38,8 +38,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p1.jpg",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 2,
+        following: 0,
     },
     // Luffy
     {
@@ -52,8 +52,8 @@ export const users = [
         password: "$!FEAS@!O)_IDJda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p2.jpg",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 0,
+        following: 1,
     },
     // Zoro
     {
@@ -66,8 +66,8 @@ export const users = [
         password: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
         profilePicturePath: "p3.jpg",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 0,
+        following: 0,
     },
     // Sanji
     {
@@ -80,8 +80,8 @@ export const users = [
         password: "d$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p4.jpg",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 0,
+        following: 0,
     },
     // Usop
     {
@@ -94,8 +94,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p5.jpg",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 0,
+        following: 0,
     },
     // Chopper
     {
@@ -108,8 +108,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p6.png",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 0,
+        following: 0,
     },
     // Nami
     {
@@ -122,8 +122,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p7.jpg",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 0,
+        following: 0,
     },
     // Robin
     {
@@ -136,8 +136,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p8.jpeg",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 0,
+        following: 0,
     },
     // Brook
     {
@@ -150,8 +150,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p9.jpg",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 0,
+        following: 0,
     },
     // Franky
     {
@@ -164,8 +164,40 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p10.jpg",
         bio: '',
-        followers: [],
-        following: [],
+        followers: 0,
+        following: 1,
+    },
+];
+
+export const followers = [
+    {
+        followersUserId: userIds[0],
+        userId: userIds[1],
+        username: 'king_of_pirate',
+        profilePicturePath: 'p2.jpg'
+    },
+    {
+        followersUserId: userIds[0],
+        userId: userIds[9],
+        username: 'franks297',
+        profilePicturePath: 'p10.jpg'
+    },
+];
+
+export const following = [
+    {
+        followingUserId: userIds[1],
+        userId: userIds[0],
+        username: 'jinbei_',
+        profilePicturePath: 'p1.jpg',
+
+    },
+    {
+        followingUserId: userIds[9],
+        userId: userIds[0],
+        username: 'jinbei_',
+        profilePicturePath: 'p1.jpg',
+
     },
 ];
 

@@ -5,7 +5,7 @@ import React from 'react'
 export default function Comment({ item }) {
 
   return (
-    <View className='px-2 py-4 border-b border-gray-600'>
+    <View className='p-2 my-2 border-t border-gray-600'>
       <View className='flex-row gap-x-2'>
           <TouchableOpacity>
             <Avatar.Image 

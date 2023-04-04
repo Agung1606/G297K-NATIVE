@@ -1,29 +1,27 @@
 import mongoose from "mongoose";
 
-interface ICommentModel {
+interface IFollowingModel {
+    followingUserId: mongoose.Types.ObjectId;
     userId: mongoose.Types.ObjectId;
-    postId: mongoose.Types.ObjectId;
     username: string;
     profilePicturePath: string;
-    comment: string;
 }
 
-const CommentsSchema = new mongoose.Schema<ICommentModel>({
-    userId: {
+const FollowingSchema = new mongoose.Schema<IFollowingModel>({
+    followingUserId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    postId: {
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post'
+        ref: 'User'
     },
     username: {
         type: String,
         required: true
     },
     profilePicturePath: String,
-    comment: String,
 });
 
-const Comments = mongoose.model<ICommentModel>("Comments", CommentsSchema);
-export default Comments;
+const Following = mongoose.model<IFollowingModel>("Following", FollowingSchema);
+export default Following;

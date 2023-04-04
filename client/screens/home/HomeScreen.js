@@ -10,8 +10,8 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 import { gql, useQuery } from '@apollo/client';
 const GET_EXPLORE_POSTS = gql`
-  query ExplorePosts($token: String) {
-    explorePosts(token: $token) {
+  query GetExplorePosts($token: String) {
+    getExplorePosts(token: $token) {
       _id
       userId
       username
@@ -56,7 +56,7 @@ export default function HomeScreen() {
         </View>
         ) : (
         <FlatList 
-          data={data.explorePosts}
+          data={data.getExplorePosts}
           renderItem={({ item }) => <Post item={item} />}
           keyExtractor={item => item._id}
           maxToRenderPerBatch={5}

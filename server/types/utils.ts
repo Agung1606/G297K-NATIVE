@@ -16,12 +16,12 @@ export type ExplorePostsArgsType = {
     token: string
 }
 
-export type PostArgsType = {
-    token: string
-    _id: string
-}
-
 export type GetPostCommentsArgsType = {
     token: string
     postId: string
+}
+
+export type GetUserArgsType = {
+    token: string
+    userId: string
 }
