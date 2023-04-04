@@ -43,6 +43,7 @@ exports.users = [
         bio: '',
         followers: 2,
         following: 0,
+        postsCount: 1,
     },
     // Luffy
     {
@@ -57,6 +58,7 @@ exports.users = [
         bio: '',
         followers: 0,
         following: 1,
+        postsCount: 1,
     },
     // Zoro
     {
@@ -71,6 +73,7 @@ exports.users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Sanji
     {
@@ -85,6 +88,7 @@ exports.users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Usop
     {
@@ -99,6 +103,7 @@ exports.users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Chopper
     {
@@ -113,6 +118,7 @@ exports.users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Nami
     {
@@ -127,6 +133,7 @@ exports.users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Robin
     {
@@ -141,6 +148,7 @@ exports.users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Brook
     {
@@ -155,6 +163,7 @@ exports.users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Franky
     {
@@ -169,6 +178,7 @@ exports.users = [
         bio: '',
         followers: 0,
         following: 1,
+        postsCount: 1,
     },
 ];
 exports.followers = [

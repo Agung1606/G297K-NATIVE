@@ -4,9 +4,8 @@ import {
     Image, 
     TouchableOpacity, 
     ActivityIndicator, 
-    FlatList 
 } from 'react-native'
-import { Avatar, TextInput } from 'react-native-paper'
+import { Avatar } from 'react-native-paper'
 import React, { useMemo, useRef, useState } from 'react'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
@@ -18,7 +17,7 @@ import {
     BottomSheetModal, 
 } from '@gorhom/bottom-sheet'
 // comment component
-import Comment from '../Comment'
+import ModalComment from '../modal/ModalComment'
 import { useNavigation } from '@react-navigation/native'
 
 import { gql, useLazyQuery } from '@apollo/client'
@@ -142,36 +141,13 @@ export default Post = ({ item }) => {
                 index={0}
                 snapPoints={snapPoints}
             >
-                <View className='px-2'>
-                    <View 
-                        className='flex-row justify-between px-3 pb-2 border-b border-gray-600'
-                        >
-                        <Text className='text-xl font-bold'>Comments</Text>
-                        <MaterialIcons name='close' size={24} onPress={closeModal} />
-                    </View>
-                    <View className='pr-2 mt-2 flex-row items-center gap-x-4'>
-                        <TextInput 
-                            placeholder='Add a comment...'
-                            underlineColor='transparent'
-                            activeUnderlineColor='#3bace2'
-                            className='flex-1 h-[38px] bg-gray-300'
-                        />
-                        <TouchableOpacity>
-                            <MaterialIcons name='send' size={24} />
-                        </TouchableOpacity>
-                    </View>
-                    {loading ? (
+                {loading ? (
+                    <View className='flex-1 justify-center items-center'>
                         <ActivityIndicator size="large" color="#406aff" />
-                        ) : (
-                        <FlatList 
-                            data={data?.getPostComments}
-                            renderItem={({ item }) => (
-                                <Comment item={item} />
-                            )}
-                            keyExtractor={item => item._id}
-                        />
-                    )}
-                </View>
+                    </View>
+                ) : (
+                    <ModalComment onPress={closeModal} data={data?.getPostComments} />
+                )}
             </BottomSheetModal>
             {/* comment modal */}
         </View>

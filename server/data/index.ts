@@ -40,6 +40,7 @@ export const users = [
         bio: '',
         followers: 2,
         following: 0,
+        postsCount: 1,
     },
     // Luffy
     {
@@ -54,6 +55,7 @@ export const users = [
         bio: '',
         followers: 0,
         following: 1,
+        postsCount: 1,
     },
     // Zoro
     {
@@ -68,6 +70,7 @@ export const users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Sanji
     {
@@ -82,6 +85,7 @@ export const users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Usop
     {
@@ -96,6 +100,7 @@ export const users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Chopper
     {
@@ -110,6 +115,7 @@ export const users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Nami
     {
@@ -124,6 +130,7 @@ export const users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Robin
     {
@@ -138,6 +145,7 @@ export const users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Brook
     {
@@ -152,6 +160,7 @@ export const users = [
         bio: '',
         followers: 0,
         following: 0,
+        postsCount: 1,
     },
     // Franky
     {
@@ -166,6 +175,7 @@ export const users = [
         bio: '',
         followers: 0,
         following: 1,
+        postsCount: 1,
     },
 ];
 

@@ -99,8 +99,10 @@ const resolvers = {
                 birthday,
                 username,
                 password: hashedPassword,
+                profilePicturePath: 'defaultAvatar.png',
                 followers: 0,
                 following: 0,
+                postsCount: 0,
             });
 
             await newUser.save();

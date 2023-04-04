@@ -14,6 +14,7 @@ const typeDefs = `#graphql
         bio: String
         followers: Int
         following: Int
+        postsCount: Int
     }
 
     type Followers {

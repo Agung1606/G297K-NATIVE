@@ -36,16 +36,14 @@ const UserSchema = new mongoose_1.default.Schema({
         required: true,
         min: 6,
     },
-    profilePicturePath: {
-        type: String,
-        default: "",
-    },
+    profilePicturePath: String,
     bio: {
         type: String,
         default: "",
     },
     followers: Number,
     following: Number,
+    postsCount: Number,
 }, { timestamps: true });
 const User = mongoose_1.default.model("User", UserSchema);
 exports.default = User;

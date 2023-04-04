@@ -11,6 +11,7 @@ interface IUserModel {
     bio?: string;
     followers?: number;
     following?: number;
+    postsCount: number;
 }
 
 const UserSchema = new mongoose.Schema<IUserModel>({
@@ -45,16 +46,14 @@ const UserSchema = new mongoose.Schema<IUserModel>({
         required: true,
         min: 6,
     },
-    profilePicturePath: {
-        type: String,
-        default: "",
-    },
+    profilePicturePath: String,
     bio: {
         type: String,
         default: "",
     },
     followers: Number,
     following: Number,
+    postsCount: Number,
 }, {timestamps: true});
 
 const User = mongoose.model<IUserModel>("User", UserSchema);

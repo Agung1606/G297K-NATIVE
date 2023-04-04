@@ -116,8 +116,10 @@ const resolvers = {
                 birthday,
                 username,
                 password: hashedPassword,
+                profilePicturePath: 'defaultAvatar.png',
                 followers: 0,
                 following: 0,
+                postsCount: 0,
             });
             yield newUser.save();
             const user = yield User_1.default.findOne({ username: username }).lean();
