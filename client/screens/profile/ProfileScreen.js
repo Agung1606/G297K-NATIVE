@@ -1,8 +1,10 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, Image, Pressable } from 'react-native'
 import { Avatar } from 'react-native-paper';
 import React, { useRef, useMemo, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
+
+import { FlatGrid } from 'react-native-super-grid';
 
 // routin
 import { useNavigation } from '@react-navigation/native';
@@ -34,6 +36,16 @@ const GET_USER = gql`
   }
 `;
 
+const GET_USER_POSTS = gql`
+  query GetUserPosts($token: String, $userId: String) {
+    getUserPosts(token: $token, userId: $userId) {
+      _id
+      userId
+      postPicturePath
+    }
+  }
+`;
+
 export default function ProfileScreen({ route }) {
   const navigation = useNavigation();
   const goToPreviousScreen = () => navigation.goBack();
@@ -45,12 +57,19 @@ export default function ProfileScreen({ route }) {
   const userId = route?.params?.param;
   const loggedInUserId = useSelector((state) => state.auth.user._id);
   const token = useSelector((state) => state.auth.token);
-  // data
+  // data from api
   const { data, loading } = useQuery(GET_USER, {
     variables: {
       token: token,
       userId: userId
     }
+  });
+
+  const { data: postsData, loading: postLoading } = useQuery(GET_USER_POSTS, {
+    variables: {
+      token: token,
+      userId: userId,
+    },
   });
 
   // USER INFORMATION
@@ -173,7 +192,35 @@ export default function ProfileScreen({ route }) {
       </View>
 
       {/* posts or tweets */}
-      {screen === "Posts" ? <Posts /> : <Tweets />}
+      {screen === "Posts" ? (
+        postLoading ? (
+          <View className="flex-1 justify-center items-center">
+            <ActivityIndicator size="large" color="#406aff" />
+          </View>
+        ) : (
+          // <Posts />
+          <FlatGrid
+            itemDimension={80}
+            data={postsData?.getUserPosts}
+            renderItem={({ item }) => (
+              <View className="h-[100px]">
+                <Pressable onPress={() => alert(item._id)}>
+                  <Image
+                    source={{
+                      uri: `http://192.168.0.106:6002/assets/${item?.postPicturePath}`,
+                    }}
+                    className="w-full h-full"
+                    resizeMode="cover"
+                  />
+                </Pressable>
+              </View>
+            )}
+          />
+        )
+      ) : (
+        <Tweets />
+      )}
+
       {/* setting modal */}
       <BottomSheetModal
         ref={bottomSheetModalRef}

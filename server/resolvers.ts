@@ -4,6 +4,7 @@ import {
     RegisterArgsType, 
     LoginArgsType, 
     ExplorePostsArgsType, 
+    UserPostsArgsType,
     GetPostCommentsArgsType,
     GetUserArgsType
 } from "./types/utils";
@@ -16,15 +17,34 @@ import bcrypt from 'bcrypt';
 import Comments from "./models/Comments";
 import Followers from "./models/Followers";
 import Following from "./models/Following";
+import Tweet from "./models/Tweet";
 
 const resolvers = {
     Query: {
+        // QUERY TWEETS
+        getTweets: async (_: any, args: ExplorePostsArgsType) => {
+            const { token } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const tweets = await Tweet.find({}).lean();
+                return tweets;
+            }
+        },
         // QUERY EXPLORE POST
         getExplorePosts: async (_: any, args: ExplorePostsArgsType) => {
             const { token } = args;
             const verified = await verifyToken(token);
             if(verified){
                 const posts = await Post.find({}).lean();
+                return posts;
+            }
+        },
+        // QUERY USER POSTS
+        getUserPosts: async (_: any, args: UserPostsArgsType) => {
+            const { token, userId } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const posts = await Post.find({ userId }).lean();
                 return posts;
             }
         },

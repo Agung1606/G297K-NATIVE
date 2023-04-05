@@ -45,14 +45,33 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const Comments_1 = __importDefault(require("./models/Comments"));
 const Followers_1 = __importDefault(require("./models/Followers"));
 const Following_1 = __importDefault(require("./models/Following"));
+const Tweet_1 = __importDefault(require("./models/Tweet"));
 const resolvers = {
     Query: {
+        // QUERY TWEETS
+        getTweets: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const tweets = yield Tweet_1.default.find({}).lean();
+                return tweets;
+            }
+        }),
         // QUERY EXPLORE POST
         getExplorePosts: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
             const { token } = args;
             const verified = yield (0, verifyToken_1.verifyToken)(token);
             if (verified) {
                 const posts = yield Post_1.default.find({}).lean();
+                return posts;
+            }
+        }),
+        // QUERY USER POSTS
+        getUserPosts: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, userId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const posts = yield Post_1.default.find({ userId }).lean();
                 return posts;
             }
         }),

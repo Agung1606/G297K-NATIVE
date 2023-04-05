@@ -26,6 +26,19 @@ const postIds = [
     new mongoose.Types.ObjectId(),
 ];
 
+const tweetIds = [
+    new mongoose.Types.ObjectId(),
+    new mongoose.Types.ObjectId(),
+    new mongoose.Types.ObjectId(),
+    new mongoose.Types.ObjectId(),
+    new mongoose.Types.ObjectId(),
+    new mongoose.Types.ObjectId(),
+    new mongoose.Types.ObjectId(),
+    new mongoose.Types.ObjectId(),
+    new mongoose.Types.ObjectId(),
+    new mongoose.Types.ObjectId(),
+];
+
 export const users = [
     // Jinbei
     {
@@ -340,6 +353,19 @@ export const posts = [
     },
 ];
 
+export const tweets = [
+    {
+        _id: tweetIds[3],
+        userId: userIds[3],
+        username: "vnsmkSanji",
+        postDate: new Date( Date.now() - 4000 * 60),
+        userProfilePicturePath: "p4.jpg",
+        tweet: "test test 123",
+        likes: [],
+        comments: 1,
+    },
+];
+
 export const comments = [
     {
         userId: userIds[3],
@@ -347,5 +373,12 @@ export const comments = [
         username: 'vnsmkSanji',
         profilePicturePath: 'p4.jpg',
         comment: 'test comment, i am sanji',
+    },
+    {
+        userId: userIds[1],
+        postId: tweetIds[3],
+        username: 'king_of_pirate',
+        profilePicturePath: 'p2.jpg',
+        comment: 'test comment, i am Monkey D. Luffy',
     },
 ];

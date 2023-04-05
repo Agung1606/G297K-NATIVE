@@ -20,10 +20,11 @@ import resolvers from './resolvers';
 
 // import User from './models/User';
 // import Post from './models/Post';
+// import Tweet from './models/Tweet';
 // import Followers from './models/Followers';
 // import Following from './models/Following';
 // import Comments from './models/Comments';
-// import { users, posts, comments, followers, following } from './data/index';
+// import { users, posts, tweets, comments, followers, following } from './data/index';
 
 (async function() {
     dotenv.config(); // to access environment variable
@@ -57,9 +58,10 @@ import resolvers from './resolvers';
 
     // await User.insertMany(users)
     // await Post.insertMany(posts)
+    // await Tweet.insertMany(tweets)
     // await Comments.insertMany(comments)
     // await Followers.insertMany(followers)
-    // await Following.insertMany(following);
+    // await Following.insertMany(following)
 
     const PORT = process.env.PORT || 9002;
     app.use(express.json());

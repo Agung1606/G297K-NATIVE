@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.comments = exports.posts = exports.following = exports.followers = exports.users = void 0;
+exports.comments = exports.tweets = exports.posts = exports.following = exports.followers = exports.users = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const userIds = [
     new mongoose_1.default.Types.ObjectId(),
@@ -18,6 +18,18 @@ const userIds = [
     new mongoose_1.default.Types.ObjectId(),
 ];
 const postIds = [
+    new mongoose_1.default.Types.ObjectId(),
+    new mongoose_1.default.Types.ObjectId(),
+    new mongoose_1.default.Types.ObjectId(),
+    new mongoose_1.default.Types.ObjectId(),
+    new mongoose_1.default.Types.ObjectId(),
+    new mongoose_1.default.Types.ObjectId(),
+    new mongoose_1.default.Types.ObjectId(),
+    new mongoose_1.default.Types.ObjectId(),
+    new mongoose_1.default.Types.ObjectId(),
+    new mongoose_1.default.Types.ObjectId(),
+];
+const tweetIds = [
     new mongoose_1.default.Types.ObjectId(),
     new mongoose_1.default.Types.ObjectId(),
     new mongoose_1.default.Types.ObjectId(),
@@ -337,6 +349,18 @@ exports.posts = [
         comments: 0,
     },
 ];
+exports.tweets = [
+    {
+        _id: tweetIds[3],
+        userId: userIds[3],
+        username: "vnsmkSanji",
+        postDate: new Date(Date.now() - 4000 * 60),
+        userProfilePicturePath: "p4.jpg",
+        tweet: "test test 123",
+        likes: [],
+        comments: 1,
+    },
+];
 exports.comments = [
     {
         userId: userIds[3],
@@ -344,5 +368,12 @@ exports.comments = [
         username: 'vnsmkSanji',
         profilePicturePath: 'p4.jpg',
         comment: 'test comment, i am sanji',
+    },
+    {
+        userId: userIds[1],
+        postId: tweetIds[3],
+        username: 'king_of_pirate',
+        profilePicturePath: 'p2.jpg',
+        comment: 'test comment, i am Monkey D. Luffy',
     },
 ];

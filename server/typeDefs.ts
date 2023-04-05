@@ -51,6 +51,17 @@ const typeDefs = `#graphql
         comments: Int
     }
 
+    type Tweet {
+        _id: String
+        userId: String
+        username: String
+        postDate: Date
+        userProfilePicturePath: String
+        tweet: String
+        likes: [String]
+        comments: Int
+    }
+
     type Comments {
         _id: String
         userId: String
@@ -61,8 +72,11 @@ const typeDefs = `#graphql
     }
 
     type Query {
+        getTweets(token: String): [Tweet]
         getExplorePosts(token: String): [Post]
+        getUserPosts(token: String, userId: String): [Post]
         getPostComments(token: String, postId: String): [Comments]
+
         getUser(token: String, userId: String): User
         getUserFollowers(token: String, userId: String): [Followers]
         getUserFollowing(token: String, userId: String): [Following]

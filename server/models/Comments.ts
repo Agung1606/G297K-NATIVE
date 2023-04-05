@@ -13,10 +13,7 @@ const CommentsSchema = new mongoose.Schema<ICommentModel>({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    postId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post'
-    },
+    postId: mongoose.Schema.Types.ObjectId,
     username: {
         type: String,
         required: true
