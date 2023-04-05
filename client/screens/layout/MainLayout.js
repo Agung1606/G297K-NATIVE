@@ -1,6 +1,6 @@
+import { View, Text, Pressable, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import HomeScreen from '../home/HomeScreen'
 import ProfileScreen from '../profile/ProfileScreen'
 import ExploreScreen from '../explore/ExploreScreen'
@@ -9,51 +9,37 @@ import ExploreScreen from '../explore/ExploreScreen'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
-const Tab = createBottomTabNavigator();
+// routing
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import { useNavigation } from '@react-navigation/native'
+const Stack = createNativeStackNavigator();
 
 export default function MainLayout() {
+  const navigation = useNavigation();
   const loggedInUserId = useSelector((state) => state.auth.user._id);
 
+  const goToHome = () => navigation.navigate('HomeScreen');
+  const goToExplore = () => navigation.navigate('ExploreScreen');
+  const goToProfile = () => navigation.navigate('ProfileScreen', { param: loggedInUserId });
+
   return (
-    <Tab.Navigator 
-      initialRouteName='Home'
-      screenOptions={{ 
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: '#010026',
-        tabBarStyle: { height: '8%' },
-      }}
-    >
-      <Tab.Screen 
-        name='Home'
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name='home' color={color} size={30} />
-          ),
-        }}
-      />
-      <Tab.Screen 
-        name='Explore'
-        component={ExploreScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name='search' color={color} size={30} />
-          )
-        }}
-      />
-      <Tab.Screen 
-        name='Profile'
-        component={ProfileScreen}
-        initialParams={{ param: loggedInUserId }}
-        
-        options={{
-          tabBarIcon: ({ color }) => (
-            <MaterialIcons name='account-circle' color={color} size={30} />
-          ),
-        }}
-        
-      />
-    </Tab.Navigator>
-  )
+    <>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="HomeScreen" component={HomeScreen} />
+        <Stack.Screen name="ExploreScreen" component={ExploreScreen} />
+        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+      </Stack.Navigator>
+      <View className="h-[8%] flex-row justify-around items-center m-2 backdrop-blur-3xl">
+        <TouchableOpacity onPress={goToHome}>
+          <FontAwesome name="home" size={30} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={goToExplore}>
+          <FontAwesome name="search" size={30} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={goToProfile}>
+          <MaterialIcons name="account-circle" size={30} />
+        </TouchableOpacity>
+      </View>
+    </>
+  );
 }

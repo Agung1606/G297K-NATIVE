@@ -35,7 +35,7 @@ const GET_POST_COMMENTS = gql`
 
 export default Post = ({ item }) => {
     const navigation = useNavigation();
-    const goToProfile = () => navigation.navigate('Profile', {param: item.userId});
+    const goToProfile = () => navigation.navigate('ProfileScreen', {param: item.userId});
 
     const [moreDesc, setMoreDesc] = useState(true);
     const handleMoreDesc = () => setMoreDesc(!moreDesc);
@@ -63,17 +63,17 @@ export default Post = ({ item }) => {
         <View className='mb-7 p-2'>
             {/* user's photo and username */}
             <View className='flex-row justify-between items-center mb-2'>
-                <View className='flex-row items-center gap-x-3 px-2'>
-                    <TouchableOpacity onPress={goToProfile}>
-                        <Avatar.Image 
-                            size={30} 
-                            source={{uri: `http://192.168.0.106:6002/assets/${item?.userProfilePicturePath}`}} 
-                        />
-                    </TouchableOpacity>
-                    <Text className='font-bold'>
-                        {item?.username}
-                    </Text>
-                </View>
+                <TouchableOpacity onPress={goToProfile}>
+                    <View className='flex-row items-center gap-x-3 px-2'>
+                            <Avatar.Image 
+                                size={30} 
+                                source={{uri: `http://192.168.0.106:6002/assets/${item?.userProfilePicturePath}`}} 
+                            />
+                        <Text className='font-bold'>
+                            {item?.username}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
                 <TouchableOpacity>
                     <MaterialIcons name='more-vert' size={25} />
                 </TouchableOpacity>
@@ -142,7 +142,7 @@ export default Post = ({ item }) => {
                 snapPoints={snapPoints}
             >
                 {loading ? (
-                    <View className='flex-1 justify-center items-center'>
+                    <View className='flex-1 justify-center'>
                         <ActivityIndicator size="large" color="#406aff" />
                     </View>
                 ) : (

@@ -1,12 +1,16 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native'
 import { Avatar } from 'react-native-paper';
-import React, { useRef, useMemo } from 'react'
+import React, { useRef, useMemo, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 
-import { useDispatch, useSelector } from 'react-redux';
+// routin
+import { useNavigation } from '@react-navigation/native';
+import Posts from './Posts';
+import Tweets from './Tweets';
 
 // icons
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
 // modal
 import { BottomSheetModal } from '@gorhom/bottom-sheet'
@@ -31,7 +35,12 @@ const GET_USER = gql`
 `;
 
 export default function ProfileScreen({ route }) {
-  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const goToPreviousScreen = () => navigation.goBack();
+
+  const [screen, setScreen] = useState('Posts');
+  const goToPosts = () => setScreen('Posts');
+  const goToTweets = () => setScreen('Tweets');
 
   const userId = route?.params?.param;
   const loggedInUserId = useSelector((state) => state.auth.user._id);
@@ -50,90 +59,129 @@ export default function ProfileScreen({ route }) {
 
   // modal
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ['45%'], []);
-  const openModal = () => {
-      bottomSheetModalRef.current.present();
-  }
+  const snapPoints = useMemo(() => ['40%'], []);
+  const openModal = () => bottomSheetModalRef.current.present();
   const closeModal = () => bottomSheetModalRef.current.dismiss();
 
+  // style
+  const selectedScreenStyle = "border-b border-blue";
+
   if(loading){
-    return <View className='flex-1 justify-center items-center'>
-      <Text>Loading...</Text>
-    </View>
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ActivityIndicator size="large" color="#406aff" />
+      </View>
+    );
   }
   
   return (
-    <SafeAreaView className='flex-1 bg-white'>
-      <View className='mx-3 my-4 flex-row justify-between items-center'>
-        <TouchableOpacity onPress={openModal}>
-          <MaterialIcons name='settings' size={25} />
-        </TouchableOpacity>
-        <Text className='text-[16px] font-semibold'>
+    <SafeAreaView className="flex-1 bg-white">
+      <View className="mx-3 my-2 flex-row justify-between items-center">
+        {isMyProfile ? (
+          <TouchableOpacity onPress={openModal}>
+            <MaterialIcons name="settings" size={25} />
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={goToPreviousScreen}>
+            <MaterialIcons name="keyboard-arrow-left" size={30} />
+          </TouchableOpacity>
+        )}
+        <Text className="text-[16px] font-semibold">
           {data?.getUser?.username}
         </Text>
       </View>
       {/* card wrapper */}
-      <View 
-        className='bg-[#d4d4d4] h-[180px] px-[10px] mx-2 mb-2 rounded-xl
-          flex-row justify-between items-center'
+      <View
+        className="bg-[#d4d4d4] h-[180px] px-[10px] mx-2 mb-2 rounded-xl
+          flex-row justify-between items-center"
       >
         {/* picture path and username */}
-        <View className='justify-center items-center gap-y-2'>
-          <Avatar.Image 
-            size={110} 
-            source={{uri: `http://192.168.0.106:6002/assets/${data?.getUser?.profilePicturePath}`}} 
+        <View className="justify-center items-center gap-y-2">
+          <Avatar.Image
+            size={110}
+            source={{
+              uri: `http://192.168.0.106:6002/assets/${data?.getUser?.profilePicturePath}`,
+            }}
           />
-          <Text className='font-bold'>{fullname}</Text>
+          <Text className="font-bold">{fullname}</Text>
         </View>
         {/* wrapper info */}
-        <View className='space-y-4'>
+        <View className="space-y-4">
           {/* posts, followers, following */}
-          <View className='flex-row items-center gap-x-[15px]'>
-            <View className='justify-center items-center'>
-              <Text className='text-lg font-bold'>
-                {data.getUser.postsCount}
+          <View className="flex-row items-center gap-x-[15px]">
+            <View className="justify-center items-center">
+              <Text className="text-lg font-bold">
+                {data?.getUser?.postsCount}
               </Text>
               <Text>Posts</Text>
             </View>
-            <View className='justify-center items-center'>
-              <Text className='text-lg font-bold'>
-                {data.getUser.followers}
+            <View className="justify-center items-center">
+              <Text className="text-lg font-bold">
+                {data?.getUser?.followers}
               </Text>
               <Text>Followers</Text>
             </View>
-            <View className='justify-center items-center'>
-              <Text className='text-lg font-bold'>
-                {data.getUser.following}
+            <View className="justify-center items-center">
+              <Text className="text-lg font-bold">
+                {data?.getUser?.following}
               </Text>
               <Text>Following</Text>
             </View>
           </View>
           {/* button */}
-            {isMyProfile ? (
-              <TouchableOpacity className='bg-deep-blue rounded-lg'>
-                <Text className='text-center text-lg text-white font-semibold py-[2px]'>
-                  Edit profile
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity className='bg-blue rounded-lg'>
-                <Text className='text-center text-lg text-white font-semibold py-[2px]'>Follow</Text>
-              </TouchableOpacity>
-            )}
+          {isMyProfile ? (
+            <TouchableOpacity className="bg-deep-blue rounded-lg">
+              <Text className="text-center text-lg text-white font-semibold py-[2px]">
+                Edit profile
+              </Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity className="bg-blue rounded-lg">
+              <Text className="text-center text-lg text-white font-semibold py-[2px]">
+                Follow
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
-      <View className='mx-3'>
-        <Text>agung is a good boy</Text>
+
+      {/* bio */}
+      {data?.getUser?.bio && (
+        <View className="mx-3 mb-4">
+          <Text>{data?.getUser?.bio}</Text>
+        </View>
+      )}
+
+      {/* navigation post */}
+      <View className="py-2 flex-row justify-around items-center border-y border-gray-500">
+        <TouchableOpacity
+          onPress={goToPosts}
+          className={`justify-center items-center ${
+            screen === "Posts" && selectedScreenStyle
+          }`}
+        >
+          <MaterialCommunityIcons name="dots-grid" size={28} />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={goToTweets}
+          className={`justify-center items-center ${
+            screen === "Tweets" && selectedScreenStyle
+          }`}
+        >
+          <MaterialCommunityIcons name="bird" size={28} />
+        </TouchableOpacity>
       </View>
 
+      {/* posts or tweets */}
+      {screen === "Posts" ? <Posts /> : <Tweets />}
       {/* setting modal */}
       <BottomSheetModal
         ref={bottomSheetModalRef}
         index={0}
         snapPoints={snapPoints}
       >
-        <ModalSetting />
+        <ModalSetting onPress={closeModal} />
       </BottomSheetModal>
     </SafeAreaView>
-  )
+  );
 }

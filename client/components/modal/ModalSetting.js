@@ -6,14 +6,14 @@ import { setLogout } from '../../state/authSlice';
 // icons
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-export default function ModalSetting() {
+export default function ModalSetting({ onPress }) {
     const dispatch = useDispatch();
     const handleLogout = () => dispatch(setLogout());
     return (
         <View className='px-2'>
             <View className='flex-row justify-between px-3 pb-2 border-b border-gray-600'>
                 <Text className='text-xl font-bold'>Settings</Text>
-                <MaterialIcons name='close' size={24} />
+                <MaterialIcons name='close' size={24} onPress={onPress} />
             </View>
             <View className='mt-4'>
                 <TouchableOpacity>
