@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, Image, Pressable } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, Image, Pressable, FlatList } from 'react-native'
 import { Avatar } from 'react-native-paper';
 import React, { useRef, useMemo, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,8 +18,10 @@ import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import { BottomSheetModal } from '@gorhom/bottom-sheet'
 import ModalSetting from '../../components/modal/ModalSetting';
 
+import { API_URL } from '@env'
+
 // api
-import { useQuery, gql } from '@apollo/client';
+import { useQuery, useLazyQuery, gql } from '@apollo/client';
 const GET_USER = gql`
   query GetUser($token: String, $userId: String) {
     getUser(token: $token, userId: $userId) {
@@ -32,6 +34,7 @@ const GET_USER = gql`
       followers
       following
       postsCount
+      tweetsCount
     }
   }
 `;
@@ -40,37 +43,56 @@ const GET_USER_POSTS = gql`
   query GetUserPosts($token: String, $userId: String) {
     getUserPosts(token: $token, userId: $userId) {
       _id
-      userId
       postPicturePath
     }
   }
 `;
 
+const GET_USER_TWEETS = gql`
+  query GetUserTweets($token: String, $userId: String) {
+    getUserTweets(token: $token, userId: $userId) {
+      _id
+      username
+      postDate
+      userProfilePicturePath
+      tweet
+      likes
+      comments
+    }
+  }
+`;
+
 export default function ProfileScreen({ route }) {
-  const navigation = useNavigation();
-  const goToPreviousScreen = () => navigation.goBack();
-
-  const [screen, setScreen] = useState('Posts');
-  const goToPosts = () => setScreen('Posts');
-  const goToTweets = () => setScreen('Tweets');
-
   const userId = route?.params?.param;
   const loggedInUserId = useSelector((state) => state.auth.user._id);
   const token = useSelector((state) => state.auth.token);
-  // data from api
+  // user data from api
   const { data, loading } = useQuery(GET_USER, {
     variables: {
       token: token,
-      userId: userId
-    }
+      userId: userId,
+    },
   });
-
+  
+  // user posts data from api
   const { data: postsData, loading: postLoading } = useQuery(GET_USER_POSTS, {
     variables: {
       token: token,
       userId: userId,
     },
   });
+  
+  // user tweets data from api
+  const [getUserTweets, { data: tweetsData, loading: tweetLoading }] = useLazyQuery(GET_USER_TWEETS);
+  
+  const [screen, setScreen] = useState("Posts");
+  const navigation = useNavigation();
+  const goToPreviousScreen = () => navigation.goBack();
+  const goToPosts = () => setScreen("Posts");
+  const goToTweets = () => {
+    setScreen("Tweets")
+    if(data?.getUser?.tweetsCount > 0) getUserTweets({ variables: { token: token, userId: userId } });
+  };
 
   // USER INFORMATION
   const fullname = `${data?.getUser?.firstName} ${data?.getUser?.lastName}`;
@@ -78,21 +100,21 @@ export default function ProfileScreen({ route }) {
 
   // modal
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ['40%'], []);
+  const snapPoints = useMemo(() => ["40%"], []);
   const openModal = () => bottomSheetModalRef.current.present();
   const closeModal = () => bottomSheetModalRef.current.dismiss();
 
   // style
   const selectedScreenStyle = "border-b border-blue";
 
-  if(loading){
+  if (loading) {
     return (
       <View className="flex-1 justify-center items-center">
         <ActivityIndicator size="large" color="#406aff" />
       </View>
     );
   }
-  
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <View className="mx-3 my-2 flex-row justify-between items-center">
@@ -119,7 +141,7 @@ export default function ProfileScreen({ route }) {
           <Avatar.Image
             size={110}
             source={{
-              uri: `http://192.168.0.106:6002/assets/${data?.getUser?.profilePicturePath}`,
+              uri: `${API_URL}/assets/${data?.getUser?.profilePicturePath}`,
             }}
           />
           <Text className="font-bold">{fullname}</Text>
@@ -130,9 +152,11 @@ export default function ProfileScreen({ route }) {
           <View className="flex-row items-center gap-x-[15px]">
             <View className="justify-center items-center">
               <Text className="text-lg font-bold">
-                {data?.getUser?.postsCount}
+                {screen === "Posts"
+                  ? data?.getUser?.postsCount
+                  : data?.getUser?.tweetsCount}
               </Text>
-              <Text>Posts</Text>
+              <Text>{screen === "Posts" ? "Posts" : "Tweets"}</Text>
             </View>
             <View className="justify-center items-center">
               <Text className="text-lg font-bold">
@@ -197,28 +221,35 @@ export default function ProfileScreen({ route }) {
           <View className="flex-1 justify-center items-center">
             <ActivityIndicator size="large" color="#406aff" />
           </View>
-        ) : (
-          // <Posts />
+        ) : postsData?.getUserPosts.length > 0 ? (
           <FlatGrid
             itemDimension={80}
             data={postsData?.getUserPosts}
-            renderItem={({ item }) => (
-              <View className="h-[100px]">
-                <Pressable onPress={() => alert(item._id)}>
-                  <Image
-                    source={{
-                      uri: `http://192.168.0.106:6002/assets/${item?.postPicturePath}`,
-                    }}
-                    className="w-full h-full"
-                    resizeMode="cover"
-                  />
-                </Pressable>
-              </View>
-            )}
+            renderItem={({ item }) => <Posts item={item} />}
           />
+        ) : (
+          <View className="flex-1 justify-center items-center">
+            <MaterialCommunityIcons name="emoticon-sad-outline" size={30} />
+            <Text>No Posts</Text>
+          </View>
         )
+      ) : tweetLoading ? (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#406aff" />
+        </View>
+      ) : tweetsData?.getUserTweets?.length > 0 ? (
+        <FlatList
+          data={tweetsData?.getUserTweets}
+          renderItem={({ item }) => <Tweets item={item} />}
+          keyExtractor={(item) => item._id}
+          maxToRenderPerBatch={5}
+          updateCellsBatchingPeriod={20}
+        />
       ) : (
-        <Tweets />
+        <View className="flex-1 justify-center items-center">
+          <MaterialCommunityIcons name="emoticon-sad-outline" size={30} />
+          <Text>No Tweets</Text>
+        </View>
       )}
 
       {/* setting modal */}

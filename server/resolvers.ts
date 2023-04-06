@@ -39,6 +39,15 @@ const resolvers = {
                 return posts;
             }
         },
+        // QUERY USER TWEETS
+        getUserTweets: async (_: any, args: UserPostsArgsType) => {
+            const { token, userId } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const tweets = await Tweet.find({ userId }).lean();
+                return tweets;
+            }
+        },
         // QUERY USER POSTS
         getUserPosts: async (_: any, args: UserPostsArgsType) => {
             const { token, userId } = args;
@@ -123,6 +132,7 @@ const resolvers = {
                 followers: 0,
                 following: 0,
                 postsCount: 0,
+                tweetsCount: 0,
             });
 
             await newUser.save();

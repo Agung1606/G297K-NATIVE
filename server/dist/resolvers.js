@@ -66,6 +66,15 @@ const resolvers = {
                 return posts;
             }
         }),
+        // QUERY USER TWEETS
+        getUserTweets: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, userId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const tweets = yield Tweet_1.default.find({ userId }).lean();
+                return tweets;
+            }
+        }),
         // QUERY USER POSTS
         getUserPosts: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
             const { token, userId } = args;

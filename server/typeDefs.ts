@@ -13,6 +13,7 @@ const typeDefs = `#graphql
         followers: Int
         following: Int
         postsCount: Int
+        tweetsCount: Int
     }
 
     type Followers {
@@ -74,6 +75,7 @@ const typeDefs = `#graphql
     type Query {
         getTweets(token: String): [Tweet]
         getExplorePosts(token: String): [Post]
+        getUserTweets(token: String, userId: String): [Tweet]
         getUserPosts(token: String, userId: String): [Post]
         getPostComments(token: String, postId: String): [Comments]
 

@@ -1,5 +1,4 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { 
   useFonts,
   Itim_400Regular,
@@ -17,12 +16,12 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
+import { API_URL } from '@env'
+
 const client = new ApolloClient({
-  uri: 'http://192.168.0.106:6002/graphql',
+  uri: `${API_URL}/graphql`,
   cache: new InMemoryCache(),
 })
-
-const Stack = createNativeStackNavigator();
 
 import Main from './Main';
 

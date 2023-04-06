@@ -1,14 +1,19 @@
-import { View, Text } from 'react-native'
+import { View, Pressable, Image } from 'react-native'
 import React from 'react'
-import { useSelector } from 'react-redux';
+import { API_URL } from '@env'
 
-import { gql, useQuery } from "@apollo/client";
-
-export default function Posts() {
-    const token = useSelector((state) => state.auth.token);
+export default function Posts({ item }) {
   return (
-    <View>
-        <Text>Posts</Text>
+    <View className="h-[100px]">
+      <Pressable onPress={() => alert(item._id)}>
+        <Image
+          source={{
+            uri: `${API_URL}/assets/${item?.postPicturePath}`,
+          }}
+          className="w-full h-full"
+          resizeMode="cover"
+        />
+      </Pressable>
     </View>
   );
 }
