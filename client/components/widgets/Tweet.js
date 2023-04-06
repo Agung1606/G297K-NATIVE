@@ -1,12 +1,21 @@
 import { View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useState, memo } from 'react'
 import { Avatar } from 'react-native-paper'
 import dayjs from 'dayjs'
 
 import { API_URL } from '@env'
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { useSelector } from 'react-redux'
 
-export default function Tweets({ item }) {
+function Tweet({ item }) {
+  const [moreTweet, setMoreTweet] = useState(false);
+  const handleMoreTweet = () => setMoreTweet(true);
+
+  const loggedInUserId = useSelector((state) => state.auth.user._id);
+  // 
+  const isLiked = Boolean(item?.likes?.find(id => id === loggedInUserId));
+  const longTweet = item?.tweet?.length > 550 && !moreTweet ? item?.tweet.slice(0, 550) : item?.tweet;
+
   return (
     <View className="mb-7 p-2 border-b border-gray-400">
       <View className="flex-row gap-x-4">
@@ -34,32 +43,32 @@ export default function Tweets({ item }) {
           </View>
           {/* tweets */}
           <Text className="text-[14px]">
-            Sejarah Indonesia meliputi suatu rentang waktu yang sangat panjang
-            yang dimulai sejak zaman prasejarah berdasarkan penemuan "Manusia
-            Jawa" yang berusia 1,7 juta tahun yang lalu. Periode sejarah
-            Indonesia dapat dibagi menjadi lima era: Era Prakolonial, munculnya
-            kerajaan-kerajaan Hindu-Buddha dan Islam di Jawa, Sumatra, dan
-            Kalimantan yang terutama mengandalkan perdagangan; Era Kolonial,
-            masuknya orang-orang Eropa (terutama Belanda, Portugis, dan Spanyol)
-            yang menginginkan rempah-rempah mengakibatkan penjajahan oleh
-            Belanda selama sekitar 3,5 abad antara awal abad ke-17 hingga
-            pertengahan abad ke-20; Era Kemerdekaan Awal, pasca-Proklamasi
-            Kemerdekaan Indonesia (1945) sampai jatuhnya Soekarno (1966); Era
-            Orde Baru, 32 tahun masa pemerintahan Soeharto (1966–1998); serta
-            Orde Reformasi yang berlangsung sampai sekarang.
+            {longTweet} {""}
+            {item?.tweet?.length > 550 && !moreTweet && (
+              <Text
+                className="text-[16px] text-[#007fff] font-semibold"
+                onPress={handleMoreTweet}
+              >
+                ...more
+              </Text>
+            )}
           </Text>
           {/* like, comment, save */}
           <View className="mt-[10px] flex-row justify-between items-center">
-            <View className='flex-row gap-x-4'>
+            <View className="flex-row gap-x-4">
               <TouchableOpacity>
-                <FontAwesome name="heart-o" size={18} />
+                <FontAwesome
+                  name={isLiked ? "heart" : "heart-o"}
+                  color={isLiked ? "red" : undefined}
+                  size={18}
+                />
               </TouchableOpacity>
               <TouchableOpacity>
                 <FontAwesome name="comment-o" size={18} />
               </TouchableOpacity>
             </View>
             <TouchableOpacity>
-              <FontAwesome name="bookmark-o" size={18} />
+              <MaterialIcons name='ios-share' size={18} />
             </TouchableOpacity>
           </View>
         </View>
@@ -67,3 +76,5 @@ export default function Tweets({ item }) {
     </View>
   );
 }
+
+export default memo(Tweet);

@@ -2,7 +2,7 @@ import { View, Pressable, Image } from 'react-native'
 import React from 'react'
 import { API_URL } from '@env'
 
-export default function Posts({ item }) {
+export default function PostGrid({ item }) {
   return (
     <View className="h-[100px]">
       <Pressable onPress={() => alert(item._id)}>

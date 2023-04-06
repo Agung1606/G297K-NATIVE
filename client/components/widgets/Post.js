@@ -6,7 +6,7 @@ import {
     ActivityIndicator, 
 } from 'react-native'
 import { Avatar } from 'react-native-paper'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useMemo, useRef, useState, memo } from 'react'
 import dayjs from 'dayjs'
 import { useSelector } from 'react-redux'
 // icons
@@ -35,19 +35,19 @@ const GET_POST_COMMENTS = gql`
     }
 `;
 
-export default Post = ({ item }) => {
+const Post = ({ item }) => {
     const navigation = useNavigation();
     const goToProfile = () => navigation.navigate('ProfileScreen', {param: item.userId});
 
-    const [moreDesc, setMoreDesc] = useState(true);
-    const handleMoreDesc = () => setMoreDesc(!moreDesc);
+    const [moreDesc, setMoreDesc] = useState(false);
+    const handleMoreDesc = () => setMoreDesc(true);
 
     const loggedInUserId = useSelector((state) => state.auth.user._id);
     const token = useSelector((state) => state.auth.token);
 
     const likeCount = item?.likes?.length;
     const isLiked = Boolean(item?.likes?.find(id => id === loggedInUserId));
-    const longDesc = item?.description?.length > 80 ? item?.description.slice(0, 80) : item?.description;
+    const longDesc = item?.description?.length > 80 && !moreDesc ? item?.description.slice(0, 80) : item?.description;
 
     // comment api using apollo useLazyQuery
     const [getPostComments, { data, loading }] = useLazyQuery(GET_POST_COMMENTS);
@@ -103,7 +103,7 @@ export default Post = ({ item }) => {
             </TouchableOpacity>
           </View>
           <TouchableOpacity>
-            <FontAwesome name="bookmark-o" size={25} />
+            <MaterialIcons name="ios-share" size={25} />
           </TouchableOpacity>
         </View>
         {/* container */}
@@ -117,20 +117,20 @@ export default Post = ({ item }) => {
           {/* username and desc */}
           {item?.description && (
             <Text>
-              <Text className="font-extrabold">
+              <Text className='font-extrabold'>
                 {item?.username}
-                {"  "}
+              </Text> {' '}
+              <Text>
+                {longDesc} {''}
+                {item?.description?.length > 40 && !moreDesc &&(
+                <Text 
+                  className="text-[16px] text-gray-400"
+                  onPress={handleMoreDesc}
+                >
+                  ...more
+                </Text>)}
               </Text>
-              {moreDesc ? longDesc : item.description}
             </Text>
-          )}
-          {/* function to look at long desc */}
-          {item?.description?.length > 40 && (
-            <TouchableOpacity onPress={handleMoreDesc}>
-              <Text className="text-gray-400">
-                {moreDesc ? "...more" : "...less"}
-              </Text>
-            </TouchableOpacity>
           )}
           {/* comment info */}
           {item?.comments > 0 && (
@@ -165,3 +165,5 @@ export default Post = ({ item }) => {
       </View>
     );
 }
+
+export default memo(Post);

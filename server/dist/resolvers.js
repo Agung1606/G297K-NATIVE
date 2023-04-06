@@ -148,6 +148,7 @@ const resolvers = {
                 followers: 0,
                 following: 0,
                 postsCount: 0,
+                tweetsCount: 0,
             });
             yield newUser.save();
             const user = yield User_1.default.findOne({ username: username }).lean();

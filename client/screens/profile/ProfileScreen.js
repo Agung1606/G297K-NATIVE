@@ -8,8 +8,8 @@ import { FlatGrid } from 'react-native-super-grid';
 
 // routin
 import { useNavigation } from '@react-navigation/native';
-import Posts from './Posts';
-import Tweets from './Tweets';
+import PostGrid from '../../components/PostGrid';
+import Tweet from '../../components/widgets/Tweet';
 
 // icons
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
@@ -94,7 +94,7 @@ export default function ProfileScreen({ route }) {
     if(data?.getUser?.tweetsCount > 0) getUserTweets({ variables: { token: token, userId: userId } });
   };
 
-  // USER INFORMATION
+  // USER INFORMATION // note max bio is 100
   const fullname = `${data?.getUser?.firstName} ${data?.getUser?.lastName}`;
   const isMyProfile = loggedInUserId === userId;
 
@@ -133,7 +133,7 @@ export default function ProfileScreen({ route }) {
       </View>
       {/* card wrapper */}
       <View
-        className="bg-[#d4d4d4] h-[180px] px-[10px] mx-2 mb-2 rounded-xl
+        className="bg-[#d4d4d4] h-[150px] px-[10px] mx-2 mb-2 rounded-xl
           flex-row justify-between items-center"
       >
         {/* picture path and username */}
@@ -190,8 +190,8 @@ export default function ProfileScreen({ route }) {
 
       {/* bio */}
       {data?.getUser?.bio && (
-        <View className="mx-3 mb-4">
-          <Text>{data?.getUser?.bio}</Text>
+        <View className="mx-3 mb-3">
+          <Text>{item?.getUser?.bio}</Text>
         </View>
       )}
 
@@ -225,7 +225,7 @@ export default function ProfileScreen({ route }) {
           <FlatGrid
             itemDimension={80}
             data={postsData?.getUserPosts}
-            renderItem={({ item }) => <Posts item={item} />}
+            renderItem={({ item }) => <PostGrid item={item} />}
           />
         ) : (
           <View className="flex-1 justify-center items-center">
@@ -240,7 +240,7 @@ export default function ProfileScreen({ route }) {
       ) : tweetsData?.getUserTweets?.length > 0 ? (
         <FlatList
           data={tweetsData?.getUserTweets}
-          renderItem={({ item }) => <Tweets item={item} />}
+          renderItem={({ item }) => <Tweet item={item} />}
           keyExtractor={(item) => item._id}
           maxToRenderPerBatch={5}
           updateCellsBatchingPeriod={20}

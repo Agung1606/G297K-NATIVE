@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux'
 import HomeScreen from '../home/HomeScreen'
 import ProfileScreen from '../profile/ProfileScreen'
 import ExploreScreen from '../explore/ExploreScreen'
+import MessageScreen from '../message/MessageScreen'
 
 // ICONS
-import FontAwesome from '@expo/vector-icons/FontAwesome'
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+import { FontAwesome, MaterialIcons, FontAwesome5 } from '@expo/vector-icons'
 
 // routing
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
@@ -20,24 +20,58 @@ export default function MainLayout() {
 
   const goToHome = () => navigation.navigate('HomeScreen');
   const goToExplore = () => navigation.navigate('ExploreScreen');
+  const goToMessage = () => navigation.navigate('MessageScreen');
   const goToProfile = () => navigation.navigate('ProfileScreen', { param: loggedInUserId });
 
   return (
     <>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="ExploreScreen" component={ExploreScreen} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen
+          name="HomeScreen"
+          component={HomeScreen}
+          options={{
+            presentation: "modal",
+            animation: "none",
+          }}
+        />
+        <Stack.Screen
+          name="ExploreScreen"
+          component={ExploreScreen}
+          options={{
+            presentation: "modal",
+            animation: "none",
+          }}
+        />
+        <Stack.Screen
+          name="MessageScreen"
+          component={MessageScreen}
+          options={{
+            presentation: "modal",
+            animation: "none",
+          }}
+        />
+        <Stack.Screen
+          name="ProfileScreen"
+          component={ProfileScreen}
+          options={{
+            presentation: "modal",
+            animation: "none",
+          }}
+        />
       </Stack.Navigator>
-      <View className="h-[8%] flex-row justify-around items-center m-2 backdrop-blur-3xl">
+      {/* bottom nav */}
+      <View className="h-[5%] flex-row justify-around items-center m-[5px] backdrop-blur-3xl">
         <TouchableOpacity onPress={goToHome}>
-          <FontAwesome name="home" size={30} />
+          <FontAwesome name="home" size={25} />
         </TouchableOpacity>
         <TouchableOpacity onPress={goToExplore}>
-          <FontAwesome name="search" size={30} />
+          <FontAwesome name="search" size={25} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={goToMessage}>
+          <FontAwesome5 name="telegram-plane" size={25} />
         </TouchableOpacity>
         <TouchableOpacity onPress={goToProfile}>
-          <MaterialIcons name="account-circle" size={30} />
+          <MaterialIcons name="account-circle" size={25} />
         </TouchableOpacity>
       </View>
     </>
