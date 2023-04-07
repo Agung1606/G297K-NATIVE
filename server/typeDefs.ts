@@ -66,8 +66,6 @@ const typeDefs = `#graphql
         getPostComments(token: String, postId: String): [Comments]
 
         getUser(token: String, userId: String): User
-        getUserFollowers(token: String, userId: String): [Followers]
-        getUserFollowing(token: String, userId: String): [Following]
     }
 
     type Mutation {

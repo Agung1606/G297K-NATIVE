@@ -9,8 +9,8 @@ interface IUserModel {
     password: string;
     profilePicturePath?: string;
     bio?: string;
-    followers?: [];
-    following?: [];
+    followers: string[];
+    following: string[];
     postsCount: number;
     tweetsCount: number;
 }

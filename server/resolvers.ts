@@ -7,9 +7,7 @@ import {
     UserPostsArgsType,
     GetPostCommentsArgsType,
     GetUserArgsType,
-    GetIsFollowerArgsType,
-    GetIsFollowingArgsType,
-    FollowUnfollowArgsType
+    FollowUnfollowArgsType,
 } from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
@@ -18,8 +16,6 @@ import { verifyToken } from "./middleware/verifyToken";
 import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import Comments from "./models/Comments";
-import Followers from "./models/Followers";
-import Following from "./models/Following";
 import Tweet from "./models/Tweet";
 
 const resolvers = {
@@ -186,7 +182,36 @@ const resolvers = {
             if(verified) {
                 const otherUser = await User.findOne({ _id: otherId }).lean()
                 const user = await User.findOne({ _id: userId }).lean()
-                
+
+                if(!otherUser || !user) {
+                    throw new GraphQLError('User does not exist', {
+                        extensions: { code: StatusCodes.BAD_REQUEST }
+                    })
+                }
+
+                const isFollowing = user.following?.find(id => id === otherId);
+
+                if(isFollowing) {
+                    user.following = user.following.filter(id => id !== otherId);
+                    otherUser.followers = otherUser.followers.filter(id => id !== userId);
+                } else {
+                    user.following.push(otherId);
+                    otherUser.followers.push(userId);
+                }
+
+                await User.findByIdAndUpdate(
+                    otherUser._id,
+                    { followers: otherUser.followers },
+                    { new: true }
+                );
+
+                const updatedUser = await User.findByIdAndUpdate(
+                    user._id,
+                    { following: user.following },
+                    { new: true }
+                );
+
+                return updatedUser;
             }
         },
     }

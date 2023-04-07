@@ -32,10 +32,8 @@ const resolvers_1 = __importDefault(require("./resolvers"));
 // import User from './models/User';
 // import Post from './models/Post';
 // import Tweet from './models/Tweet';
-// import Followers from './models/Followers';
-// import Following from './models/Following';
 // import Comments from './models/Comments';
-// import { users, posts, tweets, comments} from './data/index';
+// import { users, posts, tweets, comments } from './data/index';
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
         dotenv_1.default.config(); // to access environment variable
@@ -63,8 +61,6 @@ const resolvers_1 = __importDefault(require("./resolvers"));
         // await Post.insertMany(posts)
         // await Tweet.insertMany(tweets)
         // await Comments.insertMany(comments)
-        // await Followers.insertMany(followers)
-        // await Following.insertMany(following)
         const PORT = process.env.PORT || 9002;
         app.use(express_1.default.json());
         app.use((0, helmet_1.default)()); // securing HTTP headers

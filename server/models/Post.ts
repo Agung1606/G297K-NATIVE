@@ -7,7 +7,7 @@ interface IPostModel {
     postPicturePath: string;
     userProfilePicturePath?: string;
     description?: string;
-    likes?: [];
+    likes?: string[];
     comments?: number;
 }
 

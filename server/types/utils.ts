@@ -1,3 +1,5 @@
+import User from "../models/User"
+
 // mutation
 export type RegisterArgsType = {
     email: string
@@ -37,18 +39,6 @@ export type GetPostCommentsArgsType = {
 
 export type GetUserArgsType = {
     token: string
-    userId: string
-}
-
-export type GetIsFollowerArgsType = {
-    token: string
-    followersUserId: string
-    userId: string
-}
-
-export type GetIsFollowingArgsType = {
-    token: string
-    followingUserId: string
     userId: string
 }
 // query

@@ -183,11 +183,29 @@ const resolvers = {
         }),
         // MUTATION FOLLOW UNFOLLOW
         followUnfollow: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            var _a;
             const { token, otherId, userId } = args;
             const verified = yield (0, verifyToken_1.verifyToken)(token);
             if (verified) {
                 const otherUser = yield User_1.default.findOne({ _id: otherId }).lean();
                 const user = yield User_1.default.findOne({ _id: userId }).lean();
+                if (!otherUser || !user) {
+                    throw new graphql_1.GraphQLError('User does not exist', {
+                        extensions: { code: http_status_codes_1.StatusCodes.BAD_REQUEST }
+                    });
+                }
+                const isFollowing = (_a = user.following) === null || _a === void 0 ? void 0 : _a.find(id => id === otherId);
+                if (isFollowing) {
+                    user.following.filter(id => id === otherId);
+                    otherUser.followers.filter(id => id === userId);
+                }
+                else {
+                    user.following.push(otherId);
+                    otherUser.followers.push(userId);
+                }
+                yield User_1.default.findByIdAndUpdate(otherUser._id, { followers: otherUser.followers }, { new: true });
+                const updatedUser = yield User_1.default.findByIdAndUpdate(user._id, { following: user.following }, { new: true });
+                return updatedUser;
             }
         }),
     }

@@ -6,7 +6,7 @@ interface ITweetModel {
     postDate: Date;
     userProfilePicturePath: string;
     tweet: string;
-    likes?: [];
+    likes?: string[];
     comments?: number;
 }
 

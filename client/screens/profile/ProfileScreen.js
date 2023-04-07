@@ -21,7 +21,7 @@ import ModalSetting from '../../components/modal/ModalSetting';
 import { API_URL } from '@env'
 
 // api
-import { useQuery, useLazyQuery, gql } from '@apollo/client';
+import { useQuery, useLazyQuery, gql, useMutation } from '@apollo/client';
 const GET_USER = gql`
   query GetUser($token: String, $userId: String) {
     getUser(token: $token, userId: $userId) {
@@ -62,6 +62,16 @@ const GET_USER_TWEETS = gql`
   }
 `;
 
+const FOLLOW_UNFOLLOW = gql`
+  mutation FollowUnfollow($token: String, $otherId: String, $userId: String) {
+    followUnfollow(token: $token, otherId: $otherId, userId: $userId) {
+      _id
+      followers
+      following
+    }
+  }
+`;
+
 export default function ProfileScreen({ route }) {
   const userId = route?.params?.param;
   const loggedInUserId = useSelector((state) => state.auth.user._id);
@@ -74,7 +84,7 @@ export default function ProfileScreen({ route }) {
       userId: userId,
     },
   });
-  console.log("🚀 ~ file: ProfileScreen.js:77 ~ ProfileScreen ~ data:", data)
+  console.log("🚀 ~ file: ProfileScreen.js:87 ~ ProfileScreen ~ data:", data?.getUser);
 
   // user posts data from api
   const { data: postsData, loading: postLoading } = useQuery(GET_USER_POSTS, {
@@ -87,6 +97,16 @@ export default function ProfileScreen({ route }) {
   // user tweets data from api
   const [getUserTweets, { data: tweetsData, loading: tweetLoading }] =
     useLazyQuery(GET_USER_TWEETS);
+
+  // follow unfollow api
+  const [followUnfollow, { loading: loadingFollow }] = useMutation(FOLLOW_UNFOLLOW);
+  const handleFollow = async () => {
+    await followUnfollow({ variables: {
+      token: token,
+      otherId: userId,
+      userId: loggedInUserId
+    }})
+  }
 
   const [screen, setScreen] = useState("Posts");
   const navigation = useNavigation();
@@ -101,6 +121,12 @@ export default function ProfileScreen({ route }) {
   // USER INFORMATION // note max bio is 100
   const fullname = `${data?.getUser?.firstName} ${data?.getUser?.lastName}`;
   const isMyProfile = loggedInUserId === userId;
+  const isFollowing = Boolean(
+    data?.getUser?.followers?.find((id) => id === loggedInUserId)
+  );
+  const isFollowers = Boolean(
+    data?.getUser?.following?.find((id) => id === loggedInUserId)
+  );
 
   // modal
   const bottomSheetModalRef = useRef(null);
@@ -183,9 +209,15 @@ export default function ProfileScreen({ route }) {
               </Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity className="bg-blue rounded-lg">
+            <TouchableOpacity onPress={handleFollow} className={`${isFollowing ? 'bg-gray-900' : 'bg-blue'} rounded-lg`}>
               <Text className="text-center text-lg text-white font-semibold py-[2px]">
-                follow
+                  {loadingFollow ? (
+                    'loading...'
+                  ) : (
+                    isFollowing ? 'following' :
+                    !isFollowing && isFollowers ? 'follow back' :
+                    'follow'
+                  )}
               </Text>
             </TouchableOpacity>
           )}
