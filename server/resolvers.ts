@@ -6,7 +6,9 @@ import {
     ExplorePostsArgsType, 
     UserPostsArgsType,
     GetPostCommentsArgsType,
-    GetUserArgsType
+    GetUserArgsType,
+    GetIsFollowerArgsType,
+    GetIsFollowingArgsType
 } from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
@@ -95,6 +97,22 @@ const resolvers = {
             if(verified) {
                 const userFollowing = await Following.find({ followingUserId: userId }).lean();
                 return userFollowing;
+            }
+        },
+        getIsFollower: async (_: any, args: GetIsFollowerArgsType) => {
+            const {token, followersUserId, userId} = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const isFollower = await Followers.findOne({ followersUserId, userId }).lean();
+                return isFollower;
+            }
+        },
+        getIsFollowing: async (_: any, args: GetIsFollowingArgsType) => {
+            const { token, followingUserId, userId } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const isFollowing = await Following.findOne({ followingUserId, userId }).lean();
+                return isFollowing;
             }
         },
     },

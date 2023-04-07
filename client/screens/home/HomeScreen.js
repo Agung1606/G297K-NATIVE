@@ -1,56 +1,28 @@
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux';
-// post widget
-import Post from '../../components/widgets/Post';
-// icons
 
-import { gql, useQuery, useLazyQuery } from '@apollo/client';
-import Tweet from '../../components/widgets/Tweet';
-const GET_EXPLORE_POSTS = gql`
-  query GetExplorePosts($token: String) {
-    getExplorePosts(token: $token) {
-      _id
-      userId
-      username
-      postDate
-      postPicturePath
-      userProfilePicturePath
-      description
-      likes
-      comments
-    }
-  }
-`;
+import { createNativeStackNavigator } from '@react-navigation/native-stack'
+const Stack = createNativeStackNavigator();
 
-const GET_TWEETS = gql`
-  query GetTweets($token: String) {
-    getTweets(token: $token) {
-      _id
-      userId
-      username
-      postDate
-      userProfilePicturePath
-      tweet
-      likes
-      comments
-    }
-  }
-`;
+// posts screens
+import PostsScreen from '../postAndTweetScreen/PostsScreen';
+import TweetsScreen from '../postAndTweetScreen/TweetsScreen';
+
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function HomeScreen() {
+  const navigation = useNavigation();
   const [screen, setScreen] = useState('Posts');
   
-  const token = useSelector((state) => state.auth.token);
-  // data
-  const { data: postsData, loading: postsLoading } = useQuery(GET_EXPLORE_POSTS, { variables: {token: token} });
-  const [getTweets, { data: tweetsData, loading: tweetsLoading }] = useLazyQuery(GET_TWEETS);
-  
-  const goToPosts = () => setScreen('Posts');
+  const goToPosts = () => {
+    setScreen('Posts');
+    navigation.navigate('PostsScreen');
+  };
   const goToTweets = () => {
     setScreen('Tweets')
-    getTweets({ variables: { token: token }});
+    navigation.navigate('TweetsScreen')
   };
 
   // style
@@ -80,19 +52,24 @@ export default function HomeScreen() {
         </TouchableOpacity>
       </View>
 
-      {postsLoading || tweetsLoading ? (
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#406aff" />
-        </View>
-      ) : (
-        <FlatList
-          data={screen === "Posts" ? postsData.getExplorePosts : tweetsData.getTweets}
-          renderItem={({ item }) => screen === "Posts" ? <Post item={item} /> : <Tweet item={item} />}
-          keyExtractor={(item) => item._id}
-          maxToRenderPerBatch={5}
-          updateCellsBatchingPeriod={20}
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="PostsScreen"
+          component={PostsScreen}
+          options={{
+            presentation: "modal",
+            animation: "slide_from_left",
+          }}
         />
-      )}
+        <Stack.Screen
+          name="TweetsScreen"
+          component={TweetsScreen}
+          options={{
+            presentation: "modal",
+            animation: "slide_from_right",
+          }}
+        />
+      </Stack.Navigator>
     </SafeAreaView>
   );
 }

@@ -123,6 +123,22 @@ const resolvers = {
                 return userFollowing;
             }
         }),
+        getIsFollower: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, followersUserId, userId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const isFollower = yield Followers_1.default.findOne({ followersUserId, userId }).lean();
+                return isFollower;
+            }
+        }),
+        getIsFollowing: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, followingUserId, userId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const isFollowing = yield Following_1.default.findOne({ followingUserId, userId }).lean();
+                return isFollowing;
+            }
+        }),
     },
     Mutation: {
         // MUTATION REGISTER

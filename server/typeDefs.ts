@@ -17,6 +17,7 @@ const typeDefs = `#graphql
     }
 
     type Followers {
+        _id: String
         followersUserId: String
         userId: String
         username: String
@@ -24,6 +25,7 @@ const typeDefs = `#graphql
     }
 
     type Following {
+        _id: String
         followingUserId: String
         userId: String
         username: String
@@ -82,6 +84,9 @@ const typeDefs = `#graphql
         getUser(token: String, userId: String): User
         getUserFollowers(token: String, userId: String): [Followers]
         getUserFollowing(token: String, userId: String): [Following]
+
+        getIsFollower(token: String, followersUserId: String, userId: String): Followers
+        getIsFollowing(token: String, followingUserId: String, userId: String): Following
     }
 
     type Mutation {

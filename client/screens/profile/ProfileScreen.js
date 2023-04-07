@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, Image, Pressable, FlatList } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native'
 import { Avatar } from 'react-native-paper';
 import React, { useRef, useMemo, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -39,6 +39,30 @@ const GET_USER = gql`
   }
 `;
 
+const GET_IS_FOLLOWER = gql`
+  query GetIsFollower(
+    $token: String
+    $followersUserId: String
+    $userId: String
+  ) {
+    getIsFollower(token: $token, followersUserId: $followersUserId, userId: $userId) {
+      username
+    }
+  }
+`;
+
+const GET_IS_FOLLOWING = gql`
+  query GetIsFollowing(
+    $token: String
+    $followingUserId: String
+    $userId: String
+  ) {
+    getIsFollowing(token: $token, followingUserId: $followingUserId, userId: $userId) {
+      username
+    }
+  }
+`;
+
 const GET_USER_POSTS = gql`
   query GetUserPosts($token: String, $userId: String) {
     getUserPosts(token: $token, userId: $userId) {
@@ -66,6 +90,7 @@ export default function ProfileScreen({ route }) {
   const userId = route?.params?.param;
   const loggedInUserId = useSelector((state) => state.auth.user._id);
   const token = useSelector((state) => state.auth.token);
+
   // user data from api
   const { data, loading } = useQuery(GET_USER, {
     variables: {
@@ -73,6 +98,30 @@ export default function ProfileScreen({ route }) {
       userId: userId,
     },
   });
+
+  // is follower
+  const { data: isFollower, loading: isFollowerLoading } = useQuery(
+    GET_IS_FOLLOWER,
+    {
+      variables: {
+        token: token,
+        followersUserId: loggedInUserId,
+        userId: userId
+      },
+    }
+  );
+  
+  // is following
+  const { data: isFollowing, loading: isFollowingLoading } = useQuery(
+    GET_IS_FOLLOWING,
+    {
+      variables: {
+        token: token,
+        followingUserId: loggedInUserId,
+        userId: userId,
+      },
+    }
+  );
   
   // user posts data from api
   const { data: postsData, loading: postLoading } = useQuery(GET_USER_POSTS, {
@@ -107,7 +156,7 @@ export default function ProfileScreen({ route }) {
   // style
   const selectedScreenStyle = "border-b border-blue";
 
-  if (loading) {
+  if (loading || isFollowerLoading || isFollowingLoading) {
     return (
       <View className="flex-1 justify-center items-center">
         <ActivityIndicator size="large" color="#406aff" />
@@ -181,7 +230,11 @@ export default function ProfileScreen({ route }) {
           ) : (
             <TouchableOpacity className="bg-blue rounded-lg">
               <Text className="text-center text-lg text-white font-semibold py-[2px]">
-                Follow
+                {
+                  isFollowing?.getIsFollowing ? 'following' :
+                  !isFollowing.getIsFollowing && isFollower?.getIsFollower ? 'follow back' :
+                  'follow'
+                }
               </Text>
             </TouchableOpacity>
           )}
