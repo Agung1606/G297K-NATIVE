@@ -24,7 +24,7 @@ import resolvers from './resolvers';
 // import Followers from './models/Followers';
 // import Following from './models/Following';
 // import Comments from './models/Comments';
-// import { users, posts, tweets, comments, followers, following } from './data/index';
+// import { users, posts, tweets, comments} from './data/index';
 
 (async function() {
     dotenv.config(); // to access environment variable

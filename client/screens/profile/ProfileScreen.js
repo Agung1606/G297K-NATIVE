@@ -39,30 +39,6 @@ const GET_USER = gql`
   }
 `;
 
-const GET_IS_FOLLOWER = gql`
-  query GetIsFollower(
-    $token: String
-    $followersUserId: String
-    $userId: String
-  ) {
-    getIsFollower(token: $token, followersUserId: $followersUserId, userId: $userId) {
-      username
-    }
-  }
-`;
-
-const GET_IS_FOLLOWING = gql`
-  query GetIsFollowing(
-    $token: String
-    $followingUserId: String
-    $userId: String
-  ) {
-    getIsFollowing(token: $token, followingUserId: $followingUserId, userId: $userId) {
-      username
-    }
-  }
-`;
-
 const GET_USER_POSTS = gql`
   query GetUserPosts($token: String, $userId: String) {
     getUserPosts(token: $token, userId: $userId) {
@@ -98,31 +74,8 @@ export default function ProfileScreen({ route }) {
       userId: userId,
     },
   });
+  console.log("🚀 ~ file: ProfileScreen.js:77 ~ ProfileScreen ~ data:", data)
 
-  // is follower
-  const { data: isFollower, loading: isFollowerLoading } = useQuery(
-    GET_IS_FOLLOWER,
-    {
-      variables: {
-        token: token,
-        followersUserId: loggedInUserId,
-        userId: userId
-      },
-    }
-  );
-  
-  // is following
-  const { data: isFollowing, loading: isFollowingLoading } = useQuery(
-    GET_IS_FOLLOWING,
-    {
-      variables: {
-        token: token,
-        followingUserId: loggedInUserId,
-        userId: userId,
-      },
-    }
-  );
-  
   // user posts data from api
   const { data: postsData, loading: postLoading } = useQuery(GET_USER_POSTS, {
     variables: {
@@ -130,17 +83,19 @@ export default function ProfileScreen({ route }) {
       userId: userId,
     },
   });
-  
+
   // user tweets data from api
-  const [getUserTweets, { data: tweetsData, loading: tweetLoading }] = useLazyQuery(GET_USER_TWEETS);
-  
+  const [getUserTweets, { data: tweetsData, loading: tweetLoading }] =
+    useLazyQuery(GET_USER_TWEETS);
+
   const [screen, setScreen] = useState("Posts");
   const navigation = useNavigation();
   const goToPreviousScreen = () => navigation.goBack();
   const goToPosts = () => setScreen("Posts");
   const goToTweets = () => {
-    setScreen("Tweets")
-    if(data?.getUser?.tweetsCount > 0) getUserTweets({ variables: { token: token, userId: userId } });
+    setScreen("Tweets");
+    if (data?.getUser?.tweetsCount > 0)
+      getUserTweets({ variables: { token: token, userId: userId } });
   };
 
   // USER INFORMATION // note max bio is 100
@@ -156,7 +111,7 @@ export default function ProfileScreen({ route }) {
   // style
   const selectedScreenStyle = "border-b border-blue";
 
-  if (loading || isFollowerLoading || isFollowingLoading) {
+  if (loading) {
     return (
       <View className="flex-1 justify-center items-center">
         <ActivityIndicator size="large" color="#406aff" />
@@ -209,13 +164,13 @@ export default function ProfileScreen({ route }) {
             </View>
             <View className="justify-center items-center">
               <Text className="text-lg font-bold">
-                {data?.getUser?.followers}
+                {data?.getUser?.followers.length}
               </Text>
               <Text>Followers</Text>
             </View>
             <View className="justify-center items-center">
               <Text className="text-lg font-bold">
-                {data?.getUser?.following}
+                {data?.getUser?.following.length}
               </Text>
               <Text>Following</Text>
             </View>
@@ -230,11 +185,7 @@ export default function ProfileScreen({ route }) {
           ) : (
             <TouchableOpacity className="bg-blue rounded-lg">
               <Text className="text-center text-lg text-white font-semibold py-[2px]">
-                {
-                  isFollowing?.getIsFollowing ? 'following' :
-                  !isFollowing.getIsFollowing && isFollower?.getIsFollower ? 'follow back' :
-                  'follow'
-                }
+                follow
               </Text>
             </TouchableOpacity>
           )}

@@ -10,26 +10,10 @@ const typeDefs = `#graphql
         username: String
         profilePicturePath: String
         bio: String
-        followers: Int
-        following: Int
+        followers: [String]
+        following: [String]
         postsCount: Int
         tweetsCount: Int
-    }
-
-    type Followers {
-        _id: String
-        followersUserId: String
-        userId: String
-        username: String
-        profilePicturePath: String
-    }
-
-    type Following {
-        _id: String
-        followingUserId: String
-        userId: String
-        username: String
-        profilePicturePath: String
     }
 
     type Register {
@@ -84,9 +68,6 @@ const typeDefs = `#graphql
         getUser(token: String, userId: String): User
         getUserFollowers(token: String, userId: String): [Followers]
         getUserFollowing(token: String, userId: String): [Following]
-
-        getIsFollower(token: String, followersUserId: String, userId: String): Followers
-        getIsFollowing(token: String, followingUserId: String, userId: String): Following
     }
 
     type Mutation {
@@ -102,6 +83,11 @@ const typeDefs = `#graphql
             username: String
             pw: String
         ): Login
+        followUnfollow(
+            token: String
+            otherId: String
+            userId: String
+        ): User
     }
 `
 

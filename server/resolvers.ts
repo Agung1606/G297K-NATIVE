@@ -8,7 +8,8 @@ import {
     GetPostCommentsArgsType,
     GetUserArgsType,
     GetIsFollowerArgsType,
-    GetIsFollowingArgsType
+    GetIsFollowingArgsType,
+    FollowUnfollowArgsType
 } from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
@@ -83,38 +84,6 @@ const resolvers = {
                 return user;
             }
         },
-        getUserFollowers: async (_: any, args: GetUserArgsType) => {
-            const {token, userId} = args;
-            const verified = await verifyToken(token);
-            if(verified) {
-                const userFollowers = await Followers.find({ followersUserId: userId }).lean();
-                return userFollowers;
-            }
-        },
-        getUserFollowing: async (_: any, args: GetUserArgsType) => {
-            const {token, userId} = args;
-            const verified = await verifyToken(token);
-            if(verified) {
-                const userFollowing = await Following.find({ followingUserId: userId }).lean();
-                return userFollowing;
-            }
-        },
-        getIsFollower: async (_: any, args: GetIsFollowerArgsType) => {
-            const {token, followersUserId, userId} = args;
-            const verified = await verifyToken(token);
-            if(verified) {
-                const isFollower = await Followers.findOne({ followersUserId, userId }).lean();
-                return isFollower;
-            }
-        },
-        getIsFollowing: async (_: any, args: GetIsFollowingArgsType) => {
-            const { token, followingUserId, userId } = args;
-            const verified = await verifyToken(token);
-            if(verified) {
-                const isFollowing = await Following.findOne({ followingUserId, userId }).lean();
-                return isFollowing;
-            }
-        },
     },
     Mutation: {
         // MUTATION REGISTER
@@ -147,8 +116,8 @@ const resolvers = {
                 username,
                 password: hashedPassword,
                 profilePicturePath: 'defaultAvatar.png',
-                followers: 0,
-                following: 0,
+                followers: [],
+                following: [],
                 postsCount: 0,
                 tweetsCount: 0,
             });
@@ -208,6 +177,16 @@ const resolvers = {
             return {
                 userData: user,
                 token
+            }
+        },
+        // MUTATION FOLLOW UNFOLLOW
+        followUnfollow: async (_: any, args: FollowUnfollowArgsType) => {
+            const { token, otherId, userId } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const otherUser = await User.findOne({ _id: otherId }).lean()
+                const user = await User.findOne({ _id: userId }).lean()
+                
             }
         },
     }

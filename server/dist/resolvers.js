@@ -43,8 +43,6 @@ const verifyToken_1 = require("./middleware/verifyToken");
 const jwt = __importStar(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const Comments_1 = __importDefault(require("./models/Comments"));
-const Followers_1 = __importDefault(require("./models/Followers"));
-const Following_1 = __importDefault(require("./models/Following"));
 const Tweet_1 = __importDefault(require("./models/Tweet"));
 const resolvers = {
     Query: {
@@ -107,38 +105,6 @@ const resolvers = {
                 return user;
             }
         }),
-        getUserFollowers: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            const { token, userId } = args;
-            const verified = yield (0, verifyToken_1.verifyToken)(token);
-            if (verified) {
-                const userFollowers = yield Followers_1.default.find({ followersUserId: userId }).lean();
-                return userFollowers;
-            }
-        }),
-        getUserFollowing: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            const { token, userId } = args;
-            const verified = yield (0, verifyToken_1.verifyToken)(token);
-            if (verified) {
-                const userFollowing = yield Following_1.default.find({ followingUserId: userId }).lean();
-                return userFollowing;
-            }
-        }),
-        getIsFollower: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            const { token, followersUserId, userId } = args;
-            const verified = yield (0, verifyToken_1.verifyToken)(token);
-            if (verified) {
-                const isFollower = yield Followers_1.default.findOne({ followersUserId, userId }).lean();
-                return isFollower;
-            }
-        }),
-        getIsFollowing: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            const { token, followingUserId, userId } = args;
-            const verified = yield (0, verifyToken_1.verifyToken)(token);
-            if (verified) {
-                const isFollowing = yield Following_1.default.findOne({ followingUserId, userId }).lean();
-                return isFollowing;
-            }
-        }),
     },
     Mutation: {
         // MUTATION REGISTER
@@ -161,8 +127,8 @@ const resolvers = {
                 username,
                 password: hashedPassword,
                 profilePicturePath: 'defaultAvatar.png',
-                followers: 0,
-                following: 0,
+                followers: [],
+                following: [],
                 postsCount: 0,
                 tweetsCount: 0,
             });
@@ -214,6 +180,15 @@ const resolvers = {
                 userData: user,
                 token
             };
+        }),
+        // MUTATION FOLLOW UNFOLLOW
+        followUnfollow: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, otherId, userId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const otherUser = yield User_1.default.findOne({ _id: otherId }).lean();
+                const user = yield User_1.default.findOne({ _id: userId }).lean();
+            }
         }),
     }
 };

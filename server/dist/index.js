@@ -35,7 +35,7 @@ const resolvers_1 = __importDefault(require("./resolvers"));
 // import Followers from './models/Followers';
 // import Following from './models/Following';
 // import Comments from './models/Comments';
-// import { users, posts, tweets, comments, followers, following } from './data/index';
+// import { users, posts, tweets, comments} from './data/index';
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
         dotenv_1.default.config(); // to access environment variable

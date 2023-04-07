@@ -51,8 +51,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p1.jpg",
         bio: '',
-        followers: 2,
-        following: 0,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 0,
     },
@@ -67,8 +67,8 @@ export const users = [
         password: "$!FEAS@!O)_IDJda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p2.jpg",
         bio: '',
-        followers: 0,
-        following: 1,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 0,
     },
@@ -83,8 +83,8 @@ export const users = [
         password: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
         profilePicturePath: "p3.jpg",
         bio: '',
-        followers: 0,
-        following: 0,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 0,
     },
@@ -99,8 +99,8 @@ export const users = [
         password: "d$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p4.jpg",
         bio: '',
-        followers: 0,
-        following: 0,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 1,
     },
@@ -115,8 +115,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p5.jpg",
         bio: '',
-        followers: 0,
-        following: 0,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 0,
     },
@@ -131,8 +131,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p6.png",
         bio: '',
-        followers: 0,
-        following: 0,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 0,
     },
@@ -147,8 +147,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p7.jpg",
         bio: '',
-        followers: 0,
-        following: 0,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 0,
     },
@@ -163,8 +163,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p8.jpeg",
         bio: '',
-        followers: 0,
-        following: 0,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 0,
     },
@@ -179,8 +179,8 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p9.jpg",
         bio: '',
-        followers: 0,
-        following: 0,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 0,
     },
@@ -195,44 +195,44 @@ export const users = [
         password: "$2b$10$dsasdgsagasda//G9JxQ4bQ8KXf4OAIe/X/AK9skyWUy",
         profilePicturePath: "p10.jpg",
         bio: '',
-        followers: 0,
-        following: 1,
+        followers: [],
+        following: [],
         postsCount: 1,
         tweetsCount: 0,
     },
 ];
 
-export const followers = [
-    {
-        followersUserId: userIds[0],
-        userId: userIds[1],
-        username: 'king_of_pirate',
-        profilePicturePath: 'p2.jpg'
-    },
-    {
-        followersUserId: userIds[0],
-        userId: userIds[9],
-        username: 'franks297',
-        profilePicturePath: 'p10.jpg'
-    },
-];
+// export const followers = [
+//     {
+//         followersUserId: userIds[0],
+//         userId: userIds[1],
+//         username: 'king_of_pirate',
+//         profilePicturePath: 'p2.jpg'
+//     },
+//     {
+//         followersUserId: userIds[0],
+//         userId: userIds[9],
+//         username: 'franks297',
+//         profilePicturePath: 'p10.jpg'
+//     },
+// ];
 
-export const following = [
-    {
-        followingUserId: userIds[1],
-        userId: userIds[0],
-        username: 'jinbei_',
-        profilePicturePath: 'p1.jpg',
+// export const following = [
+//     {
+//         followingUserId: userIds[1],
+//         userId: userIds[0],
+//         username: 'jinbei_',
+//         profilePicturePath: 'p1.jpg',
 
-    },
-    {
-        followingUserId: userIds[9],
-        userId: userIds[0],
-        username: 'jinbei_',
-        profilePicturePath: 'p1.jpg',
+//     },
+//     {
+//         followingUserId: userIds[9],
+//         userId: userIds[0],
+//         username: 'jinbei_',
+//         profilePicturePath: 'p1.jpg',
 
-    },
-];
+//     },
+// ];
 
 export const posts = [
     // Jinbei
@@ -370,9 +370,19 @@ export const tweets = [
         username: "vnsmkSanji",
         postDate: new Date( Date.now() - 4000 * 60),
         userProfilePicturePath: "p4.jpg",
-        tweet: "test test 123",
+        tweet: "Sejarah Indonesia meliputi suatu rentang waktu yang sangat panjang yang dimulai sejak zaman prasejarah berdasarkan penemuan 'Manusia Jawa' yang berusia 1,7 juta tahun yang lalu. Periode sejarah Indonesia dapat dibagi menjadi lima era: Era Prakolonial, munculnya kerajaan-kerajaan Hindu-Buddha dan Islam di Jawa, Sumatra, dan Kalimantan yang terutama mengandalkan perdagangan; Era Kolonial, masuknya orang-orang Eropa (terutama Belanda, Portugis, dan Spanyol) yang menginginkan rempah-rempah mengakibatkan penjajahan oleh Belanda selama sekitar 3,5 abad antara awal abad ke-17 hingga pertengahan abad ke-20; Era Kemerdekaan Awal, pasca-Proklamasi Kemerdekaan Indonesia (1945) sampai jatuhnya Soekarno (1966); Era Orde Baru, 32 tahun masa pemerintahan Soeharto (1966–1998); serta Orde Reformasi yang berlangsung sampai sekarang.",
         likes: [],
         comments: 1,
+    },
+    {
+        _id: tweetIds[1],
+        userId: userIds[1],
+        username: "jinbei_",
+        postDate: new Date( Date.now() - 2000 * 60),
+        userProfilePicturePath: "p1.jpg",
+        tweet: `Ilmu pengetahuan alam (akronim: IPA) atau kerap diperpendek sebagai ilmu alam (serapan dari bahasa Arab: علوم العالم) adalah istilah yang digunakan yang merujuk pada rumpun ilmu di mana objeknya adalah benda-benda alam dengan hukum-hukum yang pasti dan umum, berlaku kapan pun dan di mana pun.[1] Orang yang menekuni bidang ilmu pengetahuan alam disebut sebagai Saintis. Sains (science) diambil dari kata latin scientia yang arti harfiahnya adalah pengetahuan. Sund dan Trowbribge merumuskan bahwa Sains merupakan kumpulan pengetahuan dan proses. Sedangkan Kuslan Stone menyebutkan bahwa Sains adalah kumpulan pengetahuan dan cara-cara untuk mendapatkan dan mempergunakan pengetahuan itu. Sains merupakan produk dan proses yang tidak dapat dipisahkan. "Real Science is both product and process, inseparably Joint" (Agus. S. 2003: 11) Sains sebagai proses merupakan langkah-langkah yang ditempuh para ilmuwan untuk melakukan penyelidikan dalam rangka mencari penjelasan tentang gejala-gejala alam. Langkah tersebut adalah merumuskan masalah, merumuskan hipotesis, merancang eksperimen, mengumpulkan data, menganalisis dan akhimya menyimpulkan. Dari sini tampak bahwa karakteristik yang mendasar dari Sains ialah kuantifikasi artinya gejala alam dapat berbentuk kuantitas. Ilmu alam mempelajari aspek-aspek fisik & nonmanusia tentang Bumi dan alam sekitarnya. Ilmu-ilmu alam membentuk landasan bagi ilmu terapan, yang keduanya dibedakan dari ilmu sosial, humaniora, teologi, dan seni.`,
+        likes: [],
+        comments: 0,
     },
 ];
 

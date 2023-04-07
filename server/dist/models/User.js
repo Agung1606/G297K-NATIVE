@@ -41,8 +41,8 @@ const UserSchema = new mongoose_1.default.Schema({
         type: String,
         default: "",
     },
-    followers: Number,
-    following: Number,
+    followers: [String],
+    following: [String],
     postsCount: Number,
     tweetsCount: Number,
 }, { timestamps: true });

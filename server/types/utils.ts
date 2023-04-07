@@ -1,3 +1,4 @@
+// mutation
 export type RegisterArgsType = {
     email: string
     firstName: string
@@ -12,6 +13,14 @@ export type LoginArgsType = {
     pw: string
 }
 
+export type FollowUnfollowArgsType = {
+    token: string
+    otherId: string
+    userId: string
+}
+// mutation
+
+// query
 export type ExplorePostsArgsType = {
     token: string
 }
@@ -42,3 +51,4 @@ export type GetIsFollowingArgsType = {
     followingUserId: string
     userId: string
 }
+// query
