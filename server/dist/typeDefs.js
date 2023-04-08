@@ -28,6 +28,11 @@ const typeDefs = `#graphql
         token: String
     }
 
+    type FollowUnfollow {
+        otherUpdated: User
+        userUpdated: User
+    }
+
     type Post {
         _id: String
         userId: String
@@ -87,7 +92,7 @@ const typeDefs = `#graphql
             token: String
             otherId: String
             userId: String
-        ): User
+        ): FollowUnfollow
     }
 `;
 exports.default = typeDefs;

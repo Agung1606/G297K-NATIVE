@@ -8,6 +8,7 @@ import {
     GetPostCommentsArgsType,
     GetUserArgsType,
     FollowUnfollowArgsType,
+    EditProfileArgsType,
 } from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
@@ -198,20 +199,38 @@ const resolvers = {
                     user.following.push(otherId);
                     otherUser.followers.push(userId);
                 }
-
-                await User.findByIdAndUpdate(
+                const otherUpdated = await User.findByIdAndUpdate(
                     otherUser._id,
                     { followers: otherUser.followers },
                     { new: true }
                 );
 
-                const updatedUser = await User.findByIdAndUpdate(
+                const userUpdated = await User.findByIdAndUpdate(
                     user._id,
                     { following: user.following },
                     { new: true }
                 );
 
-                return updatedUser;
+                return {otherUpdated, userUpdated};
+            }
+        },
+        // MUTATION EDIT PROFILE
+        editProfile: async (_: any, args: EditProfileArgsType) => {
+            const { 
+                token, 
+                userId, 
+                profilePicturePath, 
+                firstName, 
+                lastName, 
+                username 
+            } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const user = await User.findById({ _id: userId }).lean();
+                const posts = await Post.find({ userId: userId }).lean();
+
+                const updatedUser = await User.findByIdAndUpdate();
+                const updatedPosts = await Promise.all();
             }
         },
     }

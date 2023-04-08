@@ -196,16 +196,16 @@ const resolvers = {
                 }
                 const isFollowing = (_a = user.following) === null || _a === void 0 ? void 0 : _a.find(id => id === otherId);
                 if (isFollowing) {
-                    user.following.filter(id => id === otherId);
-                    otherUser.followers.filter(id => id === userId);
+                    user.following = user.following.filter(id => id !== otherId);
+                    otherUser.followers = otherUser.followers.filter(id => id !== userId);
                 }
                 else {
                     user.following.push(otherId);
                     otherUser.followers.push(userId);
                 }
-                yield User_1.default.findByIdAndUpdate(otherUser._id, { followers: otherUser.followers }, { new: true });
-                const updatedUser = yield User_1.default.findByIdAndUpdate(user._id, { following: user.following }, { new: true });
-                return updatedUser;
+                const otherUpdated = yield User_1.default.findByIdAndUpdate(otherUser._id, { followers: otherUser.followers }, { new: true });
+                const userUpdated = yield User_1.default.findByIdAndUpdate(user._id, { following: user.following }, { new: true });
+                return { otherUpdated, userUpdated };
             }
         }),
     }

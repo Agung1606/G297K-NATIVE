@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import SignIn from './screens/auth/signIn/SignIn';
 import FlowRegister from './screens/auth/signUp/FlowRegister';
 import MainLayout from './screens/layout/MainLayout';
+import EditProfileScreen from './screens/editProfile/EditProfileScreen';
 
 export default function Main() {
     const isAuth = useSelector((state) => state.auth.token);
@@ -16,6 +17,7 @@ export default function Main() {
             {isAuth 
                 ? <>
                     <Stack.Screen name='MainLayout' component={MainLayout} />
+                    <Stack.Screen name='EditProfileScreen' component={EditProfileScreen} />
                   </>
                 : <Stack.Group>
                     <Stack.Screen name='SignIn' component={SignIn} />

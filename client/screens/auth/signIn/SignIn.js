@@ -18,6 +18,8 @@ const LOGIN = gql`
        userData {
             _id
             username
+            firstName
+            lastName
             profilePicturePath
         }
         token

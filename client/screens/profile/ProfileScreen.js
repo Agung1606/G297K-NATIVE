@@ -65,9 +65,16 @@ const GET_USER_TWEETS = gql`
 const FOLLOW_UNFOLLOW = gql`
   mutation FollowUnfollow($token: String, $otherId: String, $userId: String) {
     followUnfollow(token: $token, otherId: $otherId, userId: $userId) {
-      _id
-      followers
-      following
+      otherUpdated {
+        _id
+        followers
+        following
+      }
+      userUpdated {
+        _id
+        followers
+        following
+      }
     }
   }
 `;
@@ -84,7 +91,6 @@ export default function ProfileScreen({ route }) {
       userId: userId,
     },
   });
-  console.log("🚀 ~ file: ProfileScreen.js:87 ~ ProfileScreen ~ data:", data?.getUser);
 
   // user posts data from api
   const { data: postsData, loading: postLoading } = useQuery(GET_USER_POSTS, {
@@ -110,6 +116,7 @@ export default function ProfileScreen({ route }) {
 
   const [screen, setScreen] = useState("Posts");
   const navigation = useNavigation();
+  const goToEditProfileScreen = () => navigation.navigate('EditProfileScreen');
   const goToPreviousScreen = () => navigation.goBack();
   const goToPosts = () => setScreen("Posts");
   const goToTweets = () => {
@@ -203,21 +210,31 @@ export default function ProfileScreen({ route }) {
           </View>
           {/* button */}
           {isMyProfile ? (
-            <TouchableOpacity className="bg-deep-blue rounded-lg">
+            <TouchableOpacity 
+              onPress={goToEditProfileScreen} 
+              className="bg-deep-blue rounded-lg"
+            >
               <Text className="text-center text-lg text-white font-semibold py-[2px]">
                 Edit profile
               </Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={handleFollow} className={`${isFollowing ? 'bg-gray-900' : 'bg-blue'} rounded-lg`}>
-              <Text className="text-center text-lg text-white font-semibold py-[2px]">
-                  {loadingFollow ? (
-                    'loading...'
-                  ) : (
-                    isFollowing ? 'following' :
-                    !isFollowing && isFollowers ? 'follow back' :
-                    'follow'
-                  )}
+            <TouchableOpacity
+              onPress={handleFollow}
+              className={`${
+                isFollowing ? "bg-gray-900" : "bg-blue"
+              } rounded-lg`}
+            >
+              <Text className="mx-auto text-lg text-white font-semibold py-[2px]">
+                {loadingFollow ? (
+                  <ActivityIndicator size="small" color="#fff" />
+                ) : isFollowing ? (
+                  "following"
+                ) : !isFollowing && isFollowers ? (
+                  "follow back"
+                ) : (
+                  "follow"
+                )}
               </Text>
             </TouchableOpacity>
           )}
@@ -294,7 +311,10 @@ export default function ProfileScreen({ route }) {
         index={0}
         snapPoints={snapPoints}
       >
-        <ModalSetting onPress={closeModal} />
+        <ModalSetting 
+          goToEditProfileScreen={goToEditProfileScreen} 
+          closeModal={closeModal} 
+        />
       </BottomSheetModal>
     </SafeAreaView>
   );

@@ -20,6 +20,15 @@ export type FollowUnfollowArgsType = {
     otherId: string
     userId: string
 }
+
+export type EditProfileArgsType = {
+    token: string
+    userId: string
+    profilePicturePath: string
+    firstName: string
+    lastName: string
+    username: string
+}
 // mutation
 
 // query

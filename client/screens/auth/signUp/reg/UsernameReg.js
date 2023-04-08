@@ -31,6 +31,8 @@ const REGISTER = gql`
             userData {
                 _id
                 username
+                firstName
+                lastName
                 profilePicturePath
             }
             token
