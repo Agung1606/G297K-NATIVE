@@ -33,6 +33,11 @@ const typeDefs = `#graphql
         userUpdated: User
     }
 
+    type EditProfile {
+        userUpdated: User
+        postsUpdated: [Post]
+    }
+
     type Post {
         _id: String
         userId: String
@@ -93,6 +98,13 @@ const typeDefs = `#graphql
             otherId: String
             userId: String
         ): FollowUnfollow
+        editProfile(
+            token: String
+            userId: String
+            firstName: String
+            lastName: String
+            username: String
+        ): EditProfile
     }
 `;
 exports.default = typeDefs;

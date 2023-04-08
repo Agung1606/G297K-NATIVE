@@ -208,6 +208,26 @@ const resolvers = {
                 return { otherUpdated, userUpdated };
             }
         }),
+        // MUTATION EDIT PROFILE
+        editProfile: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, userId, firstName, lastName, username } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const user = yield User_1.default.findById({ _id: userId }).lean();
+                const posts = yield Post_1.default.find({ userId: userId }).lean();
+                const userUpdated = yield User_1.default.findByIdAndUpdate({ _id: user._id }, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    username: username
+                }, { new: true });
+                const postsUpdated = yield Promise.all(posts.map(post => {
+                    return Post_1.default.findByIdAndUpdate({ _id: post._id }, {
+                        username: username
+                    }, { new: true });
+                }));
+                return { userUpdated, postsUpdated };
+            }
+        }),
     }
 };
 exports.default = resolvers;

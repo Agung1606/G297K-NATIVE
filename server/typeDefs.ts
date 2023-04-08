@@ -31,6 +31,11 @@ const typeDefs = `#graphql
         userUpdated: User
     }
 
+    type EditProfile {
+        userUpdated: User
+        postsUpdated: [Post]
+    }
+
     type Post {
         _id: String
         userId: String
@@ -94,11 +99,10 @@ const typeDefs = `#graphql
         editProfile(
             token: String
             userId: String
-            profilePicturePath: String
             firstName: String
             lastName: String
             username: String
-        ): User
+        ): EditProfile
     }
 `
 

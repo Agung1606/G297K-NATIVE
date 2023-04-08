@@ -24,7 +24,6 @@ export type FollowUnfollowArgsType = {
 export type EditProfileArgsType = {
     token: string
     userId: string
-    profilePicturePath: string
     firstName: string
     lastName: string
     username: string

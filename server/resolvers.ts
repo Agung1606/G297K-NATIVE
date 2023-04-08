@@ -219,7 +219,6 @@ const resolvers = {
             const { 
                 token, 
                 userId, 
-                profilePicturePath, 
                 firstName, 
                 lastName, 
                 username 
@@ -229,8 +228,29 @@ const resolvers = {
                 const user = await User.findById({ _id: userId }).lean();
                 const posts = await Post.find({ userId: userId }).lean();
 
-                const updatedUser = await User.findByIdAndUpdate();
-                const updatedPosts = await Promise.all();
+                const userUpdated = await User.findByIdAndUpdate(
+                    { _id: user._id },
+                    {
+                        firstName: firstName,
+                        lastName: lastName,
+                        username: username
+                    },
+                    { new: true }
+                );
+
+                const postsUpdated = await Promise.all(
+                    posts.map(post => {
+                        return Post.findByIdAndUpdate(
+                            { _id: post._id },
+                            {
+                                username: username
+                            },
+                            { new: true }
+                        );
+                    })
+                );
+
+                return { userUpdated, postsUpdated };
             }
         },
     }
