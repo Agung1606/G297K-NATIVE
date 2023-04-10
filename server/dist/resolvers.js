@@ -195,6 +195,26 @@ const resolvers = {
                 token
             };
         }),
+        // MUTATION EDIT PROFILE
+        editProfile: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, userId, firstName, lastName, username } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const user = yield User_1.default.findById({ _id: userId }).lean();
+                const posts = yield Post_1.default.find({ userId: userId }).lean();
+                const userUpdated = yield User_1.default.findByIdAndUpdate({ _id: user._id }, {
+                    firstName: firstName,
+                    lastName: lastName,
+                    username: username
+                }, { new: true });
+                const postsUpdated = yield Promise.all(posts.map(post => {
+                    return Post_1.default.findByIdAndUpdate({ _id: post._id }, {
+                        username: username
+                    }, { new: true });
+                }));
+                return { userUpdated, postsUpdated };
+            }
+        }),
         // MUTATION FOLLOW UNFOLLOW
         followUnfollow: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
             var _a;
@@ -222,24 +242,23 @@ const resolvers = {
                 return { otherUpdated, userUpdated };
             }
         }),
-        // MUTATION EDIT PROFILE
-        editProfile: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
-            const { token, userId, firstName, lastName, username } = args;
+        // MUTATION LIKE POST
+        likePost: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            var _b, _c, _d;
+            const { token, postId, userId } = args;
             const verified = yield (0, verifyToken_1.verifyToken)(token);
             if (verified) {
-                const user = yield User_1.default.findById({ _id: userId }).lean();
-                const posts = yield Post_1.default.find({ userId: userId }).lean();
-                const userUpdated = yield User_1.default.findByIdAndUpdate({ _id: user._id }, {
-                    firstName: firstName,
-                    lastName: lastName,
-                    username: username
-                }, { new: true });
-                const postsUpdated = yield Promise.all(posts.map(post => {
-                    return Post_1.default.findByIdAndUpdate({ _id: post._id }, {
-                        username: username
-                    }, { new: true });
-                }));
-                return { userUpdated, postsUpdated };
+                const post = yield Post_1.default.findOne({ _id: postId }).lean();
+                // check if user has liked or not
+                const isLiked = (_b = post.likes) === null || _b === void 0 ? void 0 : _b.find(id => id === userId);
+                if (isLiked) {
+                    post.likes = (_c = post.likes) === null || _c === void 0 ? void 0 : _c.filter(id => id !== userId);
+                }
+                else {
+                    (_d = post.likes) === null || _d === void 0 ? void 0 : _d.push(userId);
+                }
+                const updatedPost = yield Post_1.default.findByIdAndUpdate(post._id, { likes: post.likes }, { new: true }).lean();
+                return updatedPost;
             }
         }),
     }

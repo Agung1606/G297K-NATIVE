@@ -7,12 +7,17 @@ import Animated, {
 } from "react-native-reanimated";
 import { FontAwesome } from "@expo/vector-icons";
 
-export default function LikeAnimation({ liked }) {
+export default function LikeAnimation({ color, size, liked }) {
   const outlineStyle = useAnimatedStyle(() => {
     return {
       transform: [
         {
-          scale: interpolate(liked.value, [0, 1], [1, 0], Extrapolate.CLAMP),
+          scale: interpolate(
+            liked.value,
+            [0, 1],
+            [1, 0],
+            Extrapolate.CLAMP
+          ),
         },
       ],
     };
@@ -28,11 +33,11 @@ export default function LikeAnimation({ liked }) {
   return (
     <>
       <Animated.View style={[StyleSheet.absoluteFillObject, outlineStyle]}>
-        <FontAwesome name="heart-o" size={25} />
+        <FontAwesome name="heart-o" size={size} color={color} />
       </Animated.View>
 
       <Animated.View style={fillStyle}>
-        <FontAwesome name="heart" size={25} color="red" />
+        <FontAwesome name="heart" size={size} color="red" />
       </Animated.View>
     </>
   );

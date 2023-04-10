@@ -19,7 +19,6 @@ import {
   withSpring,
 } from "react-native-reanimated";
 
-
 import { 
     BottomSheetModal, 
 } from '@gorhom/bottom-sheet'
@@ -29,7 +28,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import { API_URL } from '@env';
 
-import { gql, useLazyQuery } from '@apollo/client'
+import { gql, useLazyQuery, useMutation } from '@apollo/client'
 const GET_POST_COMMENTS = gql`
     query GetPostComments($token: String, $postId: String) {
         getPostComments(token: $token, postId: $postId) {
@@ -40,6 +39,15 @@ const GET_POST_COMMENTS = gql`
             comment
         }
     }
+`;
+
+const LIKE_POST = gql`
+  mutation LikePost($token: String, $postId: String, $userId: String) {
+    likePost(token: $token, postId: $postId, userId: $userId) {
+      _id
+      likes
+    }
+  }
 `;
 
 import LikeAnimation from '../animation/LikeAnimation'
@@ -54,9 +62,16 @@ const Post = ({ item }) => {
     const loggedInUserId = useSelector((state) => state.auth.user._id);
     const token = useSelector((state) => state.auth.token);
 
-    const likeCount = item?.likes?.length;
-    // const isLiked = Boolean(item?.likes?.find(id => id === loggedInUserId));
-    const longDesc = item?.description?.length > 80 && !moreDesc ? item?.description.slice(0, 80) : item?.description;
+    // post config
+    const isLiked = Boolean(item?.likes.find(id => id === loggedInUserId));
+    const likeCount = Number(item?.likes.length);
+    const longDesc = item?.description.length > 80 && !moreDesc ? item?.description.slice(0, 80) : item?.description;
+    const sourceImageProfile = {
+      uri: `${API_URL}/assets/${item?.userProfilePicturePath}`,
+    };
+    const sourceImagePost = {
+      uri: `${API_URL}/assets/${item?.postPicturePath}`,
+    };
 
     // comment api using apollo useLazyQuery
     const [getPostComments, { data, loading }] = useLazyQuery(GET_POST_COMMENTS);
@@ -65,18 +80,21 @@ const Post = ({ item }) => {
     const bottomSheetModalRef = useRef(null);
     const snapPoints = useMemo(() => ['65%', '90%'], []);
     const openModal = () => {
-        bottomSheetModalRef.current.present();
-        if(item.comments > 0) getPostComments({ variables: {token: token, postId: item._id} })
+      bottomSheetModalRef.current.present();
+      if(item.comments > 0) getPostComments({ variables: {token: token, postId: item._id} })
     }
     const closeModal = () => bottomSheetModalRef.current.dismiss();
 
     // like animation config
-    const [isLiked, setIsLiked] = useState(false)
-    const liked = useSharedValue(0)
-
+    const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST);
+    const liked = useSharedValue(isLiked ? 1 : 0);
     const handleLiked = async () => {
-      setIsLiked(!isLiked)
-      liked.value = withSpring(liked.value && isLiked === true ? 0 : 1)
+      await likePost({ variables: {
+        token: token,
+        postId: item._id,
+        userId: loggedInUserId
+      }})
+      liked.value = withSpring(liked.value ? 0 : 1);
     };
 
     return (
@@ -87,9 +105,7 @@ const Post = ({ item }) => {
             <View className="flex-row items-center gap-x-3 px-2">
               <Avatar.Image
                 size={30}
-                source={{
-                  uri: `${API_URL}/assets/${item?.userProfilePicturePath}`,
-                }}
+                source={sourceImageProfile}
               />
               <Text className="font-bold">{item?.username}</Text>
             </View>
@@ -101,7 +117,7 @@ const Post = ({ item }) => {
         {/* post photo */}
         <View className="mx-auto mb-2">
           <Image
-            source={{ uri: `${API_URL}/assets/${item?.postPicturePath}` }}
+            source={sourceImagePost}
             style={{ width: 340, height: 340 }}
             resizeMode="contain"
           />
@@ -109,9 +125,8 @@ const Post = ({ item }) => {
         {/* icons */}
         <View className="flex-row justify-between items-center px-2 mb-2">
           <View className="flex-row gap-x-4">
-            {/* liked */}
             <Pressable onPress={handleLiked}>
-              <LikeAnimation liked={liked} />
+              <LikeAnimation color='#fff' size={25} liked={liked} />
             </Pressable>
 
             <TouchableOpacity onPress={openModal}>

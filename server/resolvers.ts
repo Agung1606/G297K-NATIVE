@@ -10,6 +10,7 @@ import {
     GetUserArgsType,
     FollowUnfollowArgsType,
     EditProfileArgsType,
+    LikePostArgsType,
 } from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
@@ -191,44 +192,6 @@ const resolvers = {
                 token
             }
         },
-        // MUTATION FOLLOW UNFOLLOW
-        followUnfollow: async (_: any, args: FollowUnfollowArgsType) => {
-            const { token, otherId, userId } = args;
-            const verified = await verifyToken(token);
-            if(verified) {
-                const otherUser = await User.findOne({ _id: otherId }).lean()
-                const user = await User.findOne({ _id: userId }).lean()
-
-                if(!otherUser || !user) {
-                    throw new GraphQLError('User does not exist', {
-                        extensions: { code: StatusCodes.BAD_REQUEST }
-                    })
-                }
-
-                const isFollowing = user.following?.find(id => id === otherId);
-
-                if(isFollowing) {
-                    user.following = user.following.filter(id => id !== otherId);
-                    otherUser.followers = otherUser.followers.filter(id => id !== userId);
-                } else {
-                    user.following.push(otherId);
-                    otherUser.followers.push(userId);
-                }
-                const otherUpdated = await User.findByIdAndUpdate(
-                    otherUser._id,
-                    { followers: otherUser.followers },
-                    { new: true }
-                );
-
-                const userUpdated = await User.findByIdAndUpdate(
-                    user._id,
-                    { following: user.following },
-                    { new: true }
-                );
-
-                return {otherUpdated, userUpdated};
-            }
-        },
         // MUTATION EDIT PROFILE
         editProfile: async (_: any, args: EditProfileArgsType) => {
             const { 
@@ -242,7 +205,7 @@ const resolvers = {
             if(verified) {
                 const user = await User.findById({ _id: userId }).lean();
                 const posts = await Post.find({ userId: userId }).lean();
-
+                
                 const userUpdated = await User.findByIdAndUpdate(
                     { _id: user._id },
                     {
@@ -251,21 +214,81 @@ const resolvers = {
                         username: username
                     },
                     { new: true }
-                );
-
-                const postsUpdated = await Promise.all(
-                    posts.map(post => {
+                    );
+                    
+                    const postsUpdated = await Promise.all(
+                        posts.map(post => {
                         return Post.findByIdAndUpdate(
                             { _id: post._id },
                             {
                                 username: username
                             },
                             { new: true }
-                        );
-                    })
+                            );
+                        })
                 );
 
                 return { userUpdated, postsUpdated };
+            }
+        },
+        // MUTATION FOLLOW UNFOLLOW
+        followUnfollow: async (_: any, args: FollowUnfollowArgsType) => {
+            const { token, otherId, userId } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const otherUser = await User.findOne({ _id: otherId }).lean()
+                const user = await User.findOne({ _id: userId }).lean()
+    
+                if(!otherUser || !user) {
+                    throw new GraphQLError('User does not exist', {
+                        extensions: { code: StatusCodes.BAD_REQUEST }
+                    })
+                }
+    
+                const isFollowing = user.following?.find(id => id === otherId);
+    
+                if(isFollowing) {
+                    user.following = user.following.filter(id => id !== otherId);
+                    otherUser.followers = otherUser.followers.filter(id => id !== userId);
+                } else {
+                    user.following.push(otherId);
+                    otherUser.followers.push(userId);
+                }
+                const otherUpdated = await User.findByIdAndUpdate(
+                    otherUser._id,
+                    { followers: otherUser.followers },
+                    { new: true }
+                );
+    
+                const userUpdated = await User.findByIdAndUpdate(
+                    user._id,
+                    { following: user.following },
+                    { new: true }
+                );
+    
+                return {otherUpdated, userUpdated};
+            }
+        },
+        // MUTATION LIKE POST
+        likePost: async (_: any, args: LikePostArgsType) => {
+            const { token, postId, userId } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const post = await Post.findOne({ _id: postId }).lean();
+                // check if user has liked or not
+                const isLiked = post.likes?.find(id => id === userId);
+                if(isLiked) {
+                    post.likes = post.likes?.filter(id => id !== userId);
+                } else {
+                    post.likes?.push(userId)
+                }
+                const updatedPost = await Post.findByIdAndUpdate(
+                    post._id,
+                    { likes: post.likes },
+                    { new: true }
+                ).lean();
+
+                return updatedPost;
             }
         },
     }

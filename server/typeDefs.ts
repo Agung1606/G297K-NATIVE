@@ -92,11 +92,6 @@ const typeDefs = `#graphql
             username: String
             pw: String
         ): Login
-        followUnfollow(
-            token: String
-            otherId: String
-            userId: String
-        ): FollowUnfollow
         editProfile(
             token: String
             userId: String
@@ -104,6 +99,16 @@ const typeDefs = `#graphql
             lastName: String
             username: String
         ): EditProfile
+        followUnfollow(
+            token: String
+            otherId: String
+            userId: String
+        ): FollowUnfollow
+        likePost(
+            token: String
+            postId: String
+            userId: String
+        ): Post
     }
 `
 

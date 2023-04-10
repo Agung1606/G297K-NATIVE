@@ -43,11 +43,9 @@ const FOLLOW_UNFOLLOW = gql`
       otherUpdated {
         _id
         followers
-        following
       }
       userUpdated {
         _id
-        followers
         following
       }
     }

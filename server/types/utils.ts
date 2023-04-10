@@ -28,6 +28,12 @@ export type EditProfileArgsType = {
     lastName: string
     username: string
 }
+
+export type LikePostArgsType = {
+    token: string
+    postId: string
+    userId: string
+}
 // mutation
 
 // query
