@@ -5,6 +5,7 @@ import {
     LoginArgsType, 
     ExplorePostsArgsType, 
     UserPostsArgsType,
+    GetPostArgsType,
     GetPostCommentsArgsType,
     GetUserArgsType,
     FollowUnfollowArgsType,
@@ -37,6 +38,20 @@ const resolvers = {
             if(verified){
                 const posts = await Post.find({}).lean();
                 return posts;
+            }
+        },
+        // QUERY GET POST
+        getPost: async (_: any, args: GetPostArgsType) => {
+            const { token, postId } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const post = await Post.findOne({ _id: postId }).lean();
+                if(!post) {
+                    throw new GraphQLError('Postingan tidak ditemukan', {
+                        extensions: { code: StatusCodes.NOT_FOUND }
+                    })
+                }
+                return post;
             }
         },
         // QUERY USER TWEETS

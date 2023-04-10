@@ -1,4 +1,4 @@
-import { View, Text, FlatList, ActivityIndicator } from 'react-native'
+import { View, FlatList, ActivityIndicator } from 'react-native'
 import React, { memo } from 'react'
 import Post from '../../components/widgets/Post';
 

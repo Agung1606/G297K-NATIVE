@@ -78,6 +78,7 @@ const typeDefs = `#graphql
         getPostComments(token: String, postId: String): [Comments]
 
         getUser(token: String, userId: String): User
+        getPost(token: String, postId: String): Post
     }
 
     type Mutation {

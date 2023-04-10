@@ -40,6 +40,11 @@ export type UserPostsArgsType = {
     userId: string
 }
 
+export type GetPostArgsType = {
+    token: string
+    postId: string
+}
+
 export type GetPostCommentsArgsType = {
     token: string
     postId: string

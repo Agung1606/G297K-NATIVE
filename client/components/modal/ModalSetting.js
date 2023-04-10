@@ -11,8 +11,8 @@ export default function ModalSetting({ goToEditProfileScreen, closeModal }) {
   const handleLogout = () => dispatch(setLogout());
 
   const handleGoToProfileScreen = () => {
-    closeModal();
     goToEditProfileScreen();
+    closeModal();
   }
   return (
     <View className="px-2">

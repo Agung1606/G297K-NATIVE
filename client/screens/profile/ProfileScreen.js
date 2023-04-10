@@ -1,30 +1,28 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, FlatList } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native'
 import { Avatar } from 'react-native-paper';
 import React, { useRef, useMemo, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
 
-import { FlatGrid } from 'react-native-super-grid';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+const Stack = createNativeStackNavigator();
+import ProfilePostsScreen from './ProfilePostsScreen'
+import ProfileTweetsScreen from './ProfileTweetsScreen'
 
 // routin
 import { useNavigation } from '@react-navigation/native';
-import PostGrid from '../../components/PostGrid';
-import Tweet from '../../components/widgets/Tweet';
-
 // icons
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
-
 // modal
 import { BottomSheetModal } from '@gorhom/bottom-sheet'
 import ModalSetting from '../../components/modal/ModalSetting';
-
+// secret variable
 import { API_URL } from '@env'
-
 // api
-import { useQuery, useLazyQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, gql, useMutation } from '@apollo/client';
 const GET_USER = gql`
-  query GetUser($token: String, $userId: String) {
-    getUser(token: $token, userId: $userId) {
+query GetUser($token: String, $userId: String) {
+  getUser(token: $token, userId: $userId) {
       _id
       firstName
       lastName
@@ -35,29 +33,6 @@ const GET_USER = gql`
       following
       postsCount
       tweetsCount
-    }
-  }
-`;
-
-const GET_USER_POSTS = gql`
-  query GetUserPosts($token: String, $userId: String) {
-    getUserPosts(token: $token, userId: $userId) {
-      _id
-      postPicturePath
-    }
-  }
-`;
-
-const GET_USER_TWEETS = gql`
-  query GetUserTweets($token: String, $userId: String) {
-    getUserTweets(token: $token, userId: $userId) {
-      _id
-      username
-      postDate
-      userProfilePicturePath
-      tweet
-      likes
-      comments
     }
   }
 `;
@@ -92,18 +67,6 @@ export default function ProfileScreen({ route }) {
     },
   });
 
-  // user posts data from api
-  const { data: postsData, loading: postLoading } = useQuery(GET_USER_POSTS, {
-    variables: {
-      token: token,
-      userId: userId,
-    },
-  });
-
-  // user tweets data from api
-  const [getUserTweets, { data: tweetsData, loading: tweetLoading }] =
-    useLazyQuery(GET_USER_TWEETS);
-
   // follow unfollow api
   const [followUnfollow, { loading: loadingFollow }] = useMutation(FOLLOW_UNFOLLOW);
   const handleFollow = async () => {
@@ -118,11 +81,14 @@ export default function ProfileScreen({ route }) {
   const navigation = useNavigation();
   const goToEditProfileScreen = () => navigation.navigate('EditProfileScreen');
   const goToPreviousScreen = () => navigation.goBack();
-  const goToPosts = () => setScreen("Posts");
+
+  const goToPosts = () => {
+    navigation.navigate('ProfilePostsScreen')
+    setScreen("Posts")
+  };
   const goToTweets = () => {
+    navigation.navigate('ProfileTweetsScreen')
     setScreen("Tweets");
-    if (data?.getUser?.tweetsCount > 0)
-      getUserTweets({ variables: { token: token, userId: userId } });
   };
 
   // USER INFORMATION // note max bio is 100
@@ -210,8 +176,8 @@ export default function ProfileScreen({ route }) {
           </View>
           {/* button */}
           {isMyProfile ? (
-            <TouchableOpacity 
-              onPress={goToEditProfileScreen} 
+            <TouchableOpacity
+              onPress={goToEditProfileScreen}
               className="bg-deep-blue rounded-lg"
             >
               <Text className="text-center text-lg text-white font-semibold py-[2px]">
@@ -268,42 +234,27 @@ export default function ProfileScreen({ route }) {
         </TouchableOpacity>
       </View>
 
-      {/* posts or tweets */}
-      {screen === "Posts" ? (
-        postLoading ? (
-          <View className="flex-1 justify-center items-center">
-            <ActivityIndicator size="large" color="#406aff" />
-          </View>
-        ) : postsData?.getUserPosts.length > 0 ? (
-          <FlatGrid
-            itemDimension={80}
-            data={postsData?.getUserPosts}
-            renderItem={({ item }) => <PostGrid item={item} />}
-          />
-        ) : (
-          <View className="flex-1 justify-center items-center">
-            <MaterialCommunityIcons name="emoticon-sad-outline" size={30} />
-            <Text>No Posts</Text>
-          </View>
-        )
-      ) : tweetLoading ? (
-        <View className="flex-1 justify-center items-center">
-          <ActivityIndicator size="large" color="#406aff" />
-        </View>
-      ) : tweetsData?.getUserTweets?.length > 0 ? (
-        <FlatList
-          data={tweetsData?.getUserTweets}
-          renderItem={({ item }) => <Tweet item={item} />}
-          keyExtractor={(item) => item._id}
-          maxToRenderPerBatch={5}
-          updateCellsBatchingPeriod={20}
+      {/* posts and tweets */}
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="ProfilePostsScreen"
+          component={ProfilePostsScreen}
+          initialParams={{ userId: userId }}
+          options={{
+            presentation: "modal",
+            animation: "slide_from_left",
+          }}
         />
-      ) : (
-        <View className="flex-1 justify-center items-center">
-          <MaterialCommunityIcons name="emoticon-sad-outline" size={30} />
-          <Text>No Tweets</Text>
-        </View>
-      )}
+        <Stack.Screen
+          name="ProfileTweetsScreen"
+          component={ProfileTweetsScreen}
+          initialParams={{ userId: userId }}
+          options={{
+            presentation: "modal",
+            animation: "slide_from_right",
+          }}
+        />
+      </Stack.Navigator>
 
       {/* setting modal */}
       <BottomSheetModal
@@ -311,9 +262,9 @@ export default function ProfileScreen({ route }) {
         index={0}
         snapPoints={snapPoints}
       >
-        <ModalSetting 
-          goToEditProfileScreen={goToEditProfileScreen} 
-          closeModal={closeModal} 
+        <ModalSetting
+          goToEditProfileScreen={goToEditProfileScreen}
+          closeModal={closeModal}
         />
       </BottomSheetModal>
     </SafeAreaView>

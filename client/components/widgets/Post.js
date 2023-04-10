@@ -117,7 +117,7 @@ const Post = ({ item }) => {
           {/* username and desc */}
           {item?.description && (
             <Text>
-              <Text className='font-extrabold'>
+              <Text onPress={goToProfile} className='font-extrabold'>
                 {item?.username}
               </Text> {' '}
               <Text>

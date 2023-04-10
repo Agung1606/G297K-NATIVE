@@ -1,11 +1,15 @@
-import { View, Pressable, Image } from 'react-native'
+import { View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { API_URL } from '@env'
+import { useNavigation } from '@react-navigation/native';
 
 export default function PostGrid({ item }) {
+  const navigation = useNavigation();
+  const goToPostScreen = () => navigation.navigate('PostScreen', {postId: item._id});
+
   return (
-    <View className="h-[100px]">
-      <Pressable onPress={() => alert(item._id)}>
+    <View className="h-[120px]">
+      <TouchableOpacity onPress={goToPostScreen}>
         <Image
           source={{
             uri: `${API_URL}/assets/${item?.postPicturePath}`,
@@ -13,7 +17,7 @@ export default function PostGrid({ item }) {
           className="w-full h-full"
           resizeMode="cover"
         />
-      </Pressable>
+      </TouchableOpacity>
     </View>
   );
 }
