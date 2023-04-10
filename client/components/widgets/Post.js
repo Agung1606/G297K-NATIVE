@@ -4,6 +4,7 @@ import {
     Image, 
     TouchableOpacity, 
     ActivityIndicator, 
+    Pressable,
 } from 'react-native'
 import { Avatar } from 'react-native-paper'
 import React, { useMemo, useRef, useState, memo } from 'react'
@@ -12,6 +13,12 @@ import { useSelector } from 'react-redux'
 // icons
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
+
+import {
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+
 
 import { 
     BottomSheetModal, 
@@ -35,6 +42,8 @@ const GET_POST_COMMENTS = gql`
     }
 `;
 
+import LikeAnimation from '../animation/LikeAnimation'
+
 const Post = ({ item }) => {
     const navigation = useNavigation();
     const goToProfile = () => navigation.navigate('ProfileScreen', {param: item.userId});
@@ -46,7 +55,7 @@ const Post = ({ item }) => {
     const token = useSelector((state) => state.auth.token);
 
     const likeCount = item?.likes?.length;
-    const isLiked = Boolean(item?.likes?.find(id => id === loggedInUserId));
+    // const isLiked = Boolean(item?.likes?.find(id => id === loggedInUserId));
     const longDesc = item?.description?.length > 80 && !moreDesc ? item?.description.slice(0, 80) : item?.description;
 
     // comment api using apollo useLazyQuery
@@ -60,6 +69,15 @@ const Post = ({ item }) => {
         if(item.comments > 0) getPostComments({ variables: {token: token, postId: item._id} })
     }
     const closeModal = () => bottomSheetModalRef.current.dismiss();
+
+    // like animation config
+    const [isLiked, setIsLiked] = useState(false)
+    const liked = useSharedValue(0)
+
+    const handleLiked = async () => {
+      setIsLiked(!isLiked)
+      liked.value = withSpring(liked.value && isLiked === true ? 0 : 1)
+    };
 
     return (
       <View className="mb-7 p-2">
@@ -91,13 +109,11 @@ const Post = ({ item }) => {
         {/* icons */}
         <View className="flex-row justify-between items-center px-2 mb-2">
           <View className="flex-row gap-x-4">
-            <TouchableOpacity>
-              <FontAwesome
-                name={isLiked ? "heart" : "heart-o"}
-                color={isLiked ? "red" : undefined}
-                size={25}
-              />
-            </TouchableOpacity>
+            {/* liked */}
+            <Pressable onPress={handleLiked}>
+              <LikeAnimation liked={liked} />
+            </Pressable>
+
             <TouchableOpacity onPress={openModal}>
               <FontAwesome name="comment-o" size={25} />
             </TouchableOpacity>
@@ -117,18 +133,19 @@ const Post = ({ item }) => {
           {/* username and desc */}
           {item?.description && (
             <Text>
-              <Text onPress={goToProfile} className='font-extrabold'>
+              <Text onPress={goToProfile} className="font-extrabold">
                 {item?.username}
-              </Text> {' '}
+              </Text>{" "}
               <Text>
-                {longDesc} {''}
-                {item?.description?.length > 40 && !moreDesc &&(
-                <Text 
-                  className="text-[16px] text-gray-400"
-                  onPress={handleMoreDesc}
-                >
-                  ...more
-                </Text>)}
+                {longDesc} {""}
+                {item?.description?.length > 40 && !moreDesc && (
+                  <Text
+                    className="text-[16px] text-gray-400"
+                    onPress={handleMoreDesc}
+                  >
+                    ...more
+                  </Text>
+                )}
               </Text>
             </Text>
           )}

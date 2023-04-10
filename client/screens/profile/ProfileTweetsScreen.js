@@ -11,6 +11,7 @@ const GET_USER_TWEETS = gql`
   query GetUserTweets($token: String, $userId: String) {
     getUserTweets(token: $token, userId: $userId) {
       _id
+      userId
       username
       postDate
       userProfilePicturePath

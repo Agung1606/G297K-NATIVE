@@ -21,7 +21,7 @@ const GET_USER_POSTS = gql`
 function ProfilePostsScreen({ route }) {
     const { userId } = route.params
     const token = useSelector((state) => state.auth.token);
-    
+
     const { data: postsData, loading: postLoading } = useQuery(GET_USER_POSTS, {
       variables: {
         token: token,
@@ -40,7 +40,11 @@ function ProfilePostsScreen({ route }) {
             itemDimension={95}
             spacing={5}
             data={postsData?.getUserPosts}
-            renderItem={({ item }) => <PostGrid item={item} />}
+            renderItem={({ item }) => (
+              <PostGrid
+                item={item}
+              />
+            )}
           />
         ) : (
           <View className="flex-1 justify-center items-center">

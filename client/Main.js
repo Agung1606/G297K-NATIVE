@@ -27,7 +27,7 @@ export default function Main() {
               component={PostScreen}
               options={{
                 presentation: "modal",
-                animation: "slide_from_right",
+                animation: "none",
               }}
             />
           </>

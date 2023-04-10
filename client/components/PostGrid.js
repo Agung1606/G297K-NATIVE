@@ -1,4 +1,4 @@
-import { View, Image, TouchableOpacity } from 'react-native'
+import { View, Image, TouchableOpacity, Text } from 'react-native'
 import React from 'react'
 import { API_URL } from '@env'
 import { useNavigation } from '@react-navigation/native';
@@ -8,16 +8,18 @@ export default function PostGrid({ item }) {
   const goToPostScreen = () => navigation.navigate('PostScreen', {postId: item._id});
 
   return (
-    <View className="h-[120px]">
-      <TouchableOpacity onPress={goToPostScreen}>
-        <Image
-          source={{
-            uri: `${API_URL}/assets/${item?.postPicturePath}`,
-          }}
-          className="w-full h-full"
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
-    </View>
+    <>
+      <View className="h-[120px]">
+        <TouchableOpacity onPress={goToPostScreen}>
+          <Image
+            source={{
+              uri: `${API_URL}/assets/${item?.postPicturePath}`,
+            }}
+            className="w-full h-full"
+            resizeMode="cover"
+          />
+        </TouchableOpacity>
+      </View>
+    </>
   );
 }

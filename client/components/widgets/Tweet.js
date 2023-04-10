@@ -6,6 +6,7 @@ import dayjs from 'dayjs'
 import { API_URL } from '@env'
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux'
+import { useNavigation } from '@react-navigation/native'
 
 // modal comment
 import { BottomSheetModal } from '@gorhom/bottom-sheet'
@@ -25,6 +26,9 @@ const GET_POST_COMMENTS = gql`
 `;
 
 function Tweet({ item }) {
+  const navigation = useNavigation();
+  const goToProfile = () => navigation.navigate('ProfileScreen', { param: item.userId})
+
   const [moreTweet, setMoreTweet] = useState(false);
   const handleMoreTweet = () => setMoreTweet(true);
 
@@ -51,7 +55,7 @@ function Tweet({ item }) {
   return (
     <View className="mb-7 p-2 border-b border-gray-400">
       <View className="flex-row gap-x-4">
-        <TouchableOpacity>
+        <TouchableOpacity onPress={goToProfile}>
           <Avatar.Image
             size={55}
             source={{
