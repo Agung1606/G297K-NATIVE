@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 
+import { TapGestureHandler } from 'react-native-gesture-handler'
 import LikeAnimation from '../animation/LikeAnimation'
 import Animated, {
   useSharedValue,
@@ -112,19 +113,21 @@ const Post = ({ item }) => {
         </View>
         {/* post photo */}
         <View className="relative mx-auto mb-2">
-          <Image
-            source={sourceImagePost}
-            style={{ width: 340, height: 340 }}
-            resizeMode="contain"
-          />
+          <TapGestureHandler numberOfTaps={2} onActivated={handleLiked}>
+            <Image
+              source={sourceImagePost}
+              style={{ width: 340, height: 340 }}
+              resizeMode="contain"
+            />
+          </TapGestureHandler>
           {/* love animation when liked */}
           {loadingLike && (
-          <View className="absolute top-[40%] left-[40%]">
-            <Animated.View>
-              <FontAwesome name="heart" size={80} />
-            </Animated.View>
-          </View>
-          )}
+            <View className="absolute top-[40%] left-[40%]">
+              <Animated.View>
+                <FontAwesome name="heart" size={80} />
+              </Animated.View>
+            </View>
+          )} 
         </View>
         {/* icons */}
         <View className="flex-row justify-between items-center px-2 mb-2">
