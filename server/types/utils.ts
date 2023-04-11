@@ -1,5 +1,3 @@
-import User from "../models/User"
-
 // mutation
 export type RegisterArgsType = {
     email: string
@@ -34,14 +32,29 @@ export type LikePostArgsType = {
     postId: string
     userId: string
 }
+
+export type LikeTweetArgsType = {
+    token: string
+    tweetId: string
+    userId: string
+}
 // mutation
 
 // query
-export type ExplorePostsArgsType = {
+export type GetTweetsArgsType = {
     token: string
 }
 
-export type UserPostsArgsType = {
+export type GetPostsArgsType = {
+    token: string
+}
+
+export type GetUserPostsArgsType = {
+    token: string
+    userId: string
+}
+
+export type GetUserTweetsArgsType = {
     token: string
     userId: string
 }
@@ -51,9 +64,14 @@ export type GetPostArgsType = {
     postId: string
 }
 
-export type GetPostCommentsArgsType = {
+export type GetCommentPostArgsType = {
     token: string
     postId: string
+}
+
+export type GetCommentTweetArgsType = {
+    token: string
+    tweetId: string
 }
 
 export type GetUserArgsType = {

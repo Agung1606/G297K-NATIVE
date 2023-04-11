@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.comments = exports.tweets = exports.posts = exports.users = void 0;
+exports.tweets = exports.posts = exports.users = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const userIds = [
     new mongoose_1.default.Types.ObjectId(),
@@ -379,21 +379,5 @@ exports.tweets = [
         tweet: `Ilmu pengetahuan alam (akronim: IPA) atau kerap diperpendek sebagai ilmu alam (serapan dari bahasa Arab: علوم العالم) adalah istilah yang digunakan yang merujuk pada rumpun ilmu di mana objeknya adalah benda-benda alam dengan hukum-hukum yang pasti dan umum, berlaku kapan pun dan di mana pun.[1] Orang yang menekuni bidang ilmu pengetahuan alam disebut sebagai Saintis. Sains (science) diambil dari kata latin scientia yang arti harfiahnya adalah pengetahuan. Sund dan Trowbribge merumuskan bahwa Sains merupakan kumpulan pengetahuan dan proses. Sedangkan Kuslan Stone menyebutkan bahwa Sains adalah kumpulan pengetahuan dan cara-cara untuk mendapatkan dan mempergunakan pengetahuan itu. Sains merupakan produk dan proses yang tidak dapat dipisahkan. "Real Science is both product and process, inseparably Joint" (Agus. S. 2003: 11) Sains sebagai proses merupakan langkah-langkah yang ditempuh para ilmuwan untuk melakukan penyelidikan dalam rangka mencari penjelasan tentang gejala-gejala alam. Langkah tersebut adalah merumuskan masalah, merumuskan hipotesis, merancang eksperimen, mengumpulkan data, menganalisis dan akhimya menyimpulkan. Dari sini tampak bahwa karakteristik yang mendasar dari Sains ialah kuantifikasi artinya gejala alam dapat berbentuk kuantitas. Ilmu alam mempelajari aspek-aspek fisik & nonmanusia tentang Bumi dan alam sekitarnya. Ilmu-ilmu alam membentuk landasan bagi ilmu terapan, yang keduanya dibedakan dari ilmu sosial, humaniora, teologi, dan seni.`,
         likes: [],
         comments: 0,
-    },
-];
-exports.comments = [
-    {
-        userId: userIds[3],
-        postId: postIds[0],
-        username: 'vnsmkSanji',
-        profilePicturePath: 'p4.jpg',
-        comment: 'test comment, i am sanji',
-    },
-    {
-        userId: userIds[1],
-        postId: tweetIds[3],
-        username: 'king_of_pirate',
-        profilePicturePath: 'p2.jpg',
-        comment: 'test comment, i am Monkey D. Luffy',
     },
 ];

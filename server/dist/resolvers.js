@@ -42,8 +42,9 @@ const http_status_codes_1 = require("http-status-codes");
 const verifyToken_1 = require("./middleware/verifyToken");
 const jwt = __importStar(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const Comments_1 = __importDefault(require("./models/Comments"));
 const Tweet_1 = __importDefault(require("./models/Tweet"));
+const CommentPost_1 = __importDefault(require("./models/CommentPost"));
+const CommentTweet_1 = __importDefault(require("./models/CommentTweet"));
 const resolvers = {
     Query: {
         // QUERY TWEETS
@@ -56,7 +57,7 @@ const resolvers = {
             }
         }),
         // QUERY EXPLORE POST
-        getExplorePosts: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+        getPosts: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
             const { token } = args;
             const verified = yield (0, verifyToken_1.verifyToken)(token);
             if (verified) {
@@ -97,11 +98,19 @@ const resolvers = {
             }
         }),
         // QUERY GET POST COMMENT
-        getPostComments: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+        getCommentPost: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
             const { token, postId } = args;
             const verified = yield (0, verifyToken_1.verifyToken)(token);
             if (verified) {
-                const comments = yield Comments_1.default.find({ postId }).lean();
+                const comments = yield CommentPost_1.default.find({ postId }).lean();
+                return comments;
+            }
+        }),
+        getCommentTweet: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, tweetId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const comments = yield CommentTweet_1.default.find({ tweetId }).lean();
                 return comments;
             }
         }),
@@ -259,6 +268,24 @@ const resolvers = {
                 }
                 const updatedPost = yield Post_1.default.findByIdAndUpdate(post._id, { likes: post.likes }, { new: true }).lean();
                 return updatedPost;
+            }
+        }),
+        likeTweet: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            var _e, _f, _g;
+            const { token, tweetId, userId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const tweet = yield Tweet_1.default.findOne({ _id: tweetId }).lean();
+                // check if user hs liked or not
+                const isLiked = (_e = tweet.likes) === null || _e === void 0 ? void 0 : _e.find(id => id === userId);
+                if (isLiked) {
+                    tweet.likes = (_f = tweet.likes) === null || _f === void 0 ? void 0 : _f.filter(id => id !== userId);
+                }
+                else {
+                    (_g = tweet.likes) === null || _g === void 0 ? void 0 : _g.push(userId);
+                }
+                const updatedTweet = yield Tweet_1.default.findByIdAndUpdate(tweet._id, { likes: tweet.likes }, { new: true }).lean();
+                return updatedTweet;
             }
         }),
     }

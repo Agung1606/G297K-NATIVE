@@ -5,9 +5,9 @@ import Post from '../../components/widgets/Post';
 import { gql, useQuery } from '@apollo/client';
 import { useSelector } from 'react-redux';
 
-const GET_EXPLORE_POSTS = gql`
-  query GetExplorePosts($token: String) {
-    getExplorePosts(token: $token) {
+const GET_POSTS = gql`
+  query GetPosts($token: String) {
+    getPosts(token: $token) {
       _id
       userId
       username
@@ -25,10 +25,9 @@ const GET_EXPLORE_POSTS = gql`
 function PostsScreen() {
  
     const token = useSelector((state) => state.auth.token);
-    const { data: postsData, loading: postsLoading } = useQuery(
-      GET_EXPLORE_POSTS,
-      { variables: { token: token } }
-    );
+    const { data: postsData, loading: postsLoading } = useQuery(GET_POSTS, {
+      variables: { token: token },
+    });
 
     if(postsLoading) {
         return (
@@ -40,7 +39,7 @@ function PostsScreen() {
     return (
       <View className="flex-1 bg-white">
         <FlatList
-          data={postsData.getExplorePosts}
+          data={postsData.getPosts}
           renderItem={({ item }) => <Post item={item} />}
           keyExtractor={(item) => item._id}
           maxToRenderPerBatch={5}

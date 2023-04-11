@@ -4,7 +4,6 @@ import {
     Image, 
     TouchableOpacity, 
     ActivityIndicator, 
-    Pressable,
 } from 'react-native'
 import { Avatar } from 'react-native-paper'
 import React, { useMemo, useRef, useState, memo } from 'react'
@@ -14,6 +13,7 @@ import { useSelector } from 'react-redux'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 
+import LikeAnimation from '../animation/LikeAnimation'
 import {
   useSharedValue,
   withSpring,
@@ -29,16 +29,16 @@ import { useNavigation } from '@react-navigation/native'
 import { API_URL } from '@env';
 
 import { gql, useLazyQuery, useMutation } from '@apollo/client'
-const GET_POST_COMMENTS = gql`
-    query GetPostComments($token: String, $postId: String) {
-        getPostComments(token: $token, postId: $postId) {
-            _id
-            userId
-            username
-            profilePicturePath
-            comment
-        }
+const GET_COMMENT_POST = gql`
+  query GetCommentPost($token: String, $postId: String) {
+    getCommentPost(token: $token, postId: $postId) {
+      _id
+      userId
+      username
+      profilePicturePath
+      comment
     }
+  }
 `;
 
 const LIKE_POST = gql`
@@ -49,8 +49,6 @@ const LIKE_POST = gql`
     }
   }
 `;
-
-import LikeAnimation from '../animation/LikeAnimation'
 
 const Post = ({ item }) => {
     const navigation = useNavigation();
@@ -74,14 +72,14 @@ const Post = ({ item }) => {
     };
 
     // comment api using apollo useLazyQuery
-    const [getPostComments, { data, loading }] = useLazyQuery(GET_POST_COMMENTS);
+    const [getCommentPost, { data, loading }] = useLazyQuery(GET_COMMENT_POST);
     
     // modal
     const bottomSheetModalRef = useRef(null);
     const snapPoints = useMemo(() => ['65%', '90%'], []);
     const openModal = () => {
       bottomSheetModalRef.current.present();
-      if(item.comments > 0) getPostComments({ variables: {token: token, postId: item._id} })
+      if(item.comments > 0) getCommentPost({ variables: { token: token, postId: item._id } });
     }
     const closeModal = () => bottomSheetModalRef.current.dismiss();
 
@@ -103,10 +101,7 @@ const Post = ({ item }) => {
         <View className="flex-row justify-between items-center mb-2">
           <TouchableOpacity onPress={goToProfile}>
             <View className="flex-row items-center gap-x-3 px-2">
-              <Avatar.Image
-                size={30}
-                source={sourceImageProfile}
-              />
+              <Avatar.Image size={30} source={sourceImageProfile} />
               <Text className="font-bold">{item?.username}</Text>
             </View>
           </TouchableOpacity>
@@ -125,9 +120,9 @@ const Post = ({ item }) => {
         {/* icons */}
         <View className="flex-row justify-between items-center px-2 mb-2">
           <View className="flex-row gap-x-4">
-            <Pressable onPress={handleLiked}>
-              <LikeAnimation color='#fff' size={25} liked={liked} />
-            </Pressable>
+            <TouchableOpacity onPress={handleLiked}>
+              <LikeAnimation color="#fff" size={25} liked={liked} />
+            </TouchableOpacity>
 
             <TouchableOpacity onPress={openModal}>
               <FontAwesome name="comment-o" size={25} />
@@ -190,7 +185,7 @@ const Post = ({ item }) => {
               <ActivityIndicator size="large" color="#406aff" />
             </View>
           ) : (
-            <ModalComment onPress={closeModal} data={data?.getPostComments} />
+            <ModalComment onPress={closeModal} data={data?.getCommentPost} />
           )}
         </BottomSheetModal>
         {/* comment modal */}

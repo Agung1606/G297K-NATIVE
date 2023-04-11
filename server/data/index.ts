@@ -385,20 +385,3 @@ export const tweets = [
         comments: 0,
     },
 ];
-
-export const comments = [
-    {
-        userId: userIds[3],
-        postId: postIds[0],
-        username: 'vnsmkSanji',
-        profilePicturePath: 'p4.jpg',
-        comment: 'test comment, i am sanji',
-    },
-    {
-        userId: userIds[1],
-        postId: tweetIds[3],
-        username: 'king_of_pirate',
-        profilePicturePath: 'p2.jpg',
-        comment: 'test comment, i am Monkey D. Luffy',
-    },
-];

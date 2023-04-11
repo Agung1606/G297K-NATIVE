@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-interface ICommentModel {
+interface ICommentPostModel {
     userId: mongoose.Types.ObjectId;
     postId: mongoose.Types.ObjectId;
     username: string;
@@ -8,7 +8,7 @@ interface ICommentModel {
     comment: string;
 }
 
-const CommentsSchema = new mongoose.Schema<ICommentModel>({
+const CommentPostSchema = new mongoose.Schema<ICommentPostModel>({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -22,5 +22,5 @@ const CommentsSchema = new mongoose.Schema<ICommentModel>({
     comment: String,
 });
 
-const Comments = mongoose.model<ICommentModel>("Comments", CommentsSchema);
-export default Comments;
+const CommentPost = mongoose.model<ICommentPostModel>("CommentPost", CommentPostSchema);
+export default CommentPost;

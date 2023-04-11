@@ -1,30 +1,36 @@
 import Post from "./models/Post"
 import User from "./models/User";
-import { 
-    RegisterArgsType, 
-    LoginArgsType, 
-    ExplorePostsArgsType, 
-    UserPostsArgsType,
-    GetPostArgsType,
-    GetPostCommentsArgsType,
-    GetUserArgsType,
-    FollowUnfollowArgsType,
-    EditProfileArgsType,
-    LikePostArgsType,
-} from "./types/utils";
 import { GraphQLError } from "graphql";
 import { StatusCodes } from "http-status-codes";
 import { verifyToken } from "./middleware/verifyToken";
 
 import * as jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import Comments from "./models/Comments";
 import Tweet from "./models/Tweet";
+import CommentPost from "./models/CommentPost";
+import CommentTweet from "./models/CommentTweet";
+
+import { 
+    RegisterArgsType, 
+    LoginArgsType, 
+    GetTweetsArgsType,
+    GetPostsArgsType, 
+    GetUserPostsArgsType,
+    GetUserTweetsArgsType,
+    GetPostArgsType,
+    GetCommentPostArgsType,
+    GetCommentTweetArgsType,
+    GetUserArgsType,
+    FollowUnfollowArgsType,
+    EditProfileArgsType,
+    LikePostArgsType,
+    LikeTweetArgsType,
+} from "./types/utils";
 
 const resolvers = {
     Query: {
         // QUERY TWEETS
-        getTweets: async (_: any, args: ExplorePostsArgsType) => {
+        getTweets: async (_: any, args: GetTweetsArgsType) => {
             const { token } = args;
             const verified = await verifyToken(token);
             if(verified) {
@@ -33,7 +39,7 @@ const resolvers = {
             }
         },
         // QUERY EXPLORE POST
-        getExplorePosts: async (_: any, args: ExplorePostsArgsType) => {
+        getPosts: async (_: any, args: GetPostsArgsType) => {
             const { token } = args;
             const verified = await verifyToken(token);
             if(verified){
@@ -56,7 +62,7 @@ const resolvers = {
             }
         },
         // QUERY USER TWEETS
-        getUserTweets: async (_: any, args: UserPostsArgsType) => {
+        getUserTweets: async (_: any, args: GetUserTweetsArgsType) => {
             const { token, userId } = args;
             const verified = await verifyToken(token);
             if(verified) {
@@ -65,7 +71,7 @@ const resolvers = {
             }
         },
         // QUERY USER POSTS
-        getUserPosts: async (_: any, args: UserPostsArgsType) => {
+        getUserPosts: async (_: any, args: GetUserPostsArgsType) => {
             const { token, userId } = args;
             const verified = await verifyToken(token);
             if(verified) {
@@ -74,11 +80,19 @@ const resolvers = {
             }
         },
         // QUERY GET POST COMMENT
-        getPostComments: async (_: any, args: GetPostCommentsArgsType) => {
+        getCommentPost: async (_: any, args: GetCommentPostArgsType) => {
             const {token, postId} = args;
             const verified = await verifyToken(token);
             if(verified) {
-                const comments = await Comments.find({ postId }).lean();
+                const comments = await CommentPost.find({ postId }).lean();
+                return comments;
+            }
+        },
+        getCommentTweet: async (_: any, args: GetCommentTweetArgsType) => {
+            const {token, tweetId} = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const comments = await CommentTweet.find({ tweetId }).lean();
                 return comments;
             }
         },
@@ -289,6 +303,28 @@ const resolvers = {
                 ).lean();
 
                 return updatedPost;
+            }
+        },
+        likeTweet: async(_: any, args: LikeTweetArgsType) => {
+            const {token, tweetId, userId} = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const tweet = await Tweet.findOne({ _id: tweetId }).lean();
+                // check if user hs liked or not
+                const isLiked = tweet.likes?.find(id => id === userId);
+                if(isLiked) {
+                    tweet.likes = tweet.likes?.filter(id => id !== userId);
+                } else {
+                    tweet.likes?.push(userId);
+                }
+
+                const updatedTweet = await Tweet.findByIdAndUpdate(
+                    tweet._id,
+                    { likes: tweet.likes },
+                    { new: true }
+                ).lean();
+
+                return updatedTweet;
             }
         },
     }

@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useState, memo, useRef, useMemo } from 'react'
 import { Avatar } from 'react-native-paper'
 import dayjs from 'dayjs'
@@ -15,15 +15,24 @@ import { useSharedValue, withSpring } from 'react-native-reanimated'
 import { BottomSheetModal } from '@gorhom/bottom-sheet'
 import ModalComment from '../modal/ModalComment'
 
-import { gql, useLazyQuery } from '@apollo/client'
-const GET_POST_COMMENTS = gql`
-  query GetPostComments($token: String, $postId: String) {
-    getPostComments(token: $token, postId: $postId) {
+import { gql, useLazyQuery, useMutation } from '@apollo/client'
+const GET_COMMENT_TWEET = gql`
+  query GetCommentTweet($token: String, $tweetId: String) {
+    getCommentTweet(token: $token, tweetId: $tweetId) {
       _id
       userId
       username
       profilePicturePath
       comment
+    }
+  }
+`;
+
+const LIKE_TWEET = gql`
+  mutation LikeTweet($token: String, $tweetId: String, $userId: String) {
+    likeTweet(token: $token, tweetId: $tweetId, userId: $userId) {
+      _id
+      likes
     }
   }
 `;
@@ -48,7 +57,7 @@ function Tweet({ item }) {
   };
 
   // comment api
-  const [getPostComments, { data, loading }] = useLazyQuery(GET_POST_COMMENTS);
+  const [getCommentTweet, { data, loading }] = useLazyQuery(GET_COMMENT_TWEET);
 
   // modal comment
   const bottomSheetModalRef = useRef(null);
@@ -56,14 +65,20 @@ function Tweet({ item }) {
   const openModal = () => {
     bottomSheetModalRef.current.present();
     if (item.comments > 0)
-      getPostComments({ variables: { token: token, postId: item._id } });
+      getCommentTweet({ variables: { token: token, tweetId: item._id } });
   };
   const closeModal = () => bottomSheetModalRef.current.dismiss();
 
   // like animation config
+  const [likeTweet, { loading: loadingLike }] = useMutation(LIKE_TWEET);
   const liked = useSharedValue(isLiked ? 1 : 0);
   const handleLiked = async () => {
-    liked.value = withSpring(isLiked ? 1 : 0);
+    await likeTweet({ variables: {
+      token: token,
+      tweetId: item._id,
+      userId: loggedInUserId
+    }});
+    liked.value = withSpring(liked.value ? 0 : 1);
   };
 
   return (
@@ -101,9 +116,9 @@ function Tweet({ item }) {
           {/* like, comment, save */}
           <View className="mt-[10px] flex-row justify-between items-center">
             <View className="flex-row items-center gap-x-1">
-              <Pressable onPress={handleLiked}>
+              <TouchableOpacity onPress={handleLiked}>
                 <LikeAnimation color="#7d7d7d" size={18} liked={liked} />
-              </Pressable>
+              </TouchableOpacity>
               <Text className="text-[#7d7d7d]">{likesCount}</Text>
             </View>
             <View className="flex-row items-center gap-x-1">
@@ -130,7 +145,7 @@ function Tweet({ item }) {
             <ActivityIndicator size="large" color="#406aff" />
           </View>
         ) : (
-          <ModalComment onPress={closeModal} data={data?.getPostComments} />
+          <ModalComment onPress={closeModal} data={data?.getCommentTweet} />
         )}
       </BottomSheetModal>
     </View>
