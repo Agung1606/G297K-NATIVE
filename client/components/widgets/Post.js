@@ -14,7 +14,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 import FontAwesome from '@expo/vector-icons/FontAwesome'
 
 import LikeAnimation from '../animation/LikeAnimation'
-import {
+import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
@@ -86,6 +86,7 @@ const Post = ({ item }) => {
     // like animation config
     const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST);
     const liked = useSharedValue(isLiked ? 1 : 0);
+
     const handleLiked = async () => {
       await likePost({ variables: {
         token: token,
@@ -94,7 +95,7 @@ const Post = ({ item }) => {
       }})
       liked.value = withSpring(liked.value ? 0 : 1);
     };
-
+    
     return (
       <View className="mb-7 p-2">
         {/* user's photo and username */}
@@ -110,12 +111,20 @@ const Post = ({ item }) => {
           </TouchableOpacity>
         </View>
         {/* post photo */}
-        <View className="mx-auto mb-2">
+        <View className="relative mx-auto mb-2">
           <Image
             source={sourceImagePost}
             style={{ width: 340, height: 340 }}
             resizeMode="contain"
           />
+          {/* love animation when liked */}
+          {loadingLike && (
+          <View className="absolute top-[40%] left-[40%]">
+            <Animated.View>
+              <FontAwesome name="heart" size={80} />
+            </Animated.View>
+          </View>
+          )}
         </View>
         {/* icons */}
         <View className="flex-row justify-between items-center px-2 mb-2">

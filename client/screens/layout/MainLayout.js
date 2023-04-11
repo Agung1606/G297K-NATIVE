@@ -14,7 +14,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { useNavigation } from '@react-navigation/native'
 const Stack = createNativeStackNavigator();
 
-export default function MainLayout() {
+export default function MainLayout({ route }) {
   const navigation = useNavigation();
   const loggedInUserId = useSelector((state) => state.auth.user._id);
 

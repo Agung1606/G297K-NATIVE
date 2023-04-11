@@ -8,9 +8,6 @@ import { useNavigation } from '@react-navigation/native';
 import { userUpdate } from '../../state/authSlice';
 
 import { API_URL } from '@env'
-// pick image
-import * as ImagePicker from 'expo-image-picker'
-import * as MediaLibrary from 'expo-media-library'
 // icons
 import { AntDesign } from '@expo/vector-icons';
 // form
@@ -46,6 +43,10 @@ const EDIT_PROFILE = gql`
   }
 `;
 
+// pick image
+import * as ImagePicker from 'expo-image-picker'
+import * as MediaLibrary from 'expo-media-library'
+    
 export default function EditProfileScreen() {
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
@@ -56,27 +57,31 @@ export default function EditProfileScreen() {
 
   // permission to take image
   const [status, requestPermission] = MediaLibrary.usePermissions();
-  const [profileImage, setProfileImage] = useState(null);
+  const [selectedProfileImg, setSelectedProfileImg] = useState(null);
 
-  const sourceImageProfile = {
-    uri: profileImage !== null
-      ? profileImage
-      : `${API_URL}/assets/${user?.profilePicturePath}`,
+  const sourceImgProfile = {
+    uri:
+      selectedProfileImg !== null
+        ? selectedProfileImg
+        : `${API_URL}/assets/${user?.profilePicturePath}`,
   };
 
   if (status === null) requestPermission();
 
+  // expo-image-picker
   const pickImageAsync = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [2, 2],
         quality: 1,
     });
-
+    
     if(result.canceled) {
-        alert('You did not select any image.');
+      alert('You did not select any image.');
     } else {
-        setProfileImage(result.assets[0].uri);
+      setSelectedProfileImg(result.assets[0].uri);
+      console.log(result);
     }
   };
 
@@ -144,7 +149,7 @@ export default function EditProfileScreen() {
                 onPress={pickImageAsync}
                 className="mx-auto space-y-3 items-center"
               >
-                <Avatar.Image size={110} source={sourceImageProfile} />
+                <Avatar.Image size={110} source={sourceImgProfile} />
                 <Text className="text-blue text-lg">Change profile photo</Text>
               </TouchableOpacity>
             </View>
