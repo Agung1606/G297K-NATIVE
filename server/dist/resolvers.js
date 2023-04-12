@@ -301,9 +301,12 @@ const resolvers = {
                     comment
                 });
                 yield newComment.save();
-                yield Post_1.default.findByIdAndUpdate(postId, { comments: post.comments + 1 }, { new: true });
+                const postUpdated = yield Post_1.default.findByIdAndUpdate(postId, { comments: post.comments + 1 }, { new: true });
                 const newComments = yield CommentPost_1.default.find({ postId }).lean();
-                return newComments;
+                return {
+                    postUpdated,
+                    newComments
+                };
             }
         }),
     }

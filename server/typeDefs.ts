@@ -78,7 +78,7 @@ const typeDefs = `#graphql
     }
 
     type NewCommentPost {
-        newComment:  [CommentPost]
+        newComments:  [CommentPost]
         postUpdated: Post
     }
 
@@ -136,7 +136,7 @@ const typeDefs = `#graphql
             username: String
             profilePicturePath: String
             comment: String
-        ): [CommentPost]
+        ): NewCommentPost
     }
 `
 

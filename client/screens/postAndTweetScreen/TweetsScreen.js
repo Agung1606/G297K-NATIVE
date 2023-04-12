@@ -25,6 +25,7 @@ function TweetsScreen() {
     const token = useSelector((state) => state.auth.token);
     const { data: tweetsData, loading: tweetsLoading } = useQuery(GET_TWEETS, {
       variables: { token: token },
+      fetchPolicy: 'cache-and-network'
     });
 
     if (tweetsLoading) {

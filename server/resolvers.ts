@@ -350,14 +350,17 @@ const resolvers = {
                 });
                 await newComment.save();
 
-                await Post.findByIdAndUpdate(
+                const postUpdated = await Post.findByIdAndUpdate(
                     postId,
                     { comments: post.comments + 1 },
                     { new: true }
                 );
 
                 const newComments = await CommentPost.find({ postId }).lean();
-                return newComments;
+                return {
+                    postUpdated,
+                    newComments
+                };
             }
         },
     }

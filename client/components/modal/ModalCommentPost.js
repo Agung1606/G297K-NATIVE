@@ -39,11 +39,17 @@ const COMMENT_POST = gql`
       profilePicturePath: $profilePicturePath
       comment: $comment
     ) {
-      _id
-      userId
-      username
-      profilePicturePath
-      comment
+      newComments {
+        _id
+        userId
+        username
+        profilePicturePath
+        comment
+      }
+      postUpdated {
+        _id
+        comments
+      }
     }
   }
 `;
@@ -62,12 +68,12 @@ export default function ModalCommentPost({ onPress, postId, commentCount }) {
       token: token,
       postId: postId
     },
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'cache-and-network'
   })
 
   // comment post
   const [commentPost, { loading }] = useMutation(COMMENT_POST, {
-    fetchPolicy: 'no-cache',
+    fetchPolicy: 'network-only',
   });
 
   const handleCommentPost = async () => {
