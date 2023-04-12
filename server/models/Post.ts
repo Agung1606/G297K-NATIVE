@@ -5,10 +5,10 @@ interface IPostModel {
     username: string;
     postDate: Date;
     postPicturePath: string;
-    userProfilePicturePath?: string;
-    description?: string;
-    likes?: string[];
-    comments?: number;
+    userProfilePicturePath: string;
+    description: string;
+    likes: string[];
+    comments: number;
 }
 
 const PostSchema = new mongoose.Schema<IPostModel>({

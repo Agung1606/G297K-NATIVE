@@ -288,6 +288,24 @@ const resolvers = {
                 return updatedTweet;
             }
         }),
+        commentPost: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, userId, postId, username, profilePicturePath, comment } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const post = yield Post_1.default.findById({ _id: postId }).lean();
+                const newComment = new CommentPost_1.default({
+                    userId,
+                    postId,
+                    username,
+                    profilePicturePath,
+                    comment
+                });
+                yield newComment.save();
+                yield Post_1.default.findByIdAndUpdate(postId, { comments: post.comments + 1 }, { new: true });
+                const comments = yield CommentPost_1.default.find({ postId }).lean();
+                return comments;
+            }
+        }),
     }
 };
 exports.default = resolvers;

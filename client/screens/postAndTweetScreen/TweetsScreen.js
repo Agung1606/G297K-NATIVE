@@ -40,8 +40,10 @@ function TweetsScreen() {
         data={tweetsData.getTweets}
         renderItem={({ item }) => <Tweet item={item} />}
         keyExtractor={(item) => item._id}
+        initialNumToRender={5}
         maxToRenderPerBatch={5}
-        updateCellsBatchingPeriod={20}
+        windowSize={15}
+        removeClippedSubviews={true}
       />
     </View>
   );

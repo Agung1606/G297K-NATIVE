@@ -38,6 +38,15 @@ export type LikeTweetArgsType = {
     tweetId: string
     userId: string
 }
+
+export type CommentPostArgsType = {
+    token: string
+    userId: string
+    postId: string
+    username: string
+    profilePicturePath: string
+    comment: string
+}
 // mutation
 
 // query

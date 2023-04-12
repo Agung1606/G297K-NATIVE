@@ -126,6 +126,14 @@ const typeDefs = `#graphql
             tweetId: String
             userId: String
         ): Tweet
+        commentPost(
+            token: String
+            userId: String
+            postId: String
+            username: String
+            profilePicturePath: String
+            comment: String
+        ): [CommentPost]
     }
 `;
 exports.default = typeDefs;

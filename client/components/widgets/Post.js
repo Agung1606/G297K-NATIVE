@@ -24,7 +24,7 @@ import {
     BottomSheetModal, 
 } from '@gorhom/bottom-sheet'
 // comment component
-import ModalComment from '../modal/ModalComment'
+import ModalCommentPost from '../modal/ModalCommentPost'
 import { useNavigation } from '@react-navigation/native'
 
 import { API_URL } from '@env';
@@ -73,7 +73,9 @@ const Post = ({ item }) => {
     };
 
     // comment api using apollo useLazyQuery
-    const [getCommentPost, { data, loading }] = useLazyQuery(GET_COMMENT_POST);
+    const [getCommentPost, { data, loading }] = useLazyQuery(GET_COMMENT_POST, {
+      fetchPolicy: 'no-cache'
+    });
     
     // modal
     const bottomSheetModalRef = useRef(null);
@@ -127,7 +129,7 @@ const Post = ({ item }) => {
                 <FontAwesome name="heart" size={80} />
               </Animated.View>
             </View>
-          )} 
+          )}
         </View>
         {/* icons */}
         <View className="flex-row justify-between items-center px-2 mb-2">
@@ -197,7 +199,11 @@ const Post = ({ item }) => {
               <ActivityIndicator size="large" color="#406aff" />
             </View>
           ) : (
-            <ModalComment onPress={closeModal} data={data?.getCommentPost} />
+            <ModalCommentPost
+              onPress={closeModal}
+              data={data?.getCommentPost}
+              postId={item._id}
+            />
           )}
         </BottomSheetModal>
         {/* comment modal */}

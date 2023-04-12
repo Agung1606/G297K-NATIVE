@@ -25,6 +25,7 @@ import {
     EditProfileArgsType,
     LikePostArgsType,
     LikeTweetArgsType,
+    CommentPostArgsType,
 } from "./types/utils";
 
 const resolvers = {
@@ -325,6 +326,38 @@ const resolvers = {
                 ).lean();
 
                 return updatedTweet;
+            }
+        },
+        commentPost: async (_: any, args: CommentPostArgsType) => {
+            const {
+                token,
+                userId,
+                postId,
+                username,
+                profilePicturePath,
+                comment
+            } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const post: typeof Post = await Post.findById({ _id: postId }).lean();
+
+                const newComment = new CommentPost({
+                    userId,
+                    postId,
+                    username,
+                    profilePicturePath,
+                    comment
+                });
+                await newComment.save();
+
+                await Post.findByIdAndUpdate(
+                    postId,
+                    { comments: post.comments + 1 },
+                    { new: true }
+                );
+
+                const comments = await CommentPost.find({ postId }).lean();
+                return comments;
             }
         },
     }
