@@ -356,8 +356,8 @@ const resolvers = {
                     { new: true }
                 );
 
-                const comments = await CommentPost.find({ postId }).lean();
-                return comments;
+                const newComments = await CommentPost.find({ postId }).lean();
+                return newComments;
             }
         },
     }

@@ -3,7 +3,6 @@ import {
     Text, 
     Image, 
     TouchableOpacity, 
-    ActivityIndicator, 
 } from 'react-native'
 import { Avatar } from 'react-native-paper'
 import React, { useMemo, useRef, useState, memo } from 'react'
@@ -29,18 +28,7 @@ import { useNavigation } from '@react-navigation/native'
 
 import { API_URL } from '@env';
 
-import { gql, useLazyQuery, useMutation } from '@apollo/client'
-const GET_COMMENT_POST = gql`
-  query GetCommentPost($token: String, $postId: String) {
-    getCommentPost(token: $token, postId: $postId) {
-      _id
-      userId
-      username
-      profilePicturePath
-      comment
-    }
-  }
-`;
+import { gql, useMutation } from '@apollo/client'
 
 const LIKE_POST = gql`
   mutation LikePost($token: String, $postId: String, $userId: String) {
@@ -71,18 +59,12 @@ const Post = ({ item }) => {
     const sourceImagePost = {
       uri: `${API_URL}/assets/${item?.postPicturePath}`,
     };
-
-    // comment api using apollo useLazyQuery
-    const [getCommentPost, { data, loading }] = useLazyQuery(GET_COMMENT_POST, {
-      fetchPolicy: 'no-cache'
-    });
     
     // modal
     const bottomSheetModalRef = useRef(null);
     const snapPoints = useMemo(() => ['65%', '90%'], []);
     const openModal = () => {
       bottomSheetModalRef.current.present();
-      if(item.comments > 0) getCommentPost({ variables: { token: token, postId: item._id } });
     }
     const closeModal = () => bottomSheetModalRef.current.dismiss();
 
@@ -194,17 +176,11 @@ const Post = ({ item }) => {
           index={0}
           snapPoints={snapPoints}
         >
-          {loading ? (
-            <View className="flex-1 justify-center">
-              <ActivityIndicator size="large" color="#406aff" />
-            </View>
-          ) : (
-            <ModalCommentPost
-              onPress={closeModal}
-              data={data?.getCommentPost}
-              postId={item._id}
-            />
-          )}
+          <ModalCommentPost
+            onPress={closeModal}
+            postId={item._id}
+            commentCount={item.comments}
+          />
         </BottomSheetModal>
         {/* comment modal */}
       </View>

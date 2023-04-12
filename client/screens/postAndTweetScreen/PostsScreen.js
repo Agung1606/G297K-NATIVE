@@ -27,7 +27,6 @@ function PostsScreen() {
     const token = useSelector((state) => state.auth.token);
     const { data: postsData, loading: postsLoading } = useQuery(GET_POSTS, {
       variables: { token: token },
-      fetchPolicy: 'no-cache'
     });
 
     if(postsLoading) {

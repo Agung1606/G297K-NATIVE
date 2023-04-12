@@ -1,21 +1,42 @@
-import { View, Text, FlatList, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { TextInput, Avatar } from 'react-native-paper'
 import React, { useState } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
+
+import {FlatList} from 'react-native-gesture-handler'
 
 import { API_URL } from '@env'
 import { useSelector } from 'react-redux'
 
 // api for comment
-import { useMutation, gql } from '@apollo/client'
+import { useMutation, useQuery, gql } from '@apollo/client'
+const GET_COMMENT_POST = gql`
+  query GetCommentPost($token: String, $postId: String) {
+    getCommentPost(token: $token, postId: $postId) {
+      _id
+      userId
+      username
+      profilePicturePath
+      comment
+    }
+  }
+`;
+
 const COMMENT_POST = gql`
-  mutation CommentPost($token: String, $userId: String, $postId: String, $username: String, $profilePicturePath: String, $comment: String) {
+  mutation CommentPost(
+    $token: String
+    $userId: String
+    $postId: String
+    $username: String
+    $profilePicturePath: String
+    $comment: String
+  ) {
     commentPost(
-      token: $token,
-      userId: $userId,
-      postId: $postId,
-      username: $username,
-      profilePicturePath: $profilePicturePath,
+      token: $token
+      userId: $userId
+      postId: $postId
+      username: $username
+      profilePicturePath: $profilePicturePath
       comment: $comment
     ) {
       _id
@@ -27,17 +48,28 @@ const COMMENT_POST = gql`
   }
 `;
 
-export default function ModalCommentPost({ onPress, data, postId }) {
+export default function ModalCommentPost({ onPress, postId, commentCount }) {
   const [height, setHeight] = useState(0); // for TextInput auto grow
   const [comment, setComment] = useState(''); // for comment value
 
   const user = useSelector((state) => state.auth.user);
   const token = useSelector((state) => state.auth.token);
 
+  // fetching comment post
+  const { data, loading: commentsLoading } = useQuery(GET_COMMENT_POST, {
+    skip: commentCount === 0,
+    variables: {
+      token: token,
+      postId: postId
+    },
+    fetchPolicy: 'no-cache'
+  })
+
   // comment post
   const [commentPost, { loading }] = useMutation(COMMENT_POST, {
-    fetchPolicy: 'no-cache'
+    fetchPolicy: 'no-cache',
   });
+
   const handleCommentPost = async () => {
     await commentPost({ variables: {
       token: token,
@@ -47,7 +79,9 @@ export default function ModalCommentPost({ onPress, data, postId }) {
       profilePicturePath: user.profilePicturePath,
       comment: comment
     }})
+    setComment('');
   };
+
 
   return (
     <View className="px-2">
@@ -76,15 +110,15 @@ export default function ModalCommentPost({ onPress, data, postId }) {
           </TouchableOpacity>
         )}
       </View>
-      <FlatList
-        data={data}
-        renderItem={({ item }) => <Comment item={item} />}
-        keyExtractor={(item) => item._id}
-        initialNumToRender={10}
-        maxToRenderPerBatch={8}
-        windowSize={15}
-        removeClippedSubviews={true}
-      />
+      {commentsLoading ? (
+        <ActivityIndicator size="large" color="#406aff" />
+      ) : (
+        <FlatList
+          data={data?.getCommentPost}
+          renderItem={({ item }) => <Comment item={item} />}
+          keyExtractor={(item) => item._id}
+        />
+      )}
     </View>
   );
 }

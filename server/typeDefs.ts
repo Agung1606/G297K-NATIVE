@@ -77,6 +77,11 @@ const typeDefs = `#graphql
         comment: String
     }
 
+    type NewCommentPost {
+        newComment:  [CommentPost]
+        postUpdated: Post
+    }
+
     type Query {
         getTweets(token: String): [Tweet]
         getPosts(token: String): [Post]
