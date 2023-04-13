@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 interface ICommentTweetModel {
-    userId: mongoose.Types.ObjectId;
     tweetId: mongoose.Types.ObjectId;
     username: string;
     profilePicturePath: string;
@@ -9,10 +8,6 @@ interface ICommentTweetModel {
 }
 
 const CommentTweetSchema = new mongoose.Schema<ICommentTweetModel>({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
     tweetId: mongoose.Schema.Types.ObjectId,
     username: {
         type: String,

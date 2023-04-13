@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 interface ICommentPostModel {
-    userId: mongoose.Types.ObjectId;
     postId: mongoose.Types.ObjectId;
     username: string;
     profilePicturePath: string;
@@ -9,10 +8,6 @@ interface ICommentPostModel {
 }
 
 const CommentPostSchema = new mongoose.Schema<ICommentPostModel>({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
     postId: mongoose.Schema.Types.ObjectId,
     username: {
         type: String,

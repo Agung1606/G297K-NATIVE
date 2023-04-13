@@ -41,7 +41,6 @@ export type LikeTweetArgsType = {
 
 export type CommentPostArgsType = {
     token: string
-    userId: string
     postId: string
     username: string
     profilePicturePath: string

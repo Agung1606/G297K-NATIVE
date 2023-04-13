@@ -331,7 +331,6 @@ const resolvers = {
         commentPost: async (_: any, args: CommentPostArgsType) => {
             const {
                 token,
-                userId,
                 postId,
                 username,
                 profilePicturePath,
@@ -342,7 +341,6 @@ const resolvers = {
                 const post: typeof Post = await Post.findById({ _id: postId }).lean();
 
                 const newComment = new CommentPost({
-                    userId,
                     postId,
                     username,
                     profilePicturePath,
@@ -356,10 +354,9 @@ const resolvers = {
                     { new: true }
                 );
 
-                const newComments = await CommentPost.find({ postId }).lean();
                 return {
-                    postUpdated,
-                    newComments
+                    newComment,
+                    postUpdated
                 };
             }
         },

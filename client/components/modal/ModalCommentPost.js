@@ -3,7 +3,7 @@ import { TextInput, Avatar } from 'react-native-paper'
 import React, { useState } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
-import {FlatList} from 'react-native-gesture-handler'
+import { FlatList } from 'react-native-gesture-handler'
 
 import { API_URL } from '@env'
 import { useSelector } from 'react-redux'
@@ -14,7 +14,6 @@ const GET_COMMENT_POST = gql`
   query GetCommentPost($token: String, $postId: String) {
     getCommentPost(token: $token, postId: $postId) {
       _id
-      userId
       username
       profilePicturePath
       comment
@@ -25,7 +24,6 @@ const GET_COMMENT_POST = gql`
 const COMMENT_POST = gql`
   mutation CommentPost(
     $token: String
-    $userId: String
     $postId: String
     $username: String
     $profilePicturePath: String
@@ -33,15 +31,13 @@ const COMMENT_POST = gql`
   ) {
     commentPost(
       token: $token
-      userId: $userId
       postId: $postId
       username: $username
       profilePicturePath: $profilePicturePath
       comment: $comment
     ) {
-      newComments {
+      newComment {
         _id
-        userId
         username
         profilePicturePath
         comment
@@ -68,18 +64,40 @@ export default function ModalCommentPost({ onPress, postId, commentCount }) {
       token: token,
       postId: postId
     },
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first'
   })
 
   // comment post
   const [commentPost, { loading }] = useMutation(COMMENT_POST, {
-    fetchPolicy: 'network-only',
+    fetchPolicy: "network-only",
+    update(cache, { data: { commentPost} }) {
+      cache.modify({
+        fields: {
+          getCommentPost(existingCommentPost = []) {
+            const newCommentRef = cache.writeQuery({
+              data: commentPost,
+              query: gql`
+                query CommentPost {
+                  newComment {
+                    _id
+                    username
+                    profilePicturePath
+                    comment
+                  }
+                }
+              `,
+            });
+            return [...existingCommentPost, newCommentRef]
+          }
+        }
+      });
+    },
   });
 
   const handleCommentPost = async () => {
     await commentPost({ variables: {
       token: token,
-      userId: user._id,
       postId: postId,
       username: user.username,
       profilePicturePath: user.profilePicturePath,
@@ -121,7 +139,7 @@ export default function ModalCommentPost({ onPress, postId, commentCount }) {
       ) : (
         <FlatList
           data={data?.getCommentPost}
-          renderItem={({ item }) => <Comment item={item} />}
+          renderItem={({ item }) => <Comment item={item} /> }
           keyExtractor={(item) => item._id}
         />
       )}

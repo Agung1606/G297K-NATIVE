@@ -69,15 +69,17 @@ const Post = ({ item }) => {
     const closeModal = () => bottomSheetModalRef.current.dismiss();
 
     // like animation config
-    const [likePost, { loading: loadingLike }] = useMutation(LIKE_POST);
+    const [likePost, { data, loading: loadingLike }] = useMutation(LIKE_POST);
     const liked = useSharedValue(isLiked ? 1 : 0);
 
     const handleLiked = async () => {
-      await likePost({ variables: {
-        token: token,
-        postId: item._id,
-        userId: loggedInUserId
-      }})
+      await likePost({
+        variables: {
+          token: token,
+          postId: item._id,
+          userId: loggedInUserId,
+        },
+      });
       liked.value = withSpring(liked.value ? 0 : 1);
     };
     

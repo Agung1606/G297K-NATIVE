@@ -61,7 +61,6 @@ const typeDefs = `#graphql
 
     type CommentPost {
         _id: String
-        userId: String
         postId: String
         username: String
         profilePicturePath: String
@@ -70,7 +69,6 @@ const typeDefs = `#graphql
 
     type CommentTweet {
         _id: String
-        userId: String
         tweetId: String
         username: String
         profilePicturePath: String
@@ -78,7 +76,7 @@ const typeDefs = `#graphql
     }
 
     type NewCommentPost {
-        newComments:  [CommentPost]
+        newComment:  CommentPost
         postUpdated: Post
     }
 
@@ -131,7 +129,6 @@ const typeDefs = `#graphql
         ): Tweet
         commentPost(
             token: String
-            userId: String
             postId: String
             username: String
             profilePicturePath: String
