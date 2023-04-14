@@ -1,5 +1,6 @@
 import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import React, { useState, memo, useRef, useMemo } from "react";
+
 import { Avatar } from "react-native-paper";
 import dayjs from "dayjs";
 
@@ -13,14 +14,13 @@ import { useSharedValue, withSpring } from "react-native-reanimated";
 
 // modal comment
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import ModalComment from "../modal/ModalCommentPost";
+import ModalCommentTweet from "../modal/ModalCommentTweet";
 
-import { gql, useLazyQuery, useMutation } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 const GET_COMMENT_TWEET = gql`
   query GetCommentTweet($token: String, $tweetId: String) {
     getCommentTweet(token: $token, tweetId: $tweetId) {
       _id
-      userId
       username
       profilePicturePath
       comment
@@ -39,8 +39,8 @@ const LIKE_TWEET = gql`
 
 function Tweet({ item }) {
   const navigation = useNavigation();
-  const goToProfile = () =>
-    navigation.navigate("ProfileScreen", { param: item.userId });
+  const goToProfile = () => navigation.navigate("ProfileScreen", { param: item.userId });
+  const goToTweetScreen = () => navigation.navigate("TweetScreen", { tweetId: item._id });
 
   // toggle
   const [moreTweet, setMoreTweet] = useState(false);
@@ -60,12 +60,9 @@ function Tweet({ item }) {
     uri: `${API_URL}/assets/${item?.userProfilePicturePath}`,
   };
 
-  // comment api
-  const [getCommentTweet, { data, loading }] = useLazyQuery(GET_COMMENT_TWEET);
-
   // modal comment
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["65%", "90%"], []);
+  const snapPoints = useMemo(() => ["90%"], []);
   const openModal = () => {
     bottomSheetModalRef.current.present();
     if (item.comments > 0)
@@ -74,7 +71,7 @@ function Tweet({ item }) {
   const closeModal = () => bottomSheetModalRef.current.dismiss();
 
   // like animation config
-  const [likeTweet, { loading: loadingLike }] = useMutation(LIKE_TWEET);
+  const [likeTweet] = useMutation(LIKE_TWEET);
   const liked = useSharedValue(isLiked ? 1 : 0);
   const handleLiked = async () => {
     await likeTweet({
@@ -108,7 +105,7 @@ function Tweet({ item }) {
             </TouchableOpacity>
           </View>
           {/* tweets */}
-          <Text className="text-[14px]">
+          <Text onPress={goToTweetScreen} className="text-[14px]">
             {longTweet} {""}
             {item?.tweet?.length > 550 && !moreTweet && (
               <Text
@@ -146,13 +143,7 @@ function Tweet({ item }) {
         index={0}
         snapPoints={snapPoints}
       >
-        {loading ? (
-          <View className="flex-1 justify-center">
-            <ActivityIndicator size="large" color="#406aff" />
-          </View>
-        ) : (
-          <ModalComment onPress={closeModal} data={data?.getCommentTweet} />
-        )}
+        <ModalCommentTweet onPress={closeModal} />
       </BottomSheetModal>
     </View>
   );

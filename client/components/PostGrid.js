@@ -1,4 +1,4 @@
-import { View, Image, TouchableOpacity, Text } from 'react-native'
+import { View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { API_URL } from '@env'
 import { useNavigation } from '@react-navigation/native';

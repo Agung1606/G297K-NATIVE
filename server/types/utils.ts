@@ -72,6 +72,11 @@ export type GetPostArgsType = {
     postId: string
 }
 
+export type GetTweetArgsType = {
+    token: string
+    tweetId: string
+}
+
 export type GetCommentPostArgsType = {
     token: string
     postId: string

@@ -10,6 +10,7 @@ import FlowRegister from './screens/auth/signUp/FlowRegister';
 import MainLayout from './screens/layout/MainLayout';
 import EditProfileScreen from './screens/editProfile/EditProfileScreen';
 import PostScreen from './screens/postAndTweetScreen/PostScreen';
+import TweetScreen from './screens/postAndTweetScreen/TweetScreen';
 
 export default function Main() {
     const isAuth = useSelector((state) => state.auth.token);
@@ -28,6 +29,14 @@ export default function Main() {
               options={{
                 presentation: "modal",
                 animation: "none",
+              }}
+            />
+            <Stack.Screen
+              name="TweetScreen"
+              component={TweetScreen}
+              options={{
+                presentation: "modal",
+                animation: "slide_from_right",
               }}
             />
           </>

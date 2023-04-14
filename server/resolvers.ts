@@ -26,6 +26,7 @@ import {
     LikePostArgsType,
     LikeTweetArgsType,
     CommentPostArgsType,
+    GetTweetArgsType,
 } from "./types/utils";
 
 const resolvers = {
@@ -46,6 +47,20 @@ const resolvers = {
             if(verified){
                 const posts = await Post.find({}).lean();
                 return posts;
+            }
+        },
+        // QUERY GET TWEET
+        getTweet: async (_: any, args: GetTweetArgsType) => {
+            const { token, tweetId } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const tweet = await Tweet.findOne({ _id: tweetId }).lean();
+                if(!tweet) {
+                    throw new GraphQLError('Postingan tidak ditemukan', {
+                        extensions: { code: StatusCodes.NOT_FOUND }
+                    })
+                }
+                return tweet;
             }
         },
         // QUERY GET POST

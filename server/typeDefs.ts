@@ -90,6 +90,7 @@ const typeDefs = `#graphql
 
         getUser(token: String, userId: String): User
         getPost(token: String, postId: String): Post
+        getTweet(token: String, tweetId: String): Tweet
     }
 
     type Mutation {

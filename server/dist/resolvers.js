@@ -65,6 +65,20 @@ const resolvers = {
                 return posts;
             }
         }),
+        // QUERY GET TWEET
+        getTweet: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, tweetId } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const tweet = yield Tweet_1.default.findOne({ _id: tweetId }).lean();
+                if (!tweet) {
+                    throw new graphql_1.GraphQLError('Postingan tidak ditemukan', {
+                        extensions: { code: http_status_codes_1.StatusCodes.NOT_FOUND }
+                    });
+                }
+                return tweet;
+            }
+        }),
         // QUERY GET POST
         getPost: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
             const { token, postId } = args;
