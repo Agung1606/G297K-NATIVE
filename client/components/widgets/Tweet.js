@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import React, { useState, memo, useRef, useMemo } from "react";
 
 import { Avatar } from "react-native-paper";
@@ -65,8 +65,6 @@ function Tweet({ item }) {
   const snapPoints = useMemo(() => ["90%"], []);
   const openModal = () => {
     bottomSheetModalRef.current.present();
-    if (item.comments > 0)
-      getCommentTweet({ variables: { token: token, tweetId: item._id } });
   };
   const closeModal = () => bottomSheetModalRef.current.dismiss();
 
@@ -143,7 +141,7 @@ function Tweet({ item }) {
         index={0}
         snapPoints={snapPoints}
       >
-        <ModalCommentTweet onPress={closeModal} />
+        <ModalCommentTweet onPress={closeModal} replyingTo={item?.username} />
       </BottomSheetModal>
     </View>
   );

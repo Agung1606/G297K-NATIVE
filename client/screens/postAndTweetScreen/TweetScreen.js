@@ -1,10 +1,13 @@
-import React from 'react'
+import React, { useRef, useMemo } from 'react'
 import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 // icons
 import { AntDesign, MaterialIcons, FontAwesome } from '@expo/vector-icons';
-
+// animation
 import { useSharedValue, withSpring } from 'react-native-reanimated';
+// modal comment
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import ModalCommentTweet from '../../components/modal/ModalCommentTweet';
 
 import dayjs from 'dayjs';
 import { API_URL } from '@env'
@@ -58,6 +61,14 @@ export default function TweetScreen({ route }) {
   const sourceImageProfile = {
     uri: `${API_URL}/assets/${tweetData?.getTweet?.userProfilePicturePath}`,
   };
+
+  // modal comment
+  const bottomSheetModalRef = useRef(null);
+  const snapPoints = useMemo(() => ["90%"], []);
+  const openModal = () => {
+    bottomSheetModalRef.current.present();
+  };
+  const closeModal = () => bottomSheetModalRef.current.dismiss();
 
   // like animation config
   const [likeTweet] = useMutation(LIKE_TWEET);
@@ -126,7 +137,7 @@ export default function TweetScreen({ route }) {
                 </View>
                 {/* comment */}
                 <View className="flex-row items-center gap-x-1">
-                  <TouchableOpacity>
+                  <TouchableOpacity onPress={openModal}>
                     <FontAwesome name="comment-o" size={22} color={"#7d7d7d"} />
                   </TouchableOpacity>
                   <Text className="text-[#7d7d7d]">
@@ -142,6 +153,14 @@ export default function TweetScreen({ route }) {
           </View>
         </ScrollView>
       )}
+      {/* modal */}
+      <BottomSheetModal
+        ref={bottomSheetModalRef}
+        index={0}
+        snapPoints={snapPoints}
+      >
+        <ModalCommentTweet onPress={closeModal} replyingTo={tweetData?.getTweet.username} />
+      </BottomSheetModal>
     </SafeAreaView>
   );
 }
