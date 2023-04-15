@@ -21,7 +21,10 @@ const TweetSchema = new mongoose_1.default.Schema({
         required: true
     },
     likes: [String],
-    comments: Number,
+    comments: {
+        type: Number,
+        default: 0
+    },
 });
 const Tweet = mongoose_1.default.model("Tweet", TweetSchema);
 exports.default = Tweet;

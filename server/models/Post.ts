@@ -26,7 +26,10 @@ const PostSchema = new mongoose.Schema<IPostModel>({
     userProfilePicturePath: String,
     description: String,
     likes: [String],
-    comments: Number,
+    comments: {
+        type: Number,
+        default: 0
+    },
 }, {timestamps: true});
 
 

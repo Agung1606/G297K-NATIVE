@@ -46,6 +46,14 @@ export type CommentPostArgsType = {
     profilePicturePath: string
     comment: string
 }
+
+export type CommentTweetArgsType = {
+    token: string
+    tweetId: string
+    username: string
+    profilePicturePath: string
+    comment: string
+}
 // mutation
 
 // query

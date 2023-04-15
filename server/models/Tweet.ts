@@ -7,7 +7,7 @@ interface ITweetModel {
     userProfilePicturePath: string;
     tweet: string;
     likes: string[];
-    comments?: number;
+    comments: number;
 }
 
 const TweetSchema = new mongoose.Schema<ITweetModel>({
@@ -27,7 +27,10 @@ const TweetSchema = new mongoose.Schema<ITweetModel>({
         required: true
     },
     likes: [String],
-    comments: Number,
+    comments: {
+        type: Number,
+        default: 0
+    },
 });
 
 const Tweet = mongoose.model<ITweetModel>("Tweet", TweetSchema);

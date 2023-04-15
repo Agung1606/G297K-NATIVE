@@ -27,6 +27,7 @@ import {
     LikeTweetArgsType,
     CommentPostArgsType,
     GetTweetArgsType,
+    CommentTweetArgsType,
 } from "./types/utils";
 
 const resolvers = {
@@ -353,7 +354,7 @@ const resolvers = {
             } = args;
             const verified = await verifyToken(token);
             if(verified) {
-                const post: typeof Post = await Post.findById({ _id: postId }).lean();
+                const post = await Post.findById({ _id: postId }).lean();
 
                 const newComment = new CommentPost({
                     postId,
@@ -372,6 +373,38 @@ const resolvers = {
                 return {
                     newComment,
                     postUpdated
+                };
+            }
+        },
+        commentTweet: async (_: any, args: CommentTweetArgsType) => {
+            const {
+                token,
+                tweetId,
+                username,
+                profilePicturePath,
+                comment
+            } = args;
+            const verified = await verifyToken(token);
+            if(verified) {
+                const tweet = await Tweet.findById({ _id: tweetId }).lean();
+
+                const newComment = new CommentTweet({
+                    tweetId,
+                    username,
+                    profilePicturePath,
+                    comment
+                });
+                await newComment.save();
+
+                const tweetUpdated = await Tweet.findByIdAndUpdate(
+                    tweetId,
+                    { comments: tweet.comments + 1 },
+                    { new: true }
+                );
+                
+                return {
+                    newComment,
+                    tweetUpdated
                 };
             }
         },

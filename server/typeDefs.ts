@@ -80,6 +80,11 @@ const typeDefs = `#graphql
         postUpdated: Post
     }
 
+    type NewCommentTweet {
+        newComment: CommentTweet
+        tweetUpdated: Tweet
+    }
+
     type Query {
         getTweets(token: String): [Tweet]
         getPosts(token: String): [Post]
@@ -135,6 +140,13 @@ const typeDefs = `#graphql
             profilePicturePath: String
             comment: String
         ): NewCommentPost
+        commentTweet(
+            token: String
+            tweetId: String
+            username: String
+            profilePicturePath: String
+            comment: String
+        ): NewCommentTweet
     }
 `
 

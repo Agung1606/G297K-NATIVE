@@ -85,7 +85,7 @@ export default function TweetScreen({ route }) {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-whitebefore:">
       <View className="pb-2 px-3 flex-row items-center border-b border-gray-300">
         <TouchableOpacity onPress={goToPreviousScreen}>
           <AntDesign name="arrowleft" size={30} />

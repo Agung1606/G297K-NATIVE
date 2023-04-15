@@ -19,7 +19,10 @@ const PostSchema = new mongoose_1.default.Schema({
     userProfilePicturePath: String,
     description: String,
     likes: [String],
-    comments: Number,
+    comments: {
+        type: Number,
+        default: 0
+    },
 }, { timestamps: true });
 const Post = mongoose_1.default.model("Post", PostSchema);
 exports.default = Post;

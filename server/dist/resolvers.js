@@ -321,6 +321,25 @@ const resolvers = {
                 };
             }
         }),
+        commentTweet: (_, args) => __awaiter(void 0, void 0, void 0, function* () {
+            const { token, tweetId, username, profilePicturePath, comment } = args;
+            const verified = yield (0, verifyToken_1.verifyToken)(token);
+            if (verified) {
+                const tweet = yield Tweet_1.default.findById({ _id: tweetId }).lean();
+                const newComment = new CommentTweet_1.default({
+                    tweetId,
+                    username,
+                    profilePicturePath,
+                    comment
+                });
+                yield newComment.save();
+                const tweetUpdated = yield Tweet_1.default.findByIdAndUpdate(tweetId, { comments: tweet.comments + 1 }, { new: true });
+                return {
+                    newComment,
+                    tweetUpdated
+                };
+            }
+        }),
     }
 };
 exports.default = resolvers;
