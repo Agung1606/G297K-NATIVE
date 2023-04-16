@@ -1,5 +1,5 @@
 import React, { useRef, useMemo } from 'react'
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, FlatList } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 // icons
 import { AntDesign, MaterialIcons, FontAwesome } from '@expo/vector-icons';
@@ -8,14 +8,16 @@ import { useSharedValue, withSpring } from 'react-native-reanimated';
 // modal comment
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import ModalCommentTweet from '../../components/modal/ModalCommentTweet';
+// widget comment
+import Comment from '../../components/widgets/Comment';
 
 import dayjs from 'dayjs';
 import { API_URL } from '@env'
-import { useQuery, useMutation, gql } from '@apollo/client'
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { Avatar } from 'react-native-paper';
 import LikeAnimation from '../../components/animation/LikeAnimation';
+import { useQuery, useMutation, useLazyQuery, gql } from '@apollo/client'
 const GET_TWEET = gql`
   query GetTweet($token: String, $tweetId: String) {
     getTweet(token: $token, tweetId: $tweetId) {
@@ -27,6 +29,17 @@ const GET_TWEET = gql`
       tweet
       likes
       comments
+    }
+  }
+`;
+
+const GET_COMMENT_TWEET = gql`
+  query GetCommentTweet($token: String, $tweetId: String) {
+    getCommentTweet(token: $token, tweetId: $tweetId) {
+      _id
+      username
+      profilePicturePath
+      comment
     }
   }
 `;
@@ -48,12 +61,24 @@ export default function TweetScreen({ route }) {
   const loggedInUserId = useSelector((state) => state.auth.user._id);
   const token = useSelector((state) => state.auth.token);
 
+  // tweet data
   const {data: tweetData, loading: tweetLoading} = useQuery(GET_TWEET, {
     variables: {
       token: token,
       tweetId: tweetId
     }
   })
+
+  // tweet comment
+  const [getCommentTweet, { data: dataCommentTweet, loading: loadingGetCommentTweet}] = useLazyQuery(GET_COMMENT_TWEET);
+  const handleGetCommentTweet = async () => {
+    await getCommentTweet({
+      variables: {
+        token,
+        tweetId
+      }
+    })
+  };
 
   // tweet config
   const isLiked = Boolean(tweetData?.getTweet.likes.find((id) => id === loggedInUserId));
@@ -99,7 +124,7 @@ export default function TweetScreen({ route }) {
         </View>
       ) : (
         <ScrollView>
-          <View className="my-2 p-2 border-b border-gray-300">
+          <View className="my-2 p-2">
             {/* username and more vertical */}
             <View className="flex-row items-center gap-x-[16px] mb-2">
               <TouchableOpacity>
@@ -150,6 +175,32 @@ export default function TweetScreen({ route }) {
                 </TouchableOpacity>
               </View>
             </View>
+            {/* comments */}
+            <View>
+              {dataCommentTweet?.getCommentTweet.map((item) => (
+                <Comment key={item._id} item={item} />
+              ))}
+            </View>
+            {/* btn to get comment */}
+            <View className="py-8">
+              {tweetData?.getTweet.comments > 0 && !dataCommentTweet ? (
+                loadingGetCommentTweet ? (
+                  <View className='justify-center items-center'>
+                    <Text>Loading...</Text>
+                  </View>
+                ) : (
+                  <View className="justify-center items-center">
+                    <TouchableOpacity onPress={handleGetCommentTweet}>
+                      <AntDesign name="pluscircleo" size={35} />
+                    </TouchableOpacity>
+                  </View>
+                )
+              ) : (
+                <View className="justify-center items-center">
+                  <View className="w-[10px] h-[10px] bg-[#0099ff] rounded-full" />
+                </View>
+              )}
+            </View>
           </View>
         </ScrollView>
       )}
@@ -159,7 +210,11 @@ export default function TweetScreen({ route }) {
         index={0}
         snapPoints={snapPoints}
       >
-        <ModalCommentTweet onPress={closeModal} replyingTo={tweetData?.getTweet.username} />
+        <ModalCommentTweet
+          onPress={closeModal}
+          replyingTo={tweetData?.getTweet.username}
+          tweetId={tweetId}
+        />
       </BottomSheetModal>
     </SafeAreaView>
   );

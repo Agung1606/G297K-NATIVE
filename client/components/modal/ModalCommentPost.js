@@ -4,11 +4,10 @@ import React, { useState } from 'react'
 import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 import { FlatList } from 'react-native-gesture-handler'
-
-import { API_URL } from '@env'
 import { useSelector } from 'react-redux'
 
 // api for comment
+import Comment from '../widgets/Comment'
 import { useMutation, useQuery, gql } from '@apollo/client'
 const GET_COMMENT_POST = gql`
   query GetCommentPost($token: String, $postId: String) {
@@ -97,11 +96,11 @@ export default function ModalCommentPost({ onPress, postId, commentCount }) {
 
   const handleCommentPost = async () => {
     await commentPost({ variables: {
-      token: token,
-      postId: postId,
+      token,
+      postId,
       username: user.username,
       profilePicturePath: user.profilePicturePath,
-      comment: comment
+      comment
     }})
     setComment('');
   };
@@ -143,25 +142,6 @@ export default function ModalCommentPost({ onPress, postId, commentCount }) {
           keyExtractor={(item) => item._id}
         />
       )}
-    </View>
-  );
-}
-
-function Comment({ item }) {
-  return (
-    <View className="py-2 border-t border-gray-600">
-      <View className="flex-row gap-x-2">
-        <TouchableOpacity>
-          <Avatar.Image
-            size={30}
-            source={{ uri: `${API_URL}/assets/${item?.profilePicturePath}` }}
-          />
-        </TouchableOpacity>
-        <View>
-          <Text className="text-[12px] text-gray-400">{item.username}</Text>
-          <Text>{item.comment}</Text>
-        </View>
-      </View>
     </View>
   );
 }

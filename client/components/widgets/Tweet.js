@@ -141,7 +141,11 @@ function Tweet({ item }) {
         index={0}
         snapPoints={snapPoints}
       >
-        <ModalCommentTweet onPress={closeModal} replyingTo={item?.username} />
+        <ModalCommentTweet
+          onPress={closeModal}
+          replyingTo={item?.username}
+          tweetId={item._id}
+        />
       </BottomSheetModal>
     </View>
   );
